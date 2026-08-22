@@ -1,0 +1,195 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * SocietyDesk design system — calm civic-tech.
+ * Deep teal primary, warm off-white canvas, amber reserved for overdue/high.
+ */
+
+@theme inline {
+  --font-sans: "Sora", "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-soft: var(--info-soft);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --shadow-soft: 0 1px 2px oklch(0.3 0.03 180 / 0.04), 0 8px 24px oklch(0.3 0.03 180 / 0.06);
+  --shadow-lift: 0 2px 4px oklch(0.3 0.03 180 / 0.05), 0 16px 40px oklch(0.3 0.03 180 / 0.1);
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: oklch(0.983 0.006 95);
+  --foreground: oklch(0.21 0.04 265.7);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.04 265.7);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.04 265.7);
+  --primary: #1F3622;
+  --primary-foreground: #ffffff;
+  --secondary: oklch(0.955 0.012 170);
+  --secondary-foreground: #1F3622;
+  --muted: oklch(0.958 0.008 95);
+  --muted-foreground: oklch(0.52 0.02 250);
+  --accent: #EDF3EA;
+  --accent-foreground: #1F3622;
+  --destructive: oklch(0.58 0.21 26);
+  --destructive-foreground: oklch(0.985 0.01 90);
+  --border: oklch(0.91 0.008 120);
+  --input: oklch(0.91 0.008 120);
+  --ring: #1F3622;
+  --warning: oklch(0.77 0.155 70);
+  --warning-foreground: oklch(0.32 0.08 62);
+  --warning-soft: oklch(0.95 0.05 82);
+  --success: oklch(0.6 0.12 160);
+  --success-foreground: oklch(0.3 0.07 160);
+  --success-soft: oklch(0.95 0.04 162);
+  --info: #2E4E30;
+  --info-foreground: #1F3622;
+  --info-soft: #EDF3EA;
+  --neutral-soft: oklch(0.94 0.005 250);
+  --chart-1: #1F3622;
+  --chart-2: #2E4E30;
+  --chart-3: oklch(0.77 0.155 70);
+  --chart-4: #436C46;
+  --chart-5: #5F8E63;
+  --sidebar: #1F3622;
+  --sidebar-foreground: oklch(0.93 0.02 180);
+  --sidebar-primary: #2E4E30;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2A472E;
+  --sidebar-accent-foreground: oklch(0.97 0.01 180);
+  --sidebar-border: #2A472E;
+  --sidebar-ring: #2E4E30;
+}
+
+.dark {
+  --background: oklch(0.19 0.02 200);
+  --foreground: oklch(0.95 0.01 180);
+  --card: oklch(0.24 0.025 195);
+  --card-foreground: oklch(0.95 0.01 180);
+  --popover: oklch(0.24 0.025 195);
+  --popover-foreground: oklch(0.95 0.01 180);
+  --primary: oklch(0.72 0.11 175);
+  --primary-foreground: oklch(0.2 0.04 185);
+  --secondary: oklch(0.3 0.03 195);
+  --secondary-foreground: oklch(0.95 0.01 180);
+  --muted: oklch(0.28 0.025 195);
+  --muted-foreground: oklch(0.72 0.02 190);
+  --accent: oklch(0.32 0.04 185);
+  --accent-foreground: oklch(0.95 0.01 180);
+  --destructive: oklch(0.68 0.18 25);
+  --destructive-foreground: oklch(0.98 0.01 90);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.72 0.11 175);
+  --warning: oklch(0.8 0.15 72);
+  --warning-foreground: oklch(0.22 0.05 62);
+  --warning-soft: oklch(0.36 0.08 70);
+  --success: oklch(0.72 0.12 162);
+  --success-foreground: oklch(0.2 0.05 160);
+  --success-soft: oklch(0.32 0.06 162);
+  --info: oklch(0.7 0.12 250);
+  --info-foreground: oklch(0.2 0.06 255);
+  --info-soft: oklch(0.32 0.06 250);
+  --neutral-soft: oklch(0.32 0.02 250);
+  --sidebar: oklch(0.16 0.02 200);
+  --sidebar-foreground: oklch(0.92 0.02 180);
+  --sidebar-primary: oklch(0.72 0.11 175);
+  --sidebar-primary-foreground: oklch(0.18 0.03 185);
+  --sidebar-accent: oklch(0.26 0.03 190);
+  --sidebar-accent-foreground: oklch(0.96 0.01 180);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.72 0.11 175);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+}
+
+@utility surface {
+  background-color: var(--color-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+}
+
+@keyframes overdue-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+
+@utility pulse-dot {
+  animation: overdue-pulse 1.6s ease-in-out infinite;
+}
