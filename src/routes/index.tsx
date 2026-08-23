@@ -103,58 +103,72 @@ const SCENARIOS = [
   },
 ];
 
-const SLOT_WORDS = ["multiplied", "streamlined", "automated", "supercharged", "amplified"];
+const SCRAMBLE_WORDS = ["multiplied", "streamlined", "automated", "supercharged", "amplified"];
 
-function SlotMachineReel() {
-  const [index, setIndex] = useState(0);
-  const [isSpinning, setIsSpinning] = useState(false);
+const GLYPHS = "!<>-_\\/[]{}—=+*^?#abcdefghijklmnopqrstuvwxyz0123456789";
 
-  const spin = useCallback(() => {
-    setIsSpinning(true);
-    setIndex((prev) => (prev + 1) % SLOT_WORDS.length);
-    const timer = setTimeout(() => {
-      setIsSpinning(false);
-    }, 650);
-    return () => clearTimeout(timer);
+function ScrambleTypewriter() {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [displayText, setDisplayText] = useState(SCRAMBLE_WORDS[0]!);
+  const [isScrambling, setIsScrambling] = useState(false);
+
+  const scramble = useCallback((target: string) => {
+    setIsScrambling(true);
+    let iteration = 0;
+    const maxIterations = target.length * 3;
+
+    const interval = setInterval(() => {
+      const revealedLength = Math.floor(iteration / 3);
+
+      const scrambled = target
+        .split("")
+        .map((char, index) => {
+          if (index < revealedLength) {
+            return char;
+          }
+          return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+        })
+        .join("");
+
+      setDisplayText(scrambled);
+      iteration++;
+
+      if (iteration > maxIterations) {
+        clearInterval(interval);
+        setDisplayText(target);
+        setIsScrambling(false);
+      }
+    }, 45);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(spin, 2600);
-    return () => clearInterval(interval);
-  }, [spin]);
+    const timer = setInterval(() => {
+      setWordIndex((prev) => {
+        const next = (prev + 1) % SCRAMBLE_WORDS.length;
+        scramble(SCRAMBLE_WORDS[next]!);
+        return next;
+      });
+    }, 3400);
+
+    return () => clearInterval(timer);
+  }, [scramble]);
 
   return (
     <span
-      onClick={spin}
-      className="relative inline-flex h-[1.12em] overflow-hidden align-bottom select-none cursor-pointer group"
-      title="Click to spin"
+      className="inline-flex items-baseline font-bold text-[#1F3622] tracking-tight select-none cursor-pointer group"
+      onClick={() => {
+        if (!isScrambling) {
+          const next = (wordIndex + 1) % SCRAMBLE_WORDS.length;
+          setWordIndex(next);
+          scramble(SCRAMBLE_WORDS[next]!);
+        }
+      }}
+      title="Click to scramble"
     >
-      {/* 3D Cylindrical Shadow Overlays (Slot Machine Window) */}
-      <span className="pointer-events-none absolute inset-x-0 top-0 z-20 h-4 bg-gradient-to-b from-[#F6F4ED] via-[#F6F4ED]/60 to-transparent" />
-      <span className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-4 bg-gradient-to-t from-[#F6F4ED] via-[#F6F4ED]/60 to-transparent" />
-
-      {/* Rolling Reel Cylinder */}
-      <span
-        className="flex flex-col transition-transform duration-650 ease-[cubic-bezier(0.34,1.45,0.64,1)]"
-        style={{
-          transform: `translateY(-${(index * 100) / SLOT_WORDS.length}%)`,
-          filter: isSpinning ? "blur(0.6px)" : "none",
-        }}
-      >
-        {SLOT_WORDS.map((word, i) => {
-          const isActive = index === i;
-          return (
-            <span
-              key={word}
-              className={`inline-flex items-center h-[1.12em] font-bold text-[#1F3622] tracking-tight transition-all duration-300 ${
-                isActive ? "opacity-100 scale-100" : "opacity-30 scale-95"
-              }`}
-            >
-              {word}
-            </span>
-          );
-        })}
-      </span>
+      <span className="font-mono tracking-tighter sm:tracking-tight">{displayText}</span>
+      <span className="ml-1 inline-block w-[3px] sm:w-1 h-[0.75em] bg-[#1F3622] animate-pulse align-baseline" />
     </span>
   );
 }
@@ -454,7 +468,7 @@ function SocietyDeskLanding() {
             <h1 className="text-6xl font-light leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
               <span className="font-light text-[#111215]/90">The society manager,</span>
               <br />
-              <SlotMachineReel />
+              <ScrambleTypewriter />
             </h1>
 
             <p className="mt-8 max-w-lg text-base leading-relaxed text-[#4A4D54] sm:text-lg">
