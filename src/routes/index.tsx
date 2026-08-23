@@ -121,11 +121,11 @@ function SocietyDeskLanding() {
 
           {/* Navigation Links */}
           <nav className="hidden items-center gap-7 text-sm font-medium text-[#4A4D54] md:flex">
-            <a href="#how-it-works" className="transition-colors hover:text-[#111215]">
-              How it works
-            </a>
             <a href="#features" className="transition-colors hover:text-[#111215]">
               Features
+            </a>
+            <a href="#how-it-works" className="transition-colors hover:text-[#111215]">
+              How it works
             </a>
           </nav>
 
@@ -167,7 +167,7 @@ function SocietyDeskLanding() {
             <h1 className="text-6xl font-medium leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
               The society manager,
               <br />
-              multiplied
+              <span className="font-bold text-[#1F3622]">multiplied</span>
             </h1>
 
             <p className="mt-8 max-w-lg text-base leading-relaxed text-[#4A4D54] sm:text-lg">
@@ -589,11 +589,11 @@ function SocietyDeskLanding() {
             <Link to="/auth" search={{ mode: "admin" } as never} className="hover:text-slate-900">
               Admin Login
             </Link>
-            <a href="#how-it-works" className="hover:text-slate-900">
-              How It Works
-            </a>
             <a href="#features" className="hover:text-slate-900">
               Features
+            </a>
+            <a href="#how-it-works" className="hover:text-slate-900">
+              How It Works
             </a>
             <a href="#deadlines" className="hover:text-slate-900">
               Deadlines
