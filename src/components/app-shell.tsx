@@ -139,7 +139,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       ) : (
         <ResidentShell>{children}</ResidentShell>
       )}
-      <ActionAlertPopup />
+      {isAdmin && <ActionAlertPopup />}
     </>
   );
 }

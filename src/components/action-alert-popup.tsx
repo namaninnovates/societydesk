@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 
 export function ActionAlertPopup() {
-  const { profile, isAdmin, isStaff } = useAuth();
+  const { profile, isAdmin } = useAuth();
   const [minimized, setMinimized] = useState(false);
   const [closed, setClosed] = useState(false);
   const [tab, setTab] = useState<"unassigned" | "overdue">("unassigned");
@@ -16,10 +16,10 @@ export function ActionAlertPopup() {
     queryKey: ["complaints", "action-alerts"],
     queryFn: () => fetchComplaints(),
     refetchInterval: 30000,
-    enabled: Boolean(profile && (isAdmin || isStaff)),
+    enabled: Boolean(profile && isAdmin),
   });
 
-  if (!profile || (!isAdmin && !isStaff) || closed) {
+  if (!profile || !isAdmin || closed) {
     return null;
   }
 
