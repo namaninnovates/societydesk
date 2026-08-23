@@ -103,16 +103,13 @@ const SCENARIOS = [
   },
 ];
 
-const SCRAMBLE_WORDS = ["multiplied", "streamlined", "automated", "supercharged", "amplified"];
+const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-const GLYPHS = "!<>-_\\/[]{}—=+*^?#abcdefghijklmnopqrstuvwxyz0123456789";
-
-function ScrambleTypewriter() {
-  const [wordIndex, setWordIndex] = useState(0);
-  const [displayText, setDisplayText] = useState(SCRAMBLE_WORDS[0]!);
+function ScrambleText() {
+  const [displayText, setDisplayText] = useState("multiplied");
   const [isScrambling, setIsScrambling] = useState(false);
 
-  const scramble = useCallback((target: string) => {
+  const scramble = useCallback((target = "multiplied") => {
     setIsScrambling(true);
     let iteration = 0;
     const maxIterations = target.length * 3;
@@ -126,7 +123,7 @@ function ScrambleTypewriter() {
           if (index < revealedLength) {
             return char;
           }
-          return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          return SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
         })
         .join("");
 
@@ -138,37 +135,34 @@ function ScrambleTypewriter() {
         setDisplayText(target);
         setIsScrambling(false);
       }
-    }, 45);
+    }, 35);
 
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
+    const initialTimer = setTimeout(() => scramble("multiplied"), 600);
     const timer = setInterval(() => {
-      setWordIndex((prev) => {
-        const next = (prev + 1) % SCRAMBLE_WORDS.length;
-        scramble(SCRAMBLE_WORDS[next]!);
-        return next;
-      });
-    }, 3400);
+      scramble("multiplied");
+    }, 4000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(timer);
+    };
   }, [scramble]);
 
   return (
     <span
-      className="inline-flex items-baseline font-bold text-[#1F3622] tracking-tight select-none cursor-pointer group"
-      onClick={() => {
-        if (!isScrambling) {
-          const next = (wordIndex + 1) % SCRAMBLE_WORDS.length;
-          setWordIndex(next);
-          scramble(SCRAMBLE_WORDS[next]!);
-        }
+      className="font-bold text-[#1F3622] tracking-tight select-none cursor-pointer inline-block"
+      onMouseEnter={() => {
+        if (!isScrambling) scramble("multiplied");
       }}
-      title="Click to scramble"
+      onClick={() => {
+        if (!isScrambling) scramble("multiplied");
+      }}
     >
-      <span className="font-mono tracking-tighter sm:tracking-tight">{displayText}</span>
-      <span className="ml-1 inline-block w-[3px] sm:w-1 h-[0.75em] bg-[#1F3622] animate-pulse align-baseline" />
+      {displayText}
     </span>
   );
 }
@@ -468,7 +462,7 @@ function SocietyDeskLanding() {
             <h1 className="text-6xl font-light leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
               <span className="font-light text-[#111215]/90">The society manager,</span>
               <br />
-              <ScrambleTypewriter />
+              <ScrambleText />
             </h1>
 
             <p className="mt-8 max-w-lg text-base leading-relaxed text-[#4A4D54] sm:text-lg">
