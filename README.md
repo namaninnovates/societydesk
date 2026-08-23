@@ -142,9 +142,7 @@ npx vite preview   # preview the production build
 
 ## API / Data Layer
 
-The app uses the **Supabase client SDK** directly from the frontend for CRUD operations, with Row-Level Security enforcing authorization at the database level. No separate REST API layer is needed.
-
-Server-side operations (email sending, admin user lookups) use **TanStack Start server functions** with the Supabase admin client.
+The app uses **TanStack Start Server Functions** with **Neon Serverless PostgreSQL** via `@neondatabase/serverless` connection pooling. All authentication is handled using standard **Jose JWTs** and **bcrypt** passwords.
 
 ### Key Server Functions
 
@@ -153,11 +151,10 @@ Server-side operations (email sending, admin user lookups) use **TanStack Start 
 | `notifyStatusChange`    | Admin changes complaint status   | Sends branded HTML email to the affected resident |
 | `notifyImportantNotice` | Admin publishes important notice | Sends email to all registered residents           |
 
-### Storage
+### Storage & Photos
 
-- **Supabase Storage** bucket `complaint-photos` for uploaded images
+- Compressed complaint photos stored with complaints data
 - Client-side image compression before upload (max 1400px, JPEG quality 0.75)
-- Public read access via Supabase storage policies
 
 ---
 
@@ -174,8 +171,7 @@ src/
 │   └── use-auth.tsx     # Auth context provider (session + profile)
 ├── integrations/
 │   ├── email/           # Resend email service + server functions
-│   ├── neon/            # Neon DB client + schema SQL
-│   └── supabase/        # Supabase clients, auth middleware, types
+│   └── neon/            # Neon DB client + schema SQL
 ├── lib/
 │   ├── queries.ts       # Data fetching helpers
 │   ├── societydesk.ts   # Constants, types, utilities

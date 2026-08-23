@@ -47,7 +47,7 @@ The relational schema is normalized into 8 core tables:
 
 1. **`profiles`**: Linked 1:1 to `auth.users(id)`. Stores resident metadata: `full_name`, `role` (`resident` | `admin`), `unit_number`, `block`, and `phone`.
 2. **`complaints`**: Core ticket entity with `category`, `title`, `description`, `location`, `status` (`open` | `in_progress` | `resolved`), `priority` (`low` | `medium` | `high`), `is_overdue` (boolean), `created_at`, and `resolved_at`.
-3. **`complaint_photos`**: 1:N association to `complaints`. Stores Supabase Storage paths for up to 3 attached images.
+3. **`complaint_photos`**: 1:N association to `complaints`. Stores photo metadata and image storage paths for up to 3 attached images.
 4. **`complaint_history`**: Append-only audit trail logging `old_status`, `new_status`, `note`, `actor_id`, and `created_at` on every transition.
 5. **`complaint_comments`**: Threaded communication on active complaints between residents and admins.
 6. **`overdue_thresholds`**: Configurable SLA limits in days per category (or global fallback where `category IS NULL`).
@@ -76,7 +76,7 @@ The platform ensures transparent stakeholder communication through transactional
 
 1. **Complaint Status Transitions**:
    - When an admin shifts a ticket status (e.g., `open` $\to$ `in_progress` or `resolved`), `notifyStatusChange` server function triggers.
-   - The server resolves the resident's email via the Supabase Admin API, formats a responsive HTML template containing prior/new status, the admin's mandatory transition note, and a direct deep-link to the ticket.
+   - The server resolves the resident's email via Neon database query, formats a responsive HTML template containing prior/new status, the admin's mandatory transition note, and a direct deep-link to the ticket.
 2. **Important Broadcast Notices**:
    - Publishing an announcement flagged as `is_important: true` executes `notifyImportantNotice`.
    - The server queries all registered resident profiles and dispatches notification emails via Resend.
@@ -85,14 +85,14 @@ The platform ensures transparent stakeholder communication through transactional
 
 ## 6. Security Model & Role-Based Access Control (RBAC)
 
-1. **Row-Level Security (RLS)**:
-   - Residents are constrained via `auth.uid() = resident_id` for reading and modifying their own complaints and comments.
-   - Admins (identified via `EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')`) receive full read/write access across all tables.
+1. **Server-Side Authorization**:
+   - Residents can only access and modify their own complaints and comments.
+   - Admins (identified via `role = 'admin'` in `profiles`) receive full read/write access across all tables.
 2. **Route Guarding**:
    - TanStack Router `beforeLoad` hooks verify active sessions before mounting `/_authenticated/*` routes.
    - Admin sub-trees (`/_authenticated/admin/*`) redirect non-admin residents to the resident dashboard.
 3. **Secret Isolation**:
-   - `DATABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `RESEND_API_KEY` reside strictly within server-side environment variables and are never bundled into client bundles.
+   - `DATABASE_URL`, `AUTH_SECRET`, and `RESEND_API_KEY` reside strictly within server-side environment variables and are never bundled into client bundles.
 
 ---
 
