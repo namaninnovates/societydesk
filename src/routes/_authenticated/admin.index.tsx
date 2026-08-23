@@ -6,9 +6,9 @@ import {
   Clock,
   Tray,
   TrendUp,
-  Funnel,
   X,
   MagnifyingGlass,
+  Lightning,
 } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import {
@@ -36,8 +36,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PriorityTag, StatusPill } from "@/components/status";
-import { EmptyState } from "@/components/empty-state";
 import { fetchComplaints } from "@/lib/queries";
 import { CATEGORIES, daysOpen } from "@/lib/societydesk";
 import { useAuth } from "@/hooks/use-auth";
@@ -55,7 +53,6 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 });
 
 const CHART_COLORS = ["#1F3622", "#2E4E30", "#5F8E63", "#C8DAC2"];
-
 const BLOCKS = ["Tower A", "Tower B", "Tower C", "Tower D", "Clubhouse"];
 
 function AdminDashboard() {
@@ -75,7 +72,6 @@ function AdminDashboard() {
 
   const rawRows = useMemo(() => data ?? [], [data]);
 
-  // Filtered rows based on current filter states
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
     const now = Date.now();
@@ -83,25 +79,19 @@ function AdminDashboard() {
     const cutoffTime = now - daysLimit * 86_400_000;
 
     return rawRows.filter((r) => {
-      // Date filter
       if (timeRange !== "all") {
         const created = new Date(r.created_at).getTime();
         if (created < cutoffTime) return false;
       }
-      // Status filter
       if (statusFilter !== "all" && r.status !== statusFilter) return false;
-      // Category filter
       if (categoryFilter !== "all" && r.category !== categoryFilter) return false;
-      // Block filter
       if (blockFilter !== "all") {
         const blockMatch =
           r.profiles?.block?.toLowerCase() === blockFilter.toLowerCase() ||
           r.location?.toLowerCase().includes(blockFilter.toLowerCase());
         if (!blockMatch) return false;
       }
-      // Priority filter
       if (priorityFilter !== "all" && r.priority !== priorityFilter) return false;
-      // Search term
       if (q) {
         const matchTitle = r.title.toLowerCase().includes(q);
         const matchDesc = (r.description ?? "").toLowerCase().includes(q);
@@ -133,40 +123,45 @@ function AdminDashboard() {
     setTimeRange("30");
   };
 
-  if (profileLoading) return <Skeleton className="h-64 w-full rounded-xl" />;
+  if (profileLoading) return <Skeleton className="h-96 w-full rounded-2xl" />;
   if (!profile || !isAdmin) return null;
-  if (isLoading) return <Skeleton className="h-96 w-full rounded-xl" />;
+  if (isLoading) return <Skeleton className="h-96 w-full rounded-2xl" />;
 
   const stats = [
     {
       label: "Total Complaints",
       value: rows.length,
       icon: Tray,
-      tone: "border-[#DFD9CA] bg-white",
+      tone: "border-[#DFD9CA] bg-white text-[#111215]",
+      iconBg: "bg-[#F3EFE6] text-[#1F3622]",
     },
     {
       label: "Open Tickets",
       value: rows.filter((r) => r.status === "open").length,
       icon: Clock,
-      tone: "border-[#DFD9CA] bg-white",
+      tone: "border-[#DFD9CA] bg-white text-[#111215]",
+      iconBg: "bg-[#EDF4EE] text-[#1F3622]",
     },
     {
       label: "In Progress",
       value: rows.filter((r) => r.status === "in_progress").length,
       icon: TrendUp,
-      tone: "border-[#DFD9CA] bg-white",
+      tone: "border-[#DFD9CA] bg-white text-[#111215]",
+      iconBg: "bg-[#EDF4EE] text-[#1F3622]",
     },
     {
       label: "Resolved",
       value: rows.filter((r) => r.status === "resolved").length,
       icon: CheckCircle,
-      tone: "border-[#DFD9CA] bg-white",
+      tone: "border-[#DFD9CA] bg-white text-[#111215]",
+      iconBg: "bg-[#EDF4EE] text-[#1F3622]",
     },
     {
       label: "Overdue Alerts",
       value: rows.filter((r) => r.is_overdue).length,
       icon: Warning,
-      tone: "border-amber-300 bg-amber-50/60 text-amber-900",
+      tone: "border-amber-300 bg-amber-50/70 text-amber-900",
+      iconBg: "bg-amber-100 text-amber-700",
     },
   ];
 
@@ -226,70 +221,50 @@ function AdminDashboard() {
     .sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#111215]">Society Dashboard</h1>
-          <p className="text-sm text-muted-foreground">
-            Average resolution time:{" "}
-            <span className="font-semibold text-slate-900">{avgResolution} days</span>
-            {hasActiveFilters
-              ? ` · Showing ${rows.length} of ${rawRows.length} filtered complaints`
-              : ""}
-          </p>
-        </div>
-      </div>
-
-      {/* ── FILTER TOOLBAR ────────────────────────────────────── */}
-      <div className="rounded-2xl border border-[#DFD9CA] bg-white p-4 shadow-sm space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1F3622]">
-            <Funnel className="size-4" weight="bold" />
-            Filters & Search
-          </div>
+    <div className="space-y-3">
+      {/* ── HEADER + INLINE FILTERS STRIP ─────────────────────── */}
+      <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-bold tracking-tight text-[#111215]">Society Dashboard</h1>
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#EDF4EE] px-2.5 py-0.5 text-xs font-semibold text-[#1F3622]">
+            <Lightning className="size-3 text-[#1F3622]" weight="fill" />
+            {avgResolution}d avg resolution
+          </span>
           {hasActiveFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearFilters}
-              className="h-7 text-xs text-red-600 hover:bg-red-50 hover:text-red-700"
-            >
-              <X className="mr-1 size-3.5" /> Reset Filters
-            </Button>
+            <span className="text-xs text-muted-foreground hidden sm:inline">
+              ({rows.length} / {rawRows.length} filtered)
+            </span>
           )}
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-          {/* 1. Keyword Search */}
+        {/* Compact Filters Toolbar */}
+        <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
-            <MagnifyingGlass className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <MagnifyingGlass className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search complaints..."
-              className="pl-9 text-xs h-9"
+              placeholder="Search..."
+              className="h-8 w-36 sm:w-44 pl-8 text-xs bg-white"
             />
           </div>
 
-          {/* 2. Status Filter */}
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-9 text-xs">
-              <SelectValue placeholder="All Statuses" />
+            <SelectTrigger className="h-8 w-28 text-xs bg-white">
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="open">Open</SelectItem>
               <SelectItem value="in_progress">In Progress</SelectItem>
               <SelectItem value="resolved">Resolved</SelectItem>
-              <SelectItem value="overdue">Overdue Only</SelectItem>
+              <SelectItem value="overdue">Overdue</SelectItem>
             </SelectContent>
           </Select>
 
-          {/* 3. Category Filter */}
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="h-9 text-xs">
-              <SelectValue placeholder="All Categories" />
+            <SelectTrigger className="h-8 w-32 text-xs bg-white">
+              <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
@@ -301,13 +276,12 @@ function AdminDashboard() {
             </SelectContent>
           </Select>
 
-          {/* 4. Tower / Block Filter */}
           <Select value={blockFilter} onValueChange={setBlockFilter}>
-            <SelectTrigger className="h-9 text-xs">
-              <SelectValue placeholder="All Towers" />
+            <SelectTrigger className="h-8 w-28 text-xs bg-white">
+              <SelectValue placeholder="Tower" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Towers / Blocks</SelectItem>
+              <SelectItem value="all">All Towers</SelectItem>
               {BLOCKS.map((b) => (
                 <SelectItem key={b} value={b}>
                   {b}
@@ -316,160 +290,225 @@ function AdminDashboard() {
             </SelectContent>
           </Select>
 
-          {/* 5. Priority Filter */}
-          <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-            <SelectTrigger className="h-9 text-xs">
-              <SelectValue placeholder="All Priorities" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Priorities</SelectItem>
-              <SelectItem value="high">High Priority</SelectItem>
-              <SelectItem value="medium">Medium Priority</SelectItem>
-              <SelectItem value="low">Low Priority</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* 6. Time Window Filter */}
           <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="h-9 text-xs">
-              <SelectValue placeholder="Time Period" />
+            <SelectTrigger className="h-8 w-28 text-xs bg-white">
+              <SelectValue placeholder="Period" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="7">Last 7 Days</SelectItem>
-              <SelectItem value="30">Last 30 Days</SelectItem>
-              <SelectItem value="90">Last 90 Days</SelectItem>
+              <SelectItem value="7">Last 7d</SelectItem>
+              <SelectItem value="30">Last 30d</SelectItem>
+              <SelectItem value="90">Last 90d</SelectItem>
               <SelectItem value="all">All Time</SelectItem>
             </SelectContent>
           </Select>
+
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="h-8 px-2 text-xs text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer"
+              title="Reset Filters"
+            >
+              <X className="size-3.5" />
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* ── STAT METRICS ──────────────────────────────────────── */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      {/* ── 5 COMPACT KPI METRIC CARDS ────────────────────────── */}
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((s) => (
-          <div key={s.label} className={`rounded-2xl border p-4 shadow-sm ${s.tone}`}>
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500">{s.label}</span>
-              <s.icon className="size-4 text-[#1F3622]" />
+          <div
+            key={s.label}
+            className={`rounded-xl border p-2.5 shadow-xs flex items-center justify-between ${s.tone}`}
+          >
+            <div>
+              <span className="text-[11px] font-medium text-slate-500 uppercase tracking-tight">
+                {s.label}
+              </span>
+              <p className="text-xl font-bold tracking-tight leading-none mt-1">{s.value}</p>
             </div>
-            <p className="mt-2 text-3xl font-bold tracking-tight">{s.value}</p>
+            <div
+              className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${s.iconBg}`}
+            >
+              <s.icon className="size-4" weight="bold" />
+            </div>
           </div>
         ))}
       </div>
 
-      {/* ── CHARTS ────────────────────────────────────────────── */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold text-[#111215]">Complaints by Category</h2>
+      {/* ── MIDDLE ROW: BAR CHART & STATUS DONUT ──────────────── */}
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
+        {/* Complaints by Category (7 cols) */}
+        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-7">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
+              Complaints by Category
+            </h2>
+            <span className="text-[10px] text-muted-foreground">Volume breakdown</span>
+          </div>
+
           {byCategory.length > 0 ? (
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={byCategory}>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis
-                  dataKey="name"
-                  fontSize={11}
-                  interval={0}
-                  angle={-30}
-                  textAnchor="end"
-                  height={60}
-                />
-                <YAxis fontSize={11} allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="value" fill="#1F3622" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="h-[145px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={byCategory} margin={{ top: 5, right: 10, left: -25, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                  <XAxis dataKey="name" fontSize={10} interval={0} tickLine={false} />
+                  <YAxis fontSize={10} allowDecimals={false} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      fontSize: "11px",
+                      borderRadius: "8px",
+                      padding: "4px 8px",
+                    }}
+                  />
+                  <Bar dataKey="value" fill="#1F3622" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
-            <div className="flex h-56 items-center justify-center text-xs text-slate-400">
-              No complaint data matching current filters
+            <div className="flex h-[145px] items-center justify-center text-xs text-slate-400">
+              No complaint data
             </div>
           )}
         </div>
 
-        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold text-[#111215]">Status Distribution</h2>
+        {/* Status Distribution Donut (5 cols) */}
+        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-5">
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
+              Status Distribution
+            </h2>
+            <div className="flex items-center gap-2 text-[10px]">
+              {statusData.map((d) => (
+                <span key={d.name} className="flex items-center gap-1">
+                  <span className="size-2 rounded-full" style={{ backgroundColor: d.fill }} />
+                  {d.name} ({d.value})
+                </span>
+              ))}
+            </div>
+          </div>
+
           {rows.length > 0 ? (
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie
-                  data={statusData}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={60}
-                  outerRadius={95}
-                  label={({ name, percent }: { name?: string; percent?: number }) =>
-                    (percent ?? 0) > 0 ? `${name} (${((percent ?? 0) * 100).toFixed(0)}%)` : ""
-                  }
-                  labelLine={false}
-                >
-                  {statusData.map((d) => (
-                    <Cell key={d.name} fill={d.fill} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="h-[145px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={statusData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={42}
+                    outerRadius={62}
+                    paddingAngle={3}
+                  >
+                    {statusData.map((d) => (
+                      <Cell key={d.name} fill={d.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      fontSize: "11px",
+                      borderRadius: "8px",
+                      padding: "4px 8px",
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
-            <div className="flex h-56 items-center justify-center text-xs text-slate-400">
-              No complaint data matching current filters
+            <div className="flex h-[145px] items-center justify-center text-xs text-slate-400">
+              No complaint data
             </div>
           )}
         </div>
       </div>
 
-      {/* ── 30-DAY RESOLUTION TIMELINE & WATCHLIST ───────────── */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-sm lg:col-span-2">
-          <h2 className="mb-4 text-sm font-semibold text-[#111215]">
-            Raised vs Resolved Trend ({timeRange === "all" ? "All Time" : `Last ${timeRange} Days`})
-          </h2>
-          <ResponsiveContainer width="100%" height={240}>
-            <LineChart data={days}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="day" fontSize={11} />
-              <YAxis fontSize={11} allowDecimals={false} />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="raised"
-                stroke="#1F3622"
-                strokeWidth={2}
-                name="Raised"
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="resolved"
-                stroke="#5F8E63"
-                strokeWidth={2}
-                name="Resolved"
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      {/* ── BOTTOM ROW: 30-DAY TIMELINE & REPEAT WATCHLIST ────── */}
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
+        {/* Raised vs Resolved Timeline (8 cols) */}
+        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-8">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
+              Raised vs Resolved Trend ({timeRange === "all" ? "All Time" : `Last ${timeRange}d`})
+            </h2>
+            <div className="flex items-center gap-3 text-[10px] font-semibold">
+              <span className="flex items-center gap-1 text-[#1F3622]">
+                <span className="size-2 rounded-full bg-[#1F3622]" /> Raised
+              </span>
+              <span className="flex items-center gap-1 text-[#5F8E63]">
+                <span className="size-2 rounded-full bg-[#5F8E63]" /> Resolved
+              </span>
+            </div>
+          </div>
+
+          <div className="h-[135px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={days} margin={{ top: 5, right: 10, left: -25, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                <XAxis dataKey="day" fontSize={10} tickLine={false} />
+                <YAxis fontSize={10} allowDecimals={false} tickLine={false} />
+                <Tooltip
+                  contentStyle={{
+                    fontSize: "11px",
+                    borderRadius: "8px",
+                    padding: "4px 8px",
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="raised"
+                  stroke="#1F3622"
+                  strokeWidth={2}
+                  name="Raised"
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="resolved"
+                  stroke="#5F8E63"
+                  strokeWidth={2}
+                  name="Resolved"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-sm">
-          <h2 className="mb-2 text-sm font-semibold text-[#111215]">Repeat Issues Watchlist</h2>
-          <p className="mb-4 text-xs text-muted-foreground">
-            Categories or spots with frequent maintenance reports.
-          </p>
-          {watchlist.length === 0 ? (
-            <div className="flex h-40 items-center justify-center text-xs text-slate-400">
-              No recurring issues detected.
+        {/* Repeat Issues Watchlist (4 cols) */}
+        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
+                Repeat Watchlist
+              </h2>
+              <span className="text-[10px] text-[#7C8074]">Recurring spots</span>
             </div>
-          ) : (
-            <div className="space-y-2.5">
-              {watchlist.map(([key, count]) => (
-                <div
-                  key={key}
-                  className="flex items-center justify-between rounded-lg bg-[#FAF8F2] border border-[#E9E4D7] p-2.5 text-xs"
-                >
-                  <span className="font-medium text-slate-800 truncate max-w-[200px]">{key}</span>
-                  <span className="font-bold text-[#1F3622]">{count} reports</span>
-                </div>
-              ))}
-            </div>
-          )}
+
+            {watchlist.length === 0 ? (
+              <div className="flex h-[95px] items-center justify-center text-xs text-slate-400">
+                No repeat issues detected
+              </div>
+            ) : (
+              <div className="space-y-1.5 pt-1 overflow-y-auto max-h-[100px] scrollbar-none">
+                {watchlist.slice(0, 3).map(([key, count]) => (
+                  <div
+                    key={key}
+                    className="flex items-center justify-between rounded-lg bg-[#FAF8F2] border border-[#E9E4D7] px-2.5 py-1 text-xs"
+                  >
+                    <span className="font-medium text-slate-800 truncate max-w-[150px]">{key}</span>
+                    <span className="font-bold text-[#1F3622]">{count} reports</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="pt-2 border-t border-[#F0EBE0] text-[10px] text-muted-foreground flex justify-between">
+            <span>Threshold: ≥ 2 reports</span>
+            <span className="font-semibold text-emerald-700">Auto-audited</span>
+          </div>
         </div>
       </div>
     </div>
