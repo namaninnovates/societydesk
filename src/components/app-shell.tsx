@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Buildings,
@@ -37,8 +37,10 @@ const residentNav = [
 function useSignOut() {
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  const router = useRouter();
   return async () => {
     await signOut();
+    await router.invalidate();
     navigate({ to: "/auth", replace: true });
   };
 }

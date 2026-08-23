@@ -46,6 +46,9 @@ const SCENARIOS = [
   {
     id: "elevator",
     label: "Tower B Lift Issue",
+    image: "/demo/lift-repair.jpg",
+    photoLabel: "Photo: lift_shaft_leak.jpg",
+    unitBadge: "Flat 402, Tower B",
     prompt:
       "Water dripping in Tower B lift shaft. Need emergency technician to inspect and fix before evening rush.",
     workflow: [
@@ -71,6 +74,9 @@ const SCENARIOS = [
   {
     id: "water",
     label: "Basement Water Pump",
+    image: "/demo/pump-repair.jpg",
+    photoLabel: "Photo: basement_valve_leak.jpg",
+    unitBadge: "Parking B-14, Tower A",
     prompt:
       "Main water pump valve leaking near parking slot 14. Plumber needed to tighten connection.",
     workflow: [
@@ -106,9 +112,9 @@ function SocietyDeskLanding() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F4ED] text-[#111215] font-sans antialiased selection:bg-[#1F3622] selection:text-white flex flex-col justify-between">
+    <div className="flex min-h-screen flex-col justify-between bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
       {/* ── TOP NAVIGATION BAR ──────────────────────────────── */}
-      <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 backdrop-blur-md px-6 sm:px-8 py-4">
+      <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-6 py-4 backdrop-blur-md sm:px-8">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between">
           {/* Brand Logo */}
           <BrandLogo linkTo="/" />
@@ -136,7 +142,7 @@ function SocietyDeskLanding() {
       </header>
 
       {/* ── HERO & WORKFLOW SECTION ─────────────────────────── */}
-      <main className="relative mx-auto w-full max-w-[1400px] flex-1 px-6 sm:px-8 pt-4 pb-16">
+      <main className="relative mx-auto w-full max-w-[1400px] flex-1 px-6 pt-4 pb-16 sm:px-8">
         {/* ── 1. HERO BANNER WITH BACKGROUND VIDEO ─────────────── */}
         <div className="relative mb-16 overflow-hidden rounded-3xl border border-[#E9E5DA]/80 bg-[#F6F4ED] p-8 sm:p-12 lg:p-14">
           {/* Background Video */}
@@ -185,25 +191,30 @@ function SocietyDeskLanding() {
         {/* ── 2. INTERACTIVE COMPLAINT WORKFLOW DEMO ──────────── */}
         <div>
           {/* Scenario Toggle */}
-          <div className="mb-4 flex items-center justify-end gap-2 text-xs">
-            <span className="font-semibold text-[#8E929B] uppercase">Try sample issue:</span>
-            {SCENARIOS.map((sc, i) => (
-              <button
-                key={sc.id}
-                onClick={() => switchScenario(i)}
-                className={`rounded-full px-3.5 py-1 text-xs font-medium transition-all ${
-                  activeScenarioIdx === i
-                    ? "bg-[#111215] text-white"
-                    : "bg-[#EAE6DA] text-[#4A4D54] hover:bg-[#DDD8CA]"
-                }`}
-              >
-                {sc.label}
-              </button>
-            ))}
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div className="text-xs font-semibold uppercase tracking-wider text-[#6B707B]">
+              Interactive Simulation
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-semibold text-[#8E929B] uppercase">Try sample issue:</span>
+              {SCENARIOS.map((sc, i) => (
+                <button
+                  key={sc.id}
+                  onClick={() => switchScenario(i)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all cursor-pointer ${
+                    activeScenarioIdx === i
+                      ? "bg-[#111215] text-white shadow-sm scale-105"
+                      : "bg-[#EAE6DA] text-[#4A4D54] hover:bg-[#DFDACB]"
+                  }`}
+                >
+                  {sc.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="relative min-h-[380px] w-full pt-4">
-            {/* Blue Connection Line */}
+          <div className="relative min-h-[380px] w-full pt-2">
+            {/* Connecting Flow Line */}
             <div className="pointer-events-none absolute inset-0 z-0 hidden lg:block">
               <svg
                 className="h-full w-full"
@@ -212,34 +223,35 @@ function SocietyDeskLanding() {
                 preserveAspectRatio="none"
               >
                 <path
-                  d="M 0 16 L 315 16 C 330 16 340 26 340 40 L 340 48 C 340 62 350 72 365 72 L 1340 72"
+                  d="M 0 18 L 315 18 C 330 18 340 28 340 42 L 340 50 C 340 64 350 74 365 74 L 1340 74"
                   stroke="#1F3622"
                   strokeWidth="2"
                   strokeLinecap="round"
+                  strokeDasharray="6 3"
                 />
               </svg>
             </div>
 
             {/* 4 Step Labels */}
-            <div className="relative z-10 mb-8 hidden lg:grid grid-cols-12 gap-6 text-xs font-semibold uppercase tracking-wider text-[#4A4D54]">
+            <div className="relative z-10 mb-7 hidden grid-cols-12 gap-6 text-xs font-semibold uppercase tracking-wider text-[#4A4D54] lg:grid">
               <div className="col-span-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3 py-1">
-                  <span className="text-[#1F3622]">1.</span> REPORT ISSUE
-                </span>
-              </div>
-              <div className="col-span-3 pl-6">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3 py-1">
-                  <span className="text-[#1F3622]">2.</span> ASSIGN WORKER
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">1.</span> REPORT ISSUE
                 </span>
               </div>
               <div className="col-span-3 pl-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3 py-1">
-                  <span className="text-[#1F3622]">3.</span> TRACK DEADLINE
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">2.</span> ASSIGN WORKER
                 </span>
               </div>
               <div className="col-span-3 pl-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3 py-1">
-                  <span className="text-[#1F3622]">4.</span> VERIFY & RATE
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">3.</span> TRACK DEADLINE
+                </span>
+              </div>
+              <div className="col-span-3 pl-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">4.</span> VERIFY & RATE
                 </span>
               </div>
             </div>
@@ -248,18 +260,41 @@ function SocietyDeskLanding() {
             <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
               {/* Col 1: Resident Report Card */}
               <div className="lg:col-span-3">
-                <div className="relative flex flex-col justify-between rounded-2xl border border-[#E2DDD0] bg-white p-5 shadow-[0_12px_32px_rgba(0,0,0,0.06)] min-h-[175px]">
-                  <textarea
-                    value={customPrompt}
-                    onChange={(e) => setCustomPrompt(e.target.value)}
-                    rows={4}
-                    className="w-full resize-none border-none bg-transparent p-0 text-sm leading-relaxed text-[#111215] outline-none"
-                  />
+                <div className="relative flex min-h-[220px] flex-col justify-between rounded-2xl border border-[#E2DDD0] bg-white p-5 shadow-[0_12px_32px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)]">
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8E929B]">
+                        Resident Ticket
+                      </span>
+                      <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                        {scenario.unitBadge}
+                      </span>
+                    </div>
+                    <textarea
+                      value={customPrompt}
+                      onChange={(e) => setCustomPrompt(e.target.value)}
+                      rows={3}
+                      className="w-full resize-none border-none bg-transparent p-0 text-sm leading-relaxed text-[#111215] outline-none"
+                    />
+                  </div>
+
                   <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-                    <span className="text-xs text-[#8E929B]">Photo: lift_leak.jpg</span>
+                    <div className="flex items-center gap-2">
+                      <div className="size-7 shrink-0 overflow-hidden rounded-md border border-slate-200 shadow-xs">
+                        <img
+                          src={scenario.image}
+                          alt="Thumbnail"
+                          className="size-full object-cover"
+                        />
+                      </div>
+                      <span className="max-w-[130px] truncate text-xs font-medium text-[#6B707B]">
+                        {scenario.photoLabel}
+                      </span>
+                    </div>
                     <Link
                       to="/auth"
-                      className="flex size-7 items-center justify-center rounded-lg bg-[#1F3622] text-white shadow-sm hover:scale-105 active:scale-95"
+                      className="flex size-7 items-center justify-center rounded-lg bg-[#1F3622] text-white shadow-sm transition-all hover:scale-105 active:scale-95"
+                      title="Submit issue"
                     >
                       <ArrowUp className="size-4" weight="bold" />
                     </Link>
@@ -268,66 +303,98 @@ function SocietyDeskLanding() {
               </div>
 
               {/* Col 2: Task Checklist */}
-              <div className="space-y-2 lg:col-span-3 lg:pl-6">
+              <div className="space-y-2 lg:col-span-3 lg:pl-4">
                 {scenario.workflow.map((item) => (
                   <div
                     key={item.text}
-                    className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium ${
+                    className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all ${
                       item.done
-                        ? "border-[#DFD9CA] bg-[#F1EDE1] text-[#4A4E58]"
-                        : "border-[#E5DFD1] bg-[#F6F4ED] text-[#7C8089]"
+                        ? "border-[#DFD9CA] bg-[#F1EDE1] text-[#3F434D] shadow-xs"
+                        : "border-[#E8E2D6] bg-[#F8F6F0] text-[#7C8089]"
                     }`}
                   >
-                    <span className="text-[#1F3622] font-bold">{item.done ? "✓" : "•"}</span>
-                    <span>{item.text}</span>
+                    <span
+                      className={`flex size-4 items-center justify-center rounded-full text-[10px] font-bold ${
+                        item.done ? "bg-[#1F3622] text-white" : "bg-slate-300 text-slate-700"
+                      }`}
+                    >
+                      {item.done ? "✓" : "•"}
+                    </span>
+                    <span className="tracking-tight">{item.text}</span>
                   </div>
                 ))}
               </div>
 
               {/* Col 3: Rules & Targets */}
-              <div className="space-y-4 lg:col-span-3 lg:pl-4 text-xs leading-relaxed text-[#6D717A]">
+              <div className="space-y-3.5 text-xs leading-relaxed text-[#6D717A] lg:col-span-3 lg:pl-4">
                 {scenario.rules.map((r) => (
-                  <div key={r.title} className="flex items-start gap-2.5">
-                    <PushPin className="size-3.5 text-[#1F3622] shrink-0 mt-0.5" weight="fill" />
+                  <div
+                    key={r.title}
+                    className="flex items-start gap-3 rounded-xl border border-[#E5DFCFC0] bg-white/70 p-3 shadow-xs"
+                  >
+                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-[#EDF3EA] text-[#1F3622]">
+                      <PushPin className="size-3.5" weight="fill" />
+                    </div>
                     <div>
                       <div className="font-semibold text-[#111215]">{r.title}</div>
-                      <div>{r.desc}</div>
+                      <div className="mt-0.5 text-slate-600">{r.desc}</div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Col 4: Completed Card */}
+              {/* Col 4: Completed Card with Photo Header */}
               <div className="lg:col-span-3 lg:pl-4">
-                <div className="relative overflow-hidden rounded-2xl bg-[#111612] shadow-2xl text-white border border-[#1F3622]/40">
-                  <div className="relative h-32 w-full overflow-hidden bg-gradient-to-br from-[#1F3622] via-[#152718] to-[#0D1A0F] p-4 flex flex-col justify-between">
-                    <span className="inline-block self-start rounded-full bg-[#2E4E30]/60 border border-[#436C46]/50 px-2.5 py-0.5 text-xs font-bold text-[#B8E2BD] backdrop-blur-md">
-                      {scenario.resolution.tag}
-                    </span>
-                    <div className="flex items-center gap-1 text-amber-400 text-xs">
-                      <Star className="size-3.5" weight="fill" />
-                      <Star className="size-3.5" weight="fill" />
-                      <Star className="size-3.5" weight="fill" />
-                      <Star className="size-3.5" weight="fill" />
-                      <Star className="size-3.5" weight="fill" />
-                      <span className="ml-1 text-xs text-[#D1DFD3]">5.0 Star Rating</span>
+                <div className="group relative overflow-hidden rounded-2xl border border-[#233827] bg-[#0E1510] text-white shadow-[0_16px_40px_rgba(0,0,0,0.18)] transition-all hover:border-[#3A5C40]">
+                  {/* Photo Header */}
+                  <div className="relative h-36 w-full overflow-hidden">
+                    <img
+                      src={scenario.image}
+                      alt={scenario.resolution.title}
+                      className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    {/* Gradient Overlay Scrim */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E1510] via-[#0E1510]/40 to-black/30" />
+
+                    {/* Status Badge Tag */}
+                    <div className="absolute top-3 left-3">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/85 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-emerald-300 shadow-sm backdrop-blur-md">
+                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        {scenario.resolution.tag}
+                      </span>
+                    </div>
+
+                    {/* Star Rating Overlay */}
+                    <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-xs text-amber-400">
+                      <div className="flex">
+                        {[...Array(5)].map((_, idx) => (
+                          <Star key={idx} className="size-3.5" weight="fill" />
+                        ))}
+                      </div>
+                      <span className="text-[11px] font-medium text-slate-200">
+                        5.0 Star Rating
+                      </span>
                     </div>
                   </div>
 
-                  <div className="p-4">
-                    <h4 className="text-sm font-semibold text-white">
+                  {/* Card Content */}
+                  <div className="p-4 pt-3">
+                    <h4 className="text-sm font-semibold tracking-tight text-white">
                       {scenario.resolution.title}
                     </h4>
-                    <p className="mt-1 text-xs leading-relaxed text-[#A0A4AE]">
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-300/85">
                       {scenario.resolution.desc}
                     </p>
-                    <div className="mt-3">
+                    <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
                       <Link
                         to="/auth"
-                        className="inline-block rounded-md bg-[#2B2C30] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#3B3C40]"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
                       >
-                        {scenario.resolution.action} →
+                        {scenario.resolution.action} <ArrowRight className="size-3.5" />
                       </Link>
+                      <span className="font-mono text-[10px] text-slate-400">
+                        WO #{activeScenarioIdx === 0 ? "104" : "109"}
+                      </span>
                     </div>
                   </div>
                 </div>

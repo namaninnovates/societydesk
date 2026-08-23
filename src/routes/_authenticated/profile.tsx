@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { SignOut, CheckCircle } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -34,6 +34,7 @@ const schema = z.object({
 function ProfilePage() {
   const { profile, profileLoading, session, signOut } = useAuth();
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [form, setForm] = useState({ full_name: "", unit_number: "", block: "", phone: "" });
   const [busy, setBusy] = useState(false);
@@ -54,8 +55,9 @@ function ProfilePage() {
   const handleSignOut = async () => {
     await signOut();
     queryClient.clear();
+    await router.invalidate();
     toast.success("Signed out successfully");
-    navigate({ to: "/auth" });
+    navigate({ to: "/auth", replace: true });
   };
 
   const save = async () => {

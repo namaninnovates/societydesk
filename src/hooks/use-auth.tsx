@@ -36,6 +36,11 @@ const TOKEN_KEY = "societydesk_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
+  const [token, setToken] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem(TOKEN_KEY);
+  });
+
   const [localProfile, setLocalProfile] = useState<Profile | null>(() => {
     if (typeof window === "undefined") return null;
     try {
@@ -46,24 +51,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   });
 
+  // Keep auth state strictly in sync with storage & browser back/forward history buttons
+  useEffect(() => {
+    const syncAuthFromStorage = () => {
+      const curToken = localStorage.getItem(TOKEN_KEY);
+      const curStored = localStorage.getItem(STORAGE_KEY);
+      setToken(curToken);
+      if (curToken && curStored) {
+        try {
+          setLocalProfile(JSON.parse(curStored));
+        } catch {
+          setLocalProfile(null);
+        }
+      } else {
+        setLocalProfile(null);
+        queryClient.setQueryData(["auth_user"], null);
+        queryClient.clear();
+      }
+    };
+
+    window.addEventListener("storage", syncAuthFromStorage);
+    window.addEventListener("popstate", syncAuthFromStorage);
+    return () => {
+      window.removeEventListener("storage", syncAuthFromStorage);
+      window.removeEventListener("popstate", syncAuthFromStorage);
+    };
+  }, [queryClient]);
+
   const { data: serverProfile, isLoading: profileLoading } = useQuery({
     queryKey: ["auth_user"],
     queryFn: async () => {
-      const token = typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
-      return await getCurrentUserServerFn({ data: token });
+      const curToken = typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
+      if (!curToken) return null;
+      return await getCurrentUserServerFn({ data: curToken });
     },
-    initialData: localProfile ?? undefined,
+    enabled: Boolean(token),
+    initialData: token ? (localProfile ?? undefined) : undefined,
   });
 
-  const profile = serverProfile ?? localProfile;
+  const profile = token ? (serverProfile ?? localProfile) : null;
 
-  const setAuth = (p: Profile, token: string) => {
+  const setAuth = (p: Profile, newToken: string) => {
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
-      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(TOKEN_KEY, newToken);
       // Set document cookie
-      document.cookie = `societydesk_token=${token}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
+      document.cookie = `societydesk_token=${newToken}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
     }
+    setToken(newToken);
     setLocalProfile(p);
     queryClient.setQueryData(["auth_user"], p);
     queryClient.invalidateQueries();
@@ -73,8 +108,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (typeof window !== "undefined") {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(TOKEN_KEY);
+      sessionStorage.clear();
       document.cookie = `societydesk_token=; path=/; max-age=0; SameSite=Lax`;
     }
+    setToken(null);
     setLocalProfile(null);
     queryClient.setQueryData(["auth_user"], null);
     queryClient.clear();
@@ -96,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         loading: false,
         profile: profile ?? null,
-        profileLoading,
+        profileLoading: Boolean(token) && profileLoading,
         isAdmin: profile?.role === "admin",
         setAuth,
         signOut,
