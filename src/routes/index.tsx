@@ -8,14 +8,6 @@ import {
   PushPin,
   Star,
   Timer,
-  Check,
-  Wrench,
-  Clock,
-  Broadcast,
-  CheckCircle,
-  Lightning,
-  Sparkle,
-  PaperPlaneTilt,
 } from "@phosphor-icons/react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { BrandLogo } from "@/components/brand";
@@ -259,82 +251,14 @@ function PinnedFeaturesCarousel() {
   );
 }
 
-const FLOW_STEPS = [
-  {
-    step: "01",
-    tag: "Resident Dispatch",
-    title: "Snap photos, pick category, submit in seconds",
-    desc: "Residents select the issue category (Lift, Plumbing, Electrical, Cleaning), add brief notes, attach up to 3 photos directly from mobile, and dispatch. The system auto-tags their tower and flat number with instant receipt confirmation.",
-    highlights: ["Mobile & Web Uploads", "Auto Flat & Tower Tag", "Instant Dispatch Receipt"],
-    badgeColor: "amber",
-  },
-  {
-    step: "02",
-    tag: "Triage & Work Order",
-    title: "Auto-generated work order & dedicated technician routing",
-    desc: "Society admins review issues in Kanban or List view. Work order numbers are automatically generated, emergency priorities assigned, and staff technicians or external agencies (e.g. Otis) get notified immediately.",
-    highlights: ["Auto WO Generation", "Technician Routing", "Priority Escalation"],
-    badgeColor: "emerald",
-  },
-  {
-    step: "03",
-    tag: "Broadcast & Live SLA",
-    title: "Real-time deadline radar & automated society notice board",
-    desc: "Keep the whole society informed. If an elevator or water pump goes down, public notices are published to affected towers automatically. Live countdown timers monitor repair SLA, triggering manager alerts if deadlines are at risk.",
-    highlights: ["Live Countdown Dial", "Tower Notice Broadcast", "Overdue Alarm Shield"],
-    badgeColor: "olive",
-  },
-  {
-    step: "04",
-    tag: "Resolution & Rating",
-    title: "Before & after repair proof photos with 5-star sign-off",
-    desc: "Technicians upload completion photos when the fix is done. Residents verify the repair in their portal, submit a 1 to 5 star rating with feedback, and create an immutable audit trail for society records.",
-    highlights: ["Photo Proof of Work", "5-Star Resident Rating", "Permanent Audit Log"],
-    badgeColor: "emerald",
-  },
-];
-
 function SocietyDeskLanding() {
   const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
   const scenario = SCENARIOS[activeScenarioIdx]!;
   const [customPrompt, setCustomPrompt] = useState(scenario.prompt);
-  const [activeStep, setActiveStep] = useState(0);
-
-  const step0Ref = useRef<HTMLDivElement>(null);
-  const step1Ref = useRef<HTMLDivElement>(null);
-  const step2Ref = useRef<HTMLDivElement>(null);
-  const step3Ref = useRef<HTMLDivElement>(null);
 
   const switchScenario = (idx: number) => {
     setActiveScenarioIdx(idx);
     setCustomPrompt(SCENARIOS[idx]!.prompt);
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPos = window.scrollY + window.innerHeight * 0.45;
-      const refs = [step0Ref, step1Ref, step2Ref, step3Ref];
-      for (let i = 0; i < refs.length; i++) {
-        const el = refs[i]?.current;
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPos >= top && scrollPos < top + height) {
-            setActiveStep(i);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToStep = (idx: number) => {
-    setActiveStep(idx);
-    const refs = [step0Ref, step1Ref, step2Ref, step3Ref];
-    refs[idx]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   return (
@@ -412,37 +336,22 @@ function SocietyDeskLanding() {
           </div>
         </div>
 
-        {/* PARALLAX STICKY SCROLL SECTION */}
-        <div
-          id="how-it-works"
-          className="relative rounded-3xl border border-[#DFD9CA] bg-[#FAF8F2] p-6 sm:p-10 lg:p-12 shadow-xs"
-        >
-          {/* Header & Scenario Switcher */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-[#EAE6DA]">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex size-2 rounded-full bg-[#1F3622] animate-ping" />
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1F3622]">
-                  Interactive Workflow Journey
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#111215] mt-1.5">
-                From resident complaint to verified fix
-              </h2>
+        <div>
+          {/* Scenario Toggle */}
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div className="text-xs font-semibold uppercase tracking-wider text-[#6B707B]">
+              Interactive Preview
             </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-tight">
-                Simulate Scenario:
-              </span>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-semibold text-[#8E929B] uppercase">Try sample issue:</span>
               {SCENARIOS.map((sc, i) => (
                 <button
                   key={sc.id}
                   onClick={() => switchScenario(i)}
-                  className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all cursor-pointer ${
                     activeScenarioIdx === i
-                      ? "bg-[#1F3622] text-white shadow-xs scale-105"
-                      : "bg-white border border-[#DFD9CA] text-[#4A4D54] hover:bg-[#FAF8F2]"
+                      ? "bg-[#111215] text-white shadow-sm scale-105"
+                      : "bg-[#EAE6DA] text-[#4A4D54] hover:bg-[#DFDACB]"
                   }`}
                 >
                   {sc.label}
@@ -451,480 +360,193 @@ function SocietyDeskLanding() {
             </div>
           </div>
 
-          {/* Parallax 2-Column Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 pt-10">
-            {/* LEFT COLUMN: The Narrative Explanations (Scrolls naturally) */}
-            <div className="lg:col-span-6 space-y-8 lg:space-y-12">
-              {FLOW_STEPS.map((stepItem, idx) => {
-                const isActive = activeStep === idx;
-                return (
-                  <div
-                    key={stepItem.step}
-                    ref={
-                      idx === 0 ? step0Ref : idx === 1 ? step1Ref : idx === 2 ? step2Ref : step3Ref
-                    }
-                    onClick={() => scrollToStep(idx)}
-                    className={`group relative cursor-pointer rounded-2xl p-6 sm:p-7 transition-all duration-400 border ${
-                      isActive
-                        ? "border-[#1F3622] bg-white shadow-[0_16px_36px_rgba(31,54,34,0.08)] ring-2 ring-[#1F3622]/20 translate-x-1"
-                        : "border-[#E5DFD1] bg-[#FAF8F2]/70 hover:bg-white hover:border-[#DFD9CA] opacity-75 hover:opacity-100"
-                    }`}
-                  >
-                    {/* Active Left Indicator Bar */}
-                    {isActive && (
-                      <div className="absolute left-0 top-6 bottom-6 w-1.5 rounded-r-full bg-[#1F3622]" />
-                    )}
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className={`flex size-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
-                            isActive
-                              ? "bg-[#1F3622] text-white ring-4 ring-[#EDF4EE] shadow-sm scale-110"
-                              : "bg-[#EAE4D6] text-slate-700 font-semibold"
-                          }`}
-                        >
-                          {stepItem.step}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          {isActive && (
-                            <span className="size-2 rounded-full bg-[#1F3622] animate-ping" />
-                          )}
-                          <span
-                            className={`text-xs font-bold uppercase tracking-wider ${
-                              isActive ? "text-[#1F3622]" : "text-slate-500"
-                            }`}
-                          >
-                            {stepItem.tag}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Outflow Energy Badge on Active Step */}
-                      {isActive && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[#EDF4EE] border border-[#CADACD] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#1F3622] shadow-2xs">
-                          Active Flow <ArrowRight className="size-3 animate-pulse" />
-                        </span>
-                      )}
-                    </div>
-
-                    <h3
-                      className={`mt-3.5 text-lg sm:text-xl font-bold leading-snug transition-colors ${
-                        isActive ? "text-[#111215]" : "text-[#3A3E47]"
-                      }`}
-                    >
-                      {stepItem.title}
-                    </h3>
-
-                    <p
-                      className={`mt-2 text-xs sm:text-sm leading-relaxed transition-colors ${
-                        isActive ? "text-[#3E434D]" : "text-[#6A6E78]"
-                      }`}
-                    >
-                      {stepItem.desc}
-                    </p>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {stepItem.highlights.map((hl) => (
-                        <span
-                          key={hl}
-                          className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
-                            isActive
-                              ? "bg-[#EDF4EE] border border-[#C5DAC9] text-[#1F3622] font-semibold"
-                              : "bg-[#FAF8F2] border border-[#DFD9CA] text-slate-600"
-                          }`}
-                        >
-                          <Check className="size-3 text-[#1F3622]" weight="bold" />
-                          {hl}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+          <div className="relative min-h-[380px] w-full pt-2">
+            {/* Connecting Animated Flow Line (Strictly across step header row, completely above cards) */}
+            <div className="pointer-events-none absolute inset-x-0 top-2 h-7 z-0 hidden lg:block overflow-hidden">
+              <svg
+                className="h-full w-full"
+                viewBox="0 0 1200 28"
+                fill="none"
+                preserveAspectRatio="none"
+              >
+                <line
+                  x1="0"
+                  y1="14"
+                  x2="1200"
+                  y2="14"
+                  stroke="#1F3622"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeDasharray="8 6"
+                  className="animate-flow-dash"
+                />
+              </svg>
             </div>
 
-            {/* RIGHT COLUMN: Sticky Parallax Canvas with Real Physics Curvy Stream */}
-            <div className="lg:col-span-6 relative">
-              <div className="sticky top-24 lg:top-28 space-y-4">
-                {/* Stage Stepper Navigation */}
-                <div className="flex items-center justify-between gap-1.5 rounded-2xl bg-white border border-[#DFD9CA] p-1.5 shadow-2xs">
-                  {FLOW_STEPS.map((s, idx) => (
-                    <button
-                      key={s.step}
-                      type="button"
-                      onClick={() => scrollToStep(idx)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        activeStep === idx
-                          ? "bg-[#1F3622] text-white shadow-xs scale-102"
-                          : "text-slate-600 hover:text-[#111215] hover:bg-[#FAF8F2]"
+            {/* 4 Step Labels */}
+            <div className="relative z-10 mb-7 hidden grid-cols-12 gap-6 text-xs font-semibold uppercase tracking-wider text-[#4A4D54] lg:grid">
+              <div className="col-span-3">
+                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">1.</span> REPORT ISSUE
+                </span>
+              </div>
+              <div className="col-span-3 pl-4">
+                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">2.</span> ASSIGN WORKER
+                </span>
+              </div>
+              <div className="col-span-3 pl-4">
+                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">3.</span> TRACK DEADLINE
+                </span>
+              </div>
+              <div className="col-span-3 pl-4">
+                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">4.</span> VERIFY & RATE
+                </span>
+              </div>
+            </div>
+
+            {/* 4 Columns */}
+            <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
+              {/* Col 1: Resident Report Card */}
+              <div className="lg:col-span-3">
+                <div className="relative flex min-h-[220px] flex-col justify-between rounded-2xl border border-[#E2DDD0] bg-white p-5 shadow-[0_12px_32px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)]">
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8E929B]">
+                        Resident Ticket
+                      </span>
+                      <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                        {scenario.unitBadge}
+                      </span>
+                    </div>
+                    <textarea
+                      value={customPrompt}
+                      onChange={(e) => setCustomPrompt(e.target.value)}
+                      rows={3}
+                      className="w-full resize-none border-none bg-transparent p-0 text-sm leading-relaxed text-[#111215] outline-none"
+                    />
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                    <div className="flex items-center gap-2">
+                      <div className="size-7 shrink-0 overflow-hidden rounded-md border border-slate-200 shadow-xs">
+                        <img
+                          src={scenario.image}
+                          alt="Thumbnail"
+                          className="size-full object-cover"
+                        />
+                      </div>
+                      <span className="max-w-[130px] truncate text-xs font-medium text-[#6B707B]">
+                        {scenario.photoLabel}
+                      </span>
+                    </div>
+                    <Link
+                      to="/auth"
+                      className="flex size-7 items-center justify-center rounded-lg bg-[#1F3622] text-white shadow-sm transition-all hover:scale-105 active:scale-95"
+                      title="Submit issue"
+                    >
+                      <ArrowUp className="size-4" weight="bold" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Col 2: Task Checklist */}
+              <div className="space-y-2 lg:col-span-3 lg:pl-4">
+                {scenario.workflow.map((item) => (
+                  <div
+                    key={item.text}
+                    className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all ${
+                      item.done
+                        ? "border-[#DFD9CA] bg-[#F1EDE1] text-[#3F434D] shadow-xs"
+                        : "border-[#E8E2D6] bg-[#F8F6F0] text-[#7C8089]"
+                    }`}
+                  >
+                    <span
+                      className={`flex size-4 items-center justify-center rounded-full text-[10px] font-bold ${
+                        item.done ? "bg-[#1F3622] text-white" : "bg-slate-300 text-slate-700"
                       }`}
                     >
-                      <span>{s.step}</span>
-                      <span className="hidden sm:inline">{s.tag.split(" ")[0]}</span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Showcase Container with Physics Fluid Wave Stream */}
-                <div className="relative overflow-hidden rounded-3xl border border-[#DFD9CA] bg-white p-5 sm:p-7 shadow-[0_16px_40px_rgba(0,0,0,0.06)] min-h-[440px] flex flex-col justify-between">
-                  {/* Real Physics Animated SVG Stream Track */}
-                  <div className="pointer-events-none absolute right-4 top-4 bottom-4 w-14 z-0 hidden sm:block">
-                    <svg
-                      className="h-full w-full overflow-visible"
-                      viewBox="0 0 50 420"
-                      fill="none"
-                      preserveAspectRatio="none"
-                    >
-                      <defs>
-                        <linearGradient id="physics-stream-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#1F3622" stopOpacity="0.9" />
-                          <stop offset="35%" stopColor="#4E7A4A" stopOpacity="0.8" />
-                          <stop offset="70%" stopColor="#788F54" stopOpacity="0.9" />
-                          <stop offset="100%" stopColor="#1F3622" stopOpacity="1" />
-                        </linearGradient>
-                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                          <feGaussianBlur stdDeviation="3" result="blur" />
-                          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
-                      </defs>
-
-                      {/* Ambient Guide Rail */}
-                      <path
-                        d="M 25 15 C 48 85 2 155 25 220 C 48 285 2 355 25 405"
-                        stroke="#E8E2D5"
-                        strokeWidth="5"
-                        strokeLinecap="round"
-                      />
-
-                      {/* Active Fluid Physics Stream */}
-                      <path
-                        d={
-                          activeStep === 0
-                            ? "M 25 15 C 48 85 2 120 25 125"
-                            : activeStep === 1
-                              ? "M 25 15 C 48 85 2 155 25 220"
-                              : activeStep === 2
-                                ? "M 25 15 C 48 85 2 155 25 220 C 48 285 2 320 25 320"
-                                : "M 25 15 C 48 85 2 155 25 220 C 48 285 2 355 25 405"
-                        }
-                        stroke="url(#physics-stream-grad)"
-                        strokeWidth="4"
-                        strokeDasharray="10 6"
-                        strokeLinecap="round"
-                        filter="url(#glow)"
-                        className="animate-stream-flow transition-all duration-700 ease-out"
-                      />
-
-                      {/* Traveling Particle Dots */}
-                      <circle
-                        cx={
-                          activeStep === 0
-                            ? "28"
-                            : activeStep === 1
-                              ? "25"
-                              : activeStep === 2
-                                ? "22"
-                                : "25"
-                        }
-                        cy={
-                          activeStep === 0
-                            ? "25"
-                            : activeStep === 1
-                              ? "150"
-                              : activeStep === 2
-                                ? "275"
-                                : "400"
-                        }
-                        r="6"
-                        fill="#1F3622"
-                        className="animate-ping transition-all duration-700 ease-out"
-                      />
-                      <circle
-                        cx={
-                          activeStep === 0
-                            ? "28"
-                            : activeStep === 1
-                              ? "25"
-                              : activeStep === 2
-                                ? "22"
-                                : "25"
-                        }
-                        cy={
-                          activeStep === 0
-                            ? "25"
-                            : activeStep === 1
-                              ? "150"
-                              : activeStep === 2
-                                ? "275"
-                                : "400"
-                        }
-                        r="5"
-                        fill="#FAF8F2"
-                        stroke="#1F3622"
-                        strokeWidth="2.5"
-                        className="transition-all duration-700 ease-out"
-                      />
-
-                      {/* Milestone Stage Nodes */}
-                      <circle
-                        cx="25"
-                        cy="15"
-                        r="4"
-                        fill={activeStep >= 0 ? "#1F3622" : "#DFD9CA"}
-                      />
-                      <circle
-                        cx="25"
-                        cy="145"
-                        r="4"
-                        fill={activeStep >= 1 ? "#1F3622" : "#DFD9CA"}
-                      />
-                      <circle
-                        cx="25"
-                        cy="275"
-                        r="4"
-                        fill={activeStep >= 2 ? "#1F3622" : "#DFD9CA"}
-                      />
-                      <circle
-                        cx="25"
-                        cy="405"
-                        r="4"
-                        fill={activeStep >= 3 ? "#1F3622" : "#DFD9CA"}
-                      />
-                    </svg>
-                  </div>
-
-                  {/* Morphing Step Card Content */}
-                  <div className="relative z-10 sm:pr-8">
-                    {/* STEP 01: RESIDENT DISPATCH */}
-                    {activeStep === 0 && (
-                      <div className="space-y-4 animate-in fade-in zoom-in-95 duration-400">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                          <div className="flex items-center gap-2">
-                            <span className="flex size-6 items-center justify-center rounded-full bg-[#1F3622] text-white text-xs font-bold">
-                              1
-                            </span>
-                            <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-                              Resident Report Screen
-                            </span>
-                          </div>
-                          <span className="rounded-full bg-amber-50 border border-amber-200/80 px-2.5 py-0.5 text-[10px] font-semibold text-amber-800">
-                            {scenario.unitBadge}
-                          </span>
-                        </div>
-
-                        <div className="space-y-3">
-                          <div className="rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-3 shadow-2xs">
-                            <textarea
-                              value={customPrompt}
-                              onChange={(e) => setCustomPrompt(e.target.value)}
-                              rows={3}
-                              className="w-full resize-none border-none bg-transparent p-0 text-xs leading-relaxed text-[#111215] outline-none"
-                            />
-                          </div>
-
-                          <div className="flex items-center gap-2.5 rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-2">
-                            <div className="size-9 shrink-0 overflow-hidden rounded-lg border border-slate-200 shadow-2xs">
-                              <img
-                                src={scenario.image}
-                                alt="Thumbnail"
-                                className="size-full object-cover"
-                              />
-                            </div>
-                            <div className="min-w-0">
-                              <div className="text-xs font-semibold text-[#111215] truncate">
-                                Attached Photo Proof
-                              </div>
-                              <div className="text-[11px] text-slate-500 truncate">
-                                {scenario.photoLabel}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-                          <span className="text-[11px] text-slate-500 font-medium">
-                            Auto-tags flat & block
-                          </span>
-                          <Link
-                            to="/auth"
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-[#1F3622] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-[#2E4E30] transition-colors"
-                          >
-                            <span>File Issue</span>
-                            <PaperPlaneTilt className="size-3" weight="bold" />
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* STEP 02: TRIAGE & WORK ORDER */}
-                    {activeStep === 1 && (
-                      <div className="space-y-4 animate-in fade-in zoom-in-95 duration-400">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                          <div className="flex items-center gap-2">
-                            <span className="flex size-6 items-center justify-center rounded-full bg-[#1F3622] text-white text-xs font-bold">
-                              2
-                            </span>
-                            <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-                              Admin Triage & Work Order
-                            </span>
-                          </div>
-                          <span className="rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-800">
-                            WO #{activeScenarioIdx === 0 ? "104" : "109"}
-                          </span>
-                        </div>
-
-                        <div className="relative pl-4 space-y-2.5 before:absolute before:left-1.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#DFD9CA]">
-                          {scenario.workflow.slice(0, 4).map((item) => (
-                            <div
-                              key={item.text}
-                              className="relative flex items-center gap-2.5 text-xs"
-                            >
-                              <span
-                                className={`absolute -left-4 flex size-3.5 items-center justify-center rounded-full ring-4 ring-white ${
-                                  item.done
-                                    ? "bg-[#1F3622] text-white"
-                                    : "bg-slate-300 text-slate-600"
-                                }`}
-                              >
-                                {item.done ? <Check className="size-2" weight="bold" /> : null}
-                              </span>
-                              <div
-                                className={`w-full rounded-lg px-2.5 py-2 text-xs font-medium border transition-all ${
-                                  item.done
-                                    ? "border-[#DFD9CA] bg-[#FAF8F2] text-[#111215]"
-                                    : "border-dashed border-slate-200 bg-slate-50/50 text-slate-400"
-                                }`}
-                              >
-                                <span className="truncate">{item.text}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-                          <span className="text-[11px] text-slate-500 font-medium">
-                            Technician assigned
-                          </span>
-                          <span className="inline-flex items-center gap-1 text-xs font-bold text-[#1F3622]">
-                            <Lightning className="size-3.5" weight="fill" /> High Priority SLA
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* STEP 03: BROADCAST & LIVE SLA */}
-                    {activeStep === 2 && (
-                      <div className="space-y-4 animate-in fade-in zoom-in-95 duration-400">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                          <div className="flex items-center gap-2">
-                            <span className="flex size-6 items-center justify-center rounded-full bg-[#1F3622] text-white text-xs font-bold">
-                              3
-                            </span>
-                            <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-                              Broadcast & Live SLA Radar
-                            </span>
-                          </div>
-                          <span className="inline-flex items-center gap-1 rounded-full bg-[#EDF4EE] border border-[#1F3622]/15 px-2.5 py-0.5 text-[10px] font-semibold text-[#1F3622]">
-                            <Broadcast className="size-2.5 animate-pulse" /> Live Society Radar
-                          </span>
-                        </div>
-
-                        <div className="space-y-2.5">
-                          {scenario.rules.map((r) => (
-                            <div
-                              key={r.title}
-                              className="rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-3 shadow-2xs space-y-1"
-                            >
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-[#111215]">
-                                <Clock className="size-3.5 text-[#1F3622]" weight="bold" />
-                                <span>{r.title}</span>
-                              </div>
-                              <p className="text-xs text-slate-600 pl-5">{r.desc}</p>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-                          <span className="text-[11px] text-slate-500 font-medium">
-                            Automatic overdue protection
-                          </span>
-                          <span className="text-xs font-bold text-emerald-800">
-                            ✓ SLA On Schedule
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* STEP 04: RESOLUTION & 5-STAR SIGN-OFF */}
-                    {activeStep === 3 && (
-                      <div className="space-y-4 animate-in fade-in zoom-in-95 duration-400">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                          <div className="flex items-center gap-2">
-                            <span className="flex size-6 items-center justify-center rounded-full bg-[#1F3622] text-white text-xs font-bold">
-                              4
-                            </span>
-                            <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-                              Verified Resolution Proof
-                            </span>
-                          </div>
-                          <span className="rounded-md bg-emerald-100 border border-emerald-300 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
-                            {scenario.resolution.tag}
-                          </span>
-                        </div>
-
-                        <div className="overflow-hidden rounded-2xl border border-[#233827] bg-[#142317] text-white shadow-md">
-                          <div className="relative h-32 w-full overflow-hidden">
-                            <img
-                              src={scenario.image}
-                              alt={scenario.resolution.title}
-                              className="size-full object-cover object-center"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#142317] via-[#142317]/50 to-black/30" />
-                            <div className="absolute bottom-2 left-3 flex items-center gap-1.5 text-xs text-amber-400">
-                              <div className="flex">
-                                {[...Array(5)].map((_, idx) => (
-                                  <Star key={idx} className="size-3.5" weight="fill" />
-                                ))}
-                              </div>
-                              <span className="text-[11px] font-semibold text-slate-200">
-                                5.0 Star Resident Feedback
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="p-3.5">
-                            <h4 className="text-xs sm:text-sm font-semibold tracking-tight text-white leading-snug">
-                              {scenario.resolution.title}
-                            </h4>
-                            <p className="mt-1 text-[11px] leading-relaxed text-slate-300/85">
-                              {scenario.resolution.desc}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-                          <Link
-                            to="/auth"
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#1F3622] hover:underline"
-                          >
-                            {scenario.resolution.action} <ArrowRight className="size-3.5" />
-                          </Link>
-                          <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-800">
-                            CLOSED & VERIFIED
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Footer status summary */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                    <span>
-                      Active Workflow Stage:{" "}
-                      <strong className="text-[#1F3622]">{FLOW_STEPS[activeStep]?.tag}</strong>
+                      {item.done ? "✓" : "•"}
                     </span>
-                    <span className="font-semibold text-slate-700">{activeStep + 1} of 4</span>
+                    <span className="tracking-tight">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Col 3: Rules & Targets */}
+              <div className="space-y-3.5 text-xs leading-relaxed text-[#6D717A] lg:col-span-3 lg:pl-4">
+                {scenario.rules.map((r) => (
+                  <div
+                    key={r.title}
+                    className="flex items-start gap-3 rounded-xl border border-[#DFD9CA] bg-white p-3 shadow-xs"
+                  >
+                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-[#EDF3EA] text-[#1F3622]">
+                      <PushPin className="size-3.5" weight="fill" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-[#111215]">{r.title}</div>
+                      <div className="mt-0.5 text-slate-600">{r.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Col 4: Completed Card with Photo Header */}
+              <div className="lg:col-span-3 lg:pl-4">
+                <div className="group relative overflow-hidden rounded-2xl border border-[#233827] bg-[#0E1510] text-white shadow-[0_16px_40px_rgba(0,0,0,0.18)] transition-all hover:border-[#3A5C40]">
+                  {/* Photo Header */}
+                  <div className="relative h-36 w-full overflow-hidden">
+                    <img
+                      src={scenario.image}
+                      alt={scenario.resolution.title}
+                      className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    {/* Gradient Overlay Scrim */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E1510] via-[#0E1510]/40 to-black/30" />
+
+                    {/* Status Badge Tag */}
+                    <div className="absolute top-3 left-3">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/85 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-emerald-300 shadow-sm backdrop-blur-md">
+                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        {scenario.resolution.tag}
+                      </span>
+                    </div>
+
+                    {/* Star Rating Overlay */}
+                    <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-xs text-amber-400">
+                      <div className="flex">
+                        {[...Array(5)].map((_, idx) => (
+                          <Star key={idx} className="size-3.5" weight="fill" />
+                        ))}
+                      </div>
+                      <span className="text-[11px] font-medium text-slate-200">
+                        5.0 Star Rating
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="p-4 pt-3">
+                    <h4 className="text-sm font-semibold tracking-tight text-white">
+                      {scenario.resolution.title}
+                    </h4>
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-300/85">
+                      {scenario.resolution.desc}
+                    </p>
+                    <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+                      <Link
+                        to="/auth"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
+                      >
+                        {scenario.resolution.action} <ArrowRight className="size-3.5" />
+                      </Link>
+                      <span className="font-mono text-[10px] text-slate-400">
+                        WO #{activeScenarioIdx === 0 ? "104" : "109"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -932,6 +554,50 @@ function SocietyDeskLanding() {
           </div>
         </div>
       </main>
+
+      <section
+        id="how-it-works"
+        className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-16 px-6 sm:px-8"
+      >
+        <div className="mx-auto max-w-[1400px]">
+          <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+                STEP 01
+              </div>
+              <h3 className="mt-2 text-lg font-bold text-[#111215]">Report in 30 Seconds</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+                Take photos, choose category (Plumbing, Lift, Electric), enter your flat number, and
+                submit directly from your phone.
+              </p>
+            </div>
+
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+                STEP 02
+              </div>
+              <h3 className="mt-2 text-lg font-bold text-[#111215]">
+                Admin Assigns & Sets Priority
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+                The manager sets priority (Low, Medium, High), writes notes, and tracks due dates so
+                repairs are not forgotten.
+              </p>
+            </div>
+
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+                STEP 03
+              </div>
+              <h3 className="mt-2 text-lg font-bold text-[#111215]">Email Updates & Feedback</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+                Residents receive emails on every status change. Once repaired, residents rate the
+                work 1 to 5 stars.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <PinnedFeaturesCarousel />
 
