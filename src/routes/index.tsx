@@ -121,29 +121,15 @@ function SocietyDeskLanding() {
             <a href="#features" className="transition-colors hover:text-[#111215]">
               Features
             </a>
-            <a href="#deadlines" className="transition-colors hover:text-[#111215]">
-              Repair Deadlines
-            </a>
-            <Link to="/auth" className="transition-colors hover:text-[#111215]">
-              Notice Board
-            </Link>
           </nav>
 
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
             <Link
               to="/auth"
-              search={{ mode: "admin" } as never}
-              className="text-sm font-medium text-[#4A4D54] transition-colors hover:text-[#111215] px-3 py-1.5"
-            >
-              Admin Sign In
-            </Link>
-            <Link
-              to="/auth"
-              search={{ mode: "signup" } as never}
               className="rounded-full bg-[#1F3622] px-5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-[#2E4E30]"
             >
-              Register as Resident
+              Sign In
             </Link>
           </div>
         </div>
@@ -152,7 +138,7 @@ function SocietyDeskLanding() {
       {/* ── HERO & WORKFLOW SECTION ─────────────────────────── */}
       <main className="relative mx-auto w-full max-w-[1400px] flex-1 px-6 sm:px-8 pt-4 pb-16">
         {/* ── 1. HERO BANNER WITH BACKGROUND VIDEO ─────────────── */}
-        <div className="relative overflow-hidden rounded-3xl border border-[#E9E5DA]/80 bg-[#F6F4ED] p-8 sm:p-12 lg:p-14 mb-16">
+        <div className="relative mb-16 overflow-hidden rounded-3xl border border-[#E9E5DA]/80 bg-[#F6F4ED] p-8 sm:p-12 lg:p-14">
           {/* Background Video */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
             <video
@@ -160,7 +146,7 @@ function SocietyDeskLanding() {
               loop
               muted
               playsInline
-              className="h-full w-full object-cover opacity-75 scale-[1.25] origin-center transition-opacity duration-1000"
+              className="h-full w-full origin-center scale-[1.25] object-cover opacity-75 transition-opacity duration-1000"
             >
               <source src="/hero-bg.mp4" type="video/mp4" />
             </video>
@@ -172,7 +158,7 @@ function SocietyDeskLanding() {
 
           {/* Foreground Hero Content */}
           <div className="relative z-10 max-w-2xl">
-            <h1 className="text-6xl font-medium tracking-tight text-[#111215] sm:text-7xl md:text-[82px] leading-[0.95]">
+            <h1 className="text-6xl font-medium leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
               The society manager,
               <br />
               multiplied
@@ -192,19 +178,6 @@ function SocietyDeskLanding() {
               >
                 Register as Resident <ArrowRight className="ml-2 inline size-4" />
               </Link>
-              <Link
-                to="/auth"
-                search={{ mode: "admin" } as never}
-                className="rounded-full border border-slate-300 bg-white/90 px-6 py-3.5 text-sm font-semibold text-[#111215] shadow-xs hover:bg-white transition-colors"
-              >
-                Sign in as Admin
-              </Link>
-              <a
-                href="#how-it-works"
-                className="text-sm font-semibold text-[#4A4D54] transition-colors hover:text-[#111215] ml-2"
-              >
-                See how it works
-              </a>
             </div>
           </div>
         </div>
