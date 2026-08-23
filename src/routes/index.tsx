@@ -6,6 +6,8 @@ import {
   Buildings,
   Check,
   CaretDown,
+  CaretLeft,
+  CaretRight,
   Drop,
   Stack,
   PushPin,
@@ -19,7 +21,7 @@ import {
   Clock,
   ChatCircleDots,
 } from "@phosphor-icons/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { BrandLogo } from "@/components/brand";
 
 export const Route = createFileRoute("/")({
@@ -134,6 +136,233 @@ function AnimatedMultiplier() {
   );
 }
 
+const SOCIETY_FEATURES = [
+  {
+    id: "photos",
+    pin: "01",
+    tab: "Photos",
+    tag: "Visual Evidence",
+    title: "Photos with Every Complaint",
+    desc: "Add up to 3 photos of the leak, crack, or breakdown. Photos compress automatically on your phone so uploads are lightning fast.",
+    icon: Drop,
+    pill: "Auto Compression",
+  },
+  {
+    id: "kanban",
+    pin: "02",
+    tab: "Kanban Board",
+    tag: "Admin Workspace",
+    title: "List & Board Views for Admins",
+    desc: "Admins can view complaints in a clean list or drag-and-drop Kanban columns (Open, In Progress, Resolved) for rapid triage.",
+    icon: Stack,
+    pill: "Drag & Drop",
+  },
+  {
+    id: "notices",
+    pin: "03",
+    tab: "Notices",
+    tag: "Broadcast",
+    title: "Notice Board & Email Alerts",
+    desc: "Post important society notices with pinned priority cards. Residents receive email alerts instantly when an urgent notice is published.",
+    icon: PushPin,
+    pill: "Pinned Alerts",
+  },
+  {
+    id: "sla",
+    pin: "04",
+    tab: "Overdue SLA",
+    tag: "SLA Tracker",
+    title: "Automated Overdue Warnings",
+    desc: "Set deadline days per category. Delayed complaints turn amber with a blinking alert and auto-surface to the top of the triage list.",
+    icon: Timer,
+    pill: "Live Alert",
+  },
+  {
+    id: "analytics",
+    pin: "05",
+    tab: "Reports",
+    tag: "Intelligence",
+    title: "Monthly Repair Reports",
+    desc: "See total complaints per category, average days to resolve, and watchlists for repeat issues (e.g. lift breaking down 3+ times).",
+    icon: ChartBar,
+    pill: "30-Day Trends",
+  },
+  {
+    id: "feedback",
+    pin: "06",
+    tab: "Ratings",
+    tag: "Resident Voice",
+    title: "1 to 5 Star Resident Feedback",
+    desc: "Residents rate the repair quality once completed so the management committee knows which technicians deliver great work.",
+    icon: Star,
+    pill: "5-Star Rating",
+  },
+];
+
+function PinnedFeaturesCarousel() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activePin, setActivePin] = useState(0);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = useCallback(() => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    setCanScrollLeft(scrollLeft > 20);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 20);
+
+    const cardWidth = 380 + 24;
+    const index = Math.round(scrollLeft / cardWidth);
+    setActivePin(Math.min(Math.max(index, 0), SOCIETY_FEATURES.length - 1));
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    checkScroll();
+    return () => el.removeEventListener("scroll", checkScroll);
+  }, [checkScroll]);
+
+  const scrollToPin = (idx: number) => {
+    if (!scrollRef.current) return;
+    const cardWidth = 380 + 24;
+    scrollRef.current.scrollTo({
+      left: idx * cardWidth,
+      behavior: "smooth",
+    });
+    setActivePin(idx);
+  };
+
+  const scrollPrev = () => {
+    if (activePin > 0) scrollToPin(activePin - 1);
+  };
+
+  const scrollNext = () => {
+    if (activePin < SOCIETY_FEATURES.length - 1) scrollToPin(activePin + 1);
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Header & Controls */}
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-xl">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+            Built for Societies
+          </span>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#111215] sm:text-4xl">
+            Everything your society needs to manage repairs.
+          </h2>
+        </div>
+
+        {/* Carousel Navigation Pins & Arrows */}
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="rounded-full bg-[#EAE5D9] px-3.5 py-1.5 text-xs font-bold tabular-nums text-[#1F3622]">
+            0{activePin + 1} / 0{SOCIETY_FEATURES.length}
+          </span>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={scrollPrev}
+              disabled={!canScrollLeft}
+              className="flex size-10 items-center justify-center rounded-full border border-[#D9D3C5] bg-white text-[#111215] transition-all hover:bg-[#1F3622] hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#111215] cursor-pointer disabled:cursor-not-allowed shadow-sm"
+              aria-label="Previous card"
+            >
+              <CaretLeft className="size-5" />
+            </button>
+            <button
+              onClick={scrollNext}
+              disabled={!canScrollRight}
+              className="flex size-10 items-center justify-center rounded-full border border-[#D9D3C5] bg-white text-[#111215] transition-all hover:bg-[#1F3622] hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#111215] cursor-pointer disabled:cursor-not-allowed shadow-sm"
+              aria-label="Next card"
+            >
+              <CaretRight className="size-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Pin Selector Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        {SOCIETY_FEATURES.map((item, idx) => {
+          const isActive = activePin === idx;
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.id}
+              onClick={() => scrollToPin(idx)}
+              className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                isActive
+                  ? "bg-[#1F3622] text-white shadow-sm"
+                  : "bg-white text-[#4A4D54] border border-[#E0DACE] hover:border-[#1F3622] hover:text-[#111215]"
+              }`}
+            >
+              <Icon className="size-3.5" weight={isActive ? "fill" : "regular"} />
+              <span>
+                {item.pin} {item.tab}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Horizontal Carousel Track */}
+      <div
+        ref={scrollRef}
+        className="flex gap-6 overflow-x-auto pb-6 pt-2 scroll-smooth snap-x snap-mandatory scrollbar-none"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {SOCIETY_FEATURES.map((item, idx) => {
+          const Icon = item.icon;
+          const isActive = activePin === idx;
+          return (
+            <div
+              key={item.id}
+              onClick={() => scrollToPin(idx)}
+              className={`w-[320px] sm:w-[380px] shrink-0 snap-start rounded-3xl border bg-white p-7 shadow-sm transition-all duration-300 flex flex-col justify-between cursor-pointer ${
+                isActive
+                  ? "border-[#1F3622] ring-2 ring-[#1F3622]/15 shadow-md scale-[1.01]"
+                  : "border-[#DFD9CA] hover:border-[#B5ADA0] hover:shadow-md"
+              }`}
+            >
+              <div>
+                {/* Header with Pin and Icon */}
+                <div className="flex items-center justify-between mb-5">
+                  <span className="flex items-center gap-1.5 rounded-md bg-[#F4EFE6] px-2.5 py-1 text-[11px] font-bold text-[#1F3622]">
+                    <PushPin className="size-3.5 text-[#1F3622]" weight="fill" /> PIN {item.pin}
+                  </span>
+                  <div className="flex size-11 items-center justify-center rounded-2xl bg-[#EDF4EE] text-[#1F3622]">
+                    <Icon className="size-6" weight="fill" />
+                  </div>
+                </div>
+
+                <div className="text-[11px] font-bold uppercase tracking-wider text-[#687063] mb-1">
+                  {item.tag}
+                </div>
+
+                <h3 className="text-xl font-bold tracking-tight text-[#111215] leading-snug">
+                  {item.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-relaxed text-[#5A5E68]">{item.desc}</p>
+              </div>
+
+              {/* Card Footer Badge */}
+              <div className="mt-8 flex items-center justify-between border-t border-[#F0EBE0] pt-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold bg-[#FAF7EE] border-[#E2DDD0] text-[#1F3622]">
+                  <Sparkle className="size-3.5 text-emerald-600" weight="fill" />
+                  {item.pill}
+                </span>
+                <span className="text-xs font-medium text-[#7C8074]">SocietyDesk Core</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function SocietyDeskLanding() {
   const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
   const scenario = SCENARIOS[activeScenarioIdx]!;
@@ -199,8 +428,8 @@ function SocietyDeskLanding() {
 
           {/* Foreground Hero Content */}
           <div className="relative z-10 max-w-2xl">
-            <h1 className="text-6xl font-medium leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
-              The society manager,
+            <h1 className="text-6xl font-light leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
+              <span className="font-light text-[#111215]/90">The society manager,</span>
               <br />
               <AnimatedMultiplier />
             </h1>
@@ -487,70 +716,7 @@ function SocietyDeskLanding() {
       {/* ── FEATURES SECTION ────────────────────────────────── */}
       <section id="features" className="border-t border-[#E8E4D8] bg-[#F6F4ED] py-20 px-6 sm:px-8">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-12 max-w-xl">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
-              Built for Societies
-            </span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#111215] sm:text-4xl">
-              Everything your society needs to manage repairs.
-            </h2>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-sm">
-              <Drop className="size-6 text-[#1F3622] mb-4" weight="fill" />
-              <h3 className="font-bold text-[#111215]">Photos with Every Complaint</h3>
-              <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                Add up to 3 photos of the leak, crack, or breakdown. Photos compress automatically
-                on your phone so uploads are fast.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-sm">
-              <Stack className="size-6 text-[#1F3622] mb-4" weight="fill" />
-              <h3 className="font-bold text-[#111215]">List and Board Views for Admins</h3>
-              <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                Admins can view complaints in a clean list or drag-and-drop Kanban columns (Open, In
-                Progress, Resolved).
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-sm">
-              <PushPin className="size-6 text-[#1F3622] mb-4" weight="fill" />
-              <h3 className="font-bold text-[#111215]">Notice Board & Email Alerts</h3>
-              <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                Post important society notices with pinned cards. Residents receive email alerts
-                instantly when an urgent notice is published.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-sm">
-              <Timer className="size-6 text-[#1F3622] mb-4" weight="fill" />
-              <h3 className="font-bold text-[#111215]">Overdue Warnings</h3>
-              <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                Set deadline days per category. Delayed complaints turn amber with a blinking alert
-                and move to the top of the list.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-sm">
-              <ChartBar className="size-6 text-[#1F3622] mb-4" weight="fill" />
-              <h3 className="font-bold text-[#111215]">Monthly Repair Reports</h3>
-              <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                See total complaints per category, average days to resolve, and watchlists for
-                repeat issues (e.g. lift breaking down 3+ times).
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-sm">
-              <Star className="size-6 text-[#1F3622] mb-4" weight="fill" />
-              <h3 className="font-bold text-[#111215]">1 to 5 Star Resident Feedback</h3>
-              <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                Residents rate the repair quality once completed so the management committee knows
-                which technicians do great work.
-              </p>
-            </div>
-          </div>
+          <PinnedFeaturesCarousel />
         </div>
       </section>
 
