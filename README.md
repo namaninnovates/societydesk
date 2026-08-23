@@ -2,13 +2,67 @@
 
 SocietyDesk is a maintenance management system for residential apartment complexes and housing societies. It helps residents report repair problems, helps staff technicians fix them, and helps society management committees track everything in one place instead of messy group chats and paper registers.
 
+**Live Deployment:** [https://societydesk.vercel.app](https://societydesk.vercel.app)
+
 **Built with:** React 19, TanStack Start, Tailwind CSS, Neon PostgreSQL, JWT Auth, Resend Email, and Recharts.
+
+---
+
+## Live Demo & Accounts
+
+The app is deployed on Vercel. You can explore all three roles using the built-in 1-click demo accounts on the login page:
+
+- **Society Admin**: `naman@societydesk.com` / `SocietyDesk@2026!` (Full committee triage, analytics, user directory, and notice broadcasts)
+- **Staff Technician**: `ramesh.staff@societydesk.com` / `Staff@2026!` (Assigned jobs queue, status updates, and resolution logging)
+- **Resident**: `resident@societydesk.com` / `Resident@2026!` (Ticket submission, photo uploads, live tracking, and rating)
+
+---
+
+## System Architecture
+
+```
++-----------------------------------------------------------------------------------+
+|                                  CLIENT LAYER                                     |
+|                                                                                   |
+|  [ Resident Portal ]            [ Staff Portal ]           [ Admin Dashboard ]    |
+|  - Raise complaints             - Assigned repairs         - Analytics & KPIs     |
+|  - Upload photo evidence        - Status updates           - Kanban / List triage |
+|  - Live IST timeline            - Work resolution notes    - SLA & Overdue alerts |
+|  - Rate completed repairs       - Mobile field view        - Notice broadcasts    |
++------------------------------------------+----------------------------------------+
+                                           |
+                                           | HTTPS / Type-safe RPC
+                                           v
++-----------------------------------------------------------------------------------+
+|                        APPLICATION & SERVER LAYER (Vercel)                        |
+|                                                                                   |
+|   TanStack Start (SSR) + Nitro Engine                                             |
+|   ├── Route Handlers & Middleware (Role validation for resident, staff, admin)    |
+|   ├── Authentication Engine (Jose JWT stateless tokens + bcrypt password hashing)  |
+|   ├── Server RPC Functions (create, update, triage, assign, and delete tickets)   |
+|   └── Email Service (Resend integration for status updates & notice broadcasts)   |
++------------------------------------------+----------------------------------------+
+                                           |
+                                           | SSL Pooled Connection
+                                           v
++-----------------------------------------------------------------------------------+
+|                                 DATABASE LAYER                                    |
+|                                                                                   |
+|   Neon Serverless PostgreSQL                                                      |
+|   ├── profiles (id, full_name, role, unit_number, block, phone, password_hash)    |
+|   ├── complaints (id, resident_id, assigned_to, category, priority, status, ...)  |
+|   ├── complaint_history (id, complaint_id, actor_id, old_status, new_status, ...) |
+|   ├── complaint_comments (id, complaint_id, author_id, comment, created_at)      |
+|   ├── notices (id, author_id, title, body, is_important, created_at)              |
+|   └── overdue_thresholds (category, target_hours, escalate_after_hours)           |
++-----------------------------------------------------------------------------------+
+```
 
 ---
 
 ## How It Works
 
-The platform has three dedicated portals based on user role:
+The platform provides dedicated workspaces based on user role:
 
 ### 1. Resident Portal
 
@@ -39,14 +93,15 @@ The platform has three dedicated portals based on user role:
 
 ---
 
-## Tech Stack & Architecture
+## Tech Stack
 
 - **Frontend & Routing**: React 19 with TanStack Router (file-based, type-safe routing)
 - **Backend & Server**: TanStack Start with Nitro server functions
-- **Database**: PostgreSQL hosted on Neon (using connection pooling for speed)
+- **Database**: PostgreSQL hosted on Neon (using connection pooling for fast cold starts)
 - **Authentication**: JWT token authentication with bcrypt password hashing
 - **Emails**: Resend API for sending ticket updates and urgent society notices
 - **Styling**: Tailwind CSS with an olive and parchment theme
+- **Hosting**: Vercel
 
 ---
 
@@ -78,66 +133,6 @@ src/
 ├── server.ts            # Server entry file
 └── styles.css           # Global CSS and custom theme utilities
 ```
-
----
-
-## Local Setup
-
-### 1. Requirements
-
-- Node.js version 20 or higher
-- A Neon PostgreSQL database
-
-### 2. Installation
-
-```bash
-git clone https://github.com/namaninnovates/societydesk.git
-cd resident-reply-system
-npm install
-```
-
-### 3. Setup Environment Variables
-
-Create a `.env` file from the example:
-
-```bash
-cp .env.example .env
-```
-
-Add your database connection string and a secret key:
-
-```env
-DATABASE_URL="postgresql://neondb_owner:password@ep-sample-pooler.region.aws.neon.tech/neondb?sslmode=require"
-JWT_SECRET="52cc3d95afdf35ae7cf2fb5a1f2d44d2a27f69e705469191919ca0a564d43af2"
-RESEND_API_KEY="" # Optional: add Resend key to send actual emails
-```
-
-### 4. Database Migration
-
-Run the initial SQL migration in your database:
-
-```bash
-psql $DATABASE_URL < supabase/migrations/20260822180605_da397ad0-fd18-41c4-ad2b-7dca9df49fab.sql
-```
-
-### 5. Start Development Server
-
-```bash
-npm run dev
-```
-
-Open `http://localhost:8080` in your browser.
-
----
-
-## Deployment (Vercel)
-
-SocietyDesk is ready for deployment on Vercel:
-
-1. Connect your GitHub repository to Vercel.
-2. Select framework preset: `TanStack Start` (or `Other`).
-3. Add the `DATABASE_URL` and `JWT_SECRET` variables under **Project Settings → Environment Variables**.
-4. Click Deploy.
 
 ---
 
