@@ -43,7 +43,14 @@ function AuthPage() {
   const search = useSearch({ from: "/auth" });
   const { session, profile, setAuth } = useAuth();
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<string>(search.mode || "signin");
+  const [tab, setTab] = useState<string>(() => {
+    if (search.mode === "staff") return "staff";
+    if (search.mode === "admin") return "admin";
+    return "resident";
+  });
+  const [residentMode, setResidentMode] = useState<"signin" | "register">(() =>
+    search.mode === "signup" ? "register" : "signin",
+  );
 
   // Controlled form states for 1-click filling
   const [adminEmail, setAdminEmail] = useState("naman@societydesk.com");
@@ -54,8 +61,16 @@ function AuthPage() {
   const [residentPassword, setResidentPassword] = useState("Resident@2026!");
 
   useEffect(() => {
-    if (search.mode) {
-      setTab(search.mode);
+    if (search.mode === "signup") {
+      setTab("resident");
+      setResidentMode("register");
+    } else if (search.mode === "staff") {
+      setTab("staff");
+    } else if (search.mode === "admin") {
+      setTab("admin");
+    } else if (search.mode === "signin") {
+      setTab("resident");
+      setResidentMode("signin");
     }
   }, [search.mode]);
 
@@ -171,14 +186,16 @@ function AuthPage() {
   };
 
   const fillResidentPriya = () => {
-    setTab("signin");
+    setTab("resident");
+    setResidentMode("signin");
     setResidentEmail("resident@societydesk.com");
     setResidentPassword("Resident@2026!");
     toast.info("Priya Sharma (Resident) loaded");
   };
 
   const fillResidentVikram = () => {
-    setTab("signin");
+    setTab("resident");
+    setResidentMode("signin");
     setResidentEmail("vikram.malhotra@societydesk.com");
     setResidentPassword("Resident@2026!");
     toast.info("Vikram Malhotra (Resident) loaded");
@@ -194,62 +211,145 @@ function AuthPage() {
 
         <div className="surface p-6 shadow-sm border border-[#DFD9CA] bg-white rounded-2xl">
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="grid w-full grid-cols-4 bg-[#F1EDE1] p-1 rounded-xl">
+            <TabsList className="grid w-full grid-cols-3 bg-[#F1EDE1] p-1 rounded-xl">
               <TabsTrigger
-                value="signin"
-                className="text-[11px] sm:text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+                value="resident"
+                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
               >
                 Resident
               </TabsTrigger>
               <TabsTrigger
                 value="staff"
-                className="text-[11px] sm:text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
               >
                 Staff
               </TabsTrigger>
               <TabsTrigger
                 value="admin"
-                className="text-[11px] sm:text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
               >
                 Admin
               </TabsTrigger>
-              <TabsTrigger
-                value="signup"
-                className="text-[11px] sm:text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
-              >
-                Register
-              </TabsTrigger>
             </TabsList>
 
-            {/* RESIDENT SIGN IN */}
-            <TabsContent value="signin">
-              <form onSubmit={(e) => handleSignIn(e, "resident")} className="space-y-4 pt-4">
-                <Field
-                  label="Resident Email"
-                  name="email"
-                  type="email"
-                  value={residentEmail}
-                  onChange={(e) => setResidentEmail(e.target.value)}
-                  placeholder="resident@societydesk.com"
-                  required
-                />
-                <Field
-                  label="Password"
-                  name="password"
-                  type="password"
-                  value={residentPassword}
-                  onChange={(e) => setResidentPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                />
-                <Button
-                  type="submit"
-                  className="w-full bg-[#1F3622] hover:bg-[#2E4E30]"
-                  disabled={busy}
-                >
-                  {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as Resident
-                </Button>
-              </form>
+            {/* RESIDENT TAB (SIGN IN / REGISTER TOGGLE) */}
+            <TabsContent value="resident">
+              {residentMode === "signin" ? (
+                <div className="space-y-4 pt-4">
+                  <form onSubmit={(e) => handleSignIn(e, "resident")} className="space-y-4">
+                    <Field
+                      label="Resident Email"
+                      name="email"
+                      type="email"
+                      value={residentEmail}
+                      onChange={(e) => setResidentEmail(e.target.value)}
+                      placeholder="resident@societydesk.com"
+                      required
+                    />
+                    <Field
+                      label="Password"
+                      name="password"
+                      type="password"
+                      value={residentPassword}
+                      onChange={(e) => setResidentPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      className="w-full bg-[#1F3622] hover:bg-[#2E4E30]"
+                      disabled={busy}
+                    >
+                      {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as
+                      Resident
+                    </Button>
+                  </form>
+
+                  {/* Register prompt below sign in */}
+                  <div className="pt-2 text-center border-t border-slate-100">
+                    <p className="text-xs text-muted-foreground">
+                      New resident in our society?{" "}
+                      <button
+                        type="button"
+                        onClick={() => setResidentMode("register")}
+                        className="font-bold text-[#1F3622] hover:underline cursor-pointer"
+                      >
+                        Register your flat
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 pt-4">
+                  <div className="flex items-center justify-between border-b border-[#DFD9CA] pb-2">
+                    <div>
+                      <h3 className="text-xs font-bold text-[#111215] uppercase tracking-wider">
+                        Register Flat
+                      </h3>
+                      <p className="text-[11px] text-muted-foreground">
+                        Create an account for your unit
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setResidentMode("signin")}
+                      className="text-xs font-semibold text-[#1F3622] hover:underline cursor-pointer"
+                    >
+                      Back to Sign In
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSignUp} className="space-y-3.5">
+                    <Field label="Full name" name="full_name" placeholder="Rahul Sharma" required />
+                    <Field
+                      label="Email address"
+                      name="email"
+                      type="email"
+                      placeholder="name@email.com"
+                      required
+                    />
+                    <Field
+                      label="Create password"
+                      name="password"
+                      type="password"
+                      placeholder="At least 8 characters"
+                      required
+                    />
+                    <div className="grid grid-cols-2 gap-3">
+                      <Field label="Flat / Unit" name="unit_number" placeholder="B-1204" required />
+                      <Field label="Block / Tower" name="block" placeholder="Tower B" required />
+                    </div>
+                    <Field
+                      label="Phone number"
+                      name="phone"
+                      type="tel"
+                      placeholder="+91 98765 43210"
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      className="w-full bg-[#1F3622] hover:bg-[#2E4E30]"
+                      disabled={busy}
+                    >
+                      {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Register Flat
+                    </Button>
+                  </form>
+
+                  {/* Sign in prompt below register */}
+                  <div className="pt-2 text-center border-t border-slate-100">
+                    <p className="text-xs text-muted-foreground">
+                      Already registered?{" "}
+                      <button
+                        type="button"
+                        onClick={() => setResidentMode("signin")}
+                        className="font-bold text-[#1F3622] hover:underline cursor-pointer"
+                      >
+                        Sign in to your flat
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             {/* STAFF SIGN IN */}
@@ -316,45 +416,6 @@ function AuthPage() {
                   disabled={busy}
                 >
                   {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as Admin
-                </Button>
-              </form>
-            </TabsContent>
-
-            {/* REGISTER AS RESIDENT */}
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4 pt-4">
-                <Field label="Full name" name="full_name" placeholder="Rahul Sharma" required />
-                <Field
-                  label="Email address"
-                  name="email"
-                  type="email"
-                  placeholder="name@email.com"
-                  required
-                />
-                <Field
-                  label="Create password"
-                  name="password"
-                  type="password"
-                  placeholder="At least 8 characters"
-                  required
-                />
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="Flat / Unit" name="unit_number" placeholder="B-1204" required />
-                  <Field label="Block / Tower" name="block" placeholder="Tower B" required />
-                </div>
-                <Field
-                  label="Phone number"
-                  name="phone"
-                  type="tel"
-                  placeholder="+91 98765 43210"
-                  required
-                />
-                <Button
-                  type="submit"
-                  className="w-full bg-[#1F3622] hover:bg-[#2E4E30]"
-                  disabled={busy}
-                >
-                  {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Register Flat
                 </Button>
               </form>
             </TabsContent>
