@@ -12,6 +12,8 @@ import {
 } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -460,14 +462,14 @@ function AdminDashboard() {
               </span>
             </div>
 
-            {/* Live summary pills */}
+            {/* Live summary pills in shades of olive */}
             <div className="flex items-center gap-2 text-[11px] font-semibold">
-              <span className="inline-flex items-center gap-1 rounded-md bg-[#EDF4EE] px-2 py-0.5 text-[#1F3622]">
-                <span className="size-2 rounded-full bg-[#1F3622]" />
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-[#3E4D28]/10 border border-[#3E4D28]/20 px-2.5 py-0.5 text-[#3E4D28]">
+                <span className="size-2 rounded-full bg-[#3E4D28]" />
                 {totalPeriodRaised} Raised
               </span>
-              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-emerald-800">
-                <span className="size-2 rounded-full bg-[#10B981]" />
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-[#829758]/15 border border-[#829758]/30 px-2.5 py-0.5 text-[#546633]">
+                <span className="size-2 rounded-full bg-[#829758]" />
                 {totalPeriodResolved} Resolved
               </span>
             </div>
@@ -475,36 +477,42 @@ function AdminDashboard() {
 
           <div className="h-[135px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={activityData}
-                margin={{ top: 5, right: 10, left: -25, bottom: 0 }}
-                barGap={2}
-              >
+              <AreaChart data={activityData} margin={{ top: 8, right: 10, left: -25, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="oliveRaisedGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3E4D28" stopOpacity={0.22} />
+                    <stop offset="95%" stopColor="#3E4D28" stopOpacity={0.0} />
+                  </linearGradient>
+                  <linearGradient id="oliveResolvedGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#829758" stopOpacity={0.22} />
+                    <stop offset="95%" stopColor="#829758" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.12} />
                 <XAxis dataKey="date" fontSize={10} tickLine={false} />
                 <YAxis fontSize={10} allowDecimals={false} tickLine={false} />
                 <Tooltip
-                  cursor={{ fill: "rgba(0,0,0,0.03)" }}
+                  cursor={{ stroke: "#829758", strokeWidth: 1, strokeDasharray: "3 3" }}
                   content={({ active, payload }) => {
                     const item = payload?.[0]?.payload as
                       { fullDate: string; raised: number; resolved: number } | undefined;
                     if (active && item) {
                       return (
-                        <div className="rounded-lg border border-[#DFD9CA] bg-white p-2 text-xs shadow-md space-y-1">
+                        <div className="rounded-xl border border-[#DFD9CA] bg-white p-2.5 text-xs shadow-md space-y-1.5 min-w-[130px]">
                           <p className="font-semibold text-slate-900 border-b border-slate-100 pb-1">
                             {item.fullDate}
                           </p>
                           <div className="flex items-center justify-between gap-3 text-slate-700">
-                            <span className="flex items-center gap-1">
-                              <span className="size-2 rounded-full bg-[#1F3622]" /> Raised:
+                            <span className="flex items-center gap-1.5">
+                              <span className="size-2 rounded-full bg-[#3E4D28]" /> Raised:
                             </span>
-                            <span className="font-bold text-[#1F3622]">{item.raised}</span>
+                            <span className="font-bold text-[#3E4D28]">{item.raised}</span>
                           </div>
                           <div className="flex items-center justify-between gap-3 text-slate-700">
-                            <span className="flex items-center gap-1">
-                              <span className="size-2 rounded-full bg-[#10B981]" /> Resolved:
+                            <span className="flex items-center gap-1.5">
+                              <span className="size-2 rounded-full bg-[#829758]" /> Resolved:
                             </span>
-                            <span className="font-bold text-emerald-700">{item.resolved}</span>
+                            <span className="font-bold text-[#546633]">{item.resolved}</span>
                           </div>
                         </div>
                       );
@@ -512,21 +520,29 @@ function AdminDashboard() {
                     return null;
                   }}
                 />
-                <Bar
+                <Area
+                  type="monotone"
                   dataKey="raised"
                   name="Raised"
-                  fill="#1F3622"
-                  radius={[3, 3, 0, 0]}
-                  maxBarSize={14}
+                  stroke="#3E4D28"
+                  strokeWidth={2.5}
+                  fillOpacity={1}
+                  fill="url(#oliveRaisedGrad)"
+                  dot={{ r: 3, fill: "#3E4D28", strokeWidth: 1.5, stroke: "#FFFFFF" }}
+                  activeDot={{ r: 5, fill: "#3E4D28", stroke: "#FFFFFF", strokeWidth: 2 }}
                 />
-                <Bar
+                <Area
+                  type="monotone"
                   dataKey="resolved"
                   name="Resolved"
-                  fill="#10B981"
-                  radius={[3, 3, 0, 0]}
-                  maxBarSize={14}
+                  stroke="#829758"
+                  strokeWidth={2.5}
+                  fillOpacity={1}
+                  fill="url(#oliveResolvedGrad)"
+                  dot={{ r: 3, fill: "#829758", strokeWidth: 1.5, stroke: "#FFFFFF" }}
+                  activeDot={{ r: 5, fill: "#829758", stroke: "#FFFFFF", strokeWidth: 2 }}
                 />
-              </BarChart>
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
