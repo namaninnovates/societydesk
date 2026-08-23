@@ -227,7 +227,7 @@ function AdminComplaints() {
   if (!profile || !isAdmin) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full min-w-0 overflow-x-hidden">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#111215]">Complaints & Tasks</h1>
@@ -348,7 +348,7 @@ function AdminComplaints() {
       ) : rows.length === 0 ? (
         <EmptyState icon={Tray} title="No complaints match" body="Try clearing a filter or two." />
       ) : view === "board" ? (
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
           {(["open", "in_progress", "resolved"] as const).map((s) => (
             <div key={s} className="space-y-3">
               <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">

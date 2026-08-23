@@ -245,7 +245,7 @@ function AdminDashboard() {
     .sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 w-full min-w-0 overflow-x-hidden">
       <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-bold tracking-tight text-[#111215]">Society Dashboard</h1>
@@ -261,7 +261,7 @@ function AdminDashboard() {
         </div>
 
         {/* Compact Filters Toolbar */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none flex-nowrap">
           <div className="relative">
             <MagnifyingGlass className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
             <Input
@@ -362,7 +362,7 @@ function AdminDashboard() {
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
         {/* Complaints by Category (7 cols) */}
-        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-7">
+        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-7 min-w-0 overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
               Complaints by Category
@@ -371,11 +371,19 @@ function AdminDashboard() {
           </div>
 
           {byCategory.length > 0 ? (
-            <div className="h-[145px] w-full">
+            <div className="h-[145px] w-full min-w-0">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={byCategory} margin={{ top: 5, right: 10, left: -25, bottom: 0 }}>
+                <BarChart data={byCategory} margin={{ top: 5, right: 10, left: -25, bottom: 24 }}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                  <XAxis dataKey="name" fontSize={10} interval={0} tickLine={false} />
+                  <XAxis
+                    dataKey="name"
+                    fontSize={9}
+                    interval={0}
+                    tickLine={false}
+                    angle={-35}
+                    textAnchor="end"
+                    tick={{ fontSize: 9 }}
+                  />
                   <YAxis fontSize={10} allowDecimals={false} tickLine={false} />
                   <Tooltip
                     contentStyle={{
@@ -396,7 +404,7 @@ function AdminDashboard() {
         </div>
 
         {/* Status Distribution Donut (5 cols) */}
-        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-5">
+        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-5 min-w-0 overflow-hidden">
           <div className="flex items-center justify-between mb-1">
             <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
               Status Distribution
@@ -447,7 +455,7 @@ function AdminDashboard() {
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
         {/* Raised vs Resolved Activity (8 cols) */}
-        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-8">
+        <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-8 min-w-0 overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
@@ -471,7 +479,7 @@ function AdminDashboard() {
             </div>
           </div>
 
-          <div className="h-[135px] w-full">
+          <div className="h-[135px] w-full min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={activityData} margin={{ top: 8, right: 10, left: -25, bottom: 0 }}>
                 <defs>
