@@ -20,7 +20,7 @@ export function BrandMark({
     <svg
       className={cn(
         "size-7 shrink-0",
-        variant === "sidebar"
+        variant === "sidebar" || variant === "footer"
           ? "text-[#EDF3EA]"
           : variant === "mono"
             ? "text-current"
@@ -50,11 +50,7 @@ export function BrandLogo({
       <span
         className={cn(
           "text-xl font-bold tracking-tight",
-          variant === "sidebar"
-            ? "text-white"
-            : variant === "footer"
-              ? "text-slate-900"
-              : "text-[#111215]",
+          variant === "sidebar" || variant === "footer" ? "text-white" : "text-[#111215]",
           textClassName,
         )}
       >

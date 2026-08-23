@@ -115,12 +115,9 @@ function SocietyDeskLanding() {
     <div className="flex min-h-screen flex-col justify-between bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
       {/* ── TOP NAVIGATION BAR ──────────────────────────────── */}
       <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-6 py-4 backdrop-blur-md sm:px-8">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between">
-          {/* Brand Logo */}
-          <BrandLogo linkTo="/" />
-
-          {/* Navigation Links */}
-          <nav className="hidden items-center gap-7 text-sm font-medium text-[#4A4D54] md:flex">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-3 items-center">
+          {/* Left: Navigation Links in place of branding */}
+          <nav className="flex items-center gap-6 text-sm font-medium text-[#4A4D54] sm:gap-8">
             <a href="#features" className="transition-colors hover:text-[#111215]">
               Features
             </a>
@@ -129,8 +126,13 @@ function SocietyDeskLanding() {
             </a>
           </nav>
 
-          {/* CTA Buttons */}
-          <div className="flex items-center gap-3">
+          {/* Center: Brand Logo */}
+          <div className="flex justify-center">
+            <BrandLogo linkTo="/" />
+          </div>
+
+          {/* Right: CTA Button */}
+          <div className="flex items-center justify-end gap-3">
             <Link
               to="/auth"
               className="rounded-full bg-[#1F3622] px-5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-[#2E4E30]"
@@ -579,27 +581,23 @@ function SocietyDeskLanding() {
       </section>
 
       {/* ── FOOTER ──────────────────────────────────────────── */}
-      <footer className="border-t border-[#E8E4D8] bg-[#FAF7EE] py-10 px-6 sm:px-8 text-xs text-[#5F6368]">
-        <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-4 sm:flex-row">
+      <footer className="border-t border-[#233827] bg-[#162719] py-12 px-6 sm:px-8 text-xs text-[#A3B8A7]">
+        <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 sm:flex-row">
           <BrandLogo linkTo="/" variant="footer" />
-          <div className="flex gap-6 font-medium">
-            <Link to="/auth" className="hover:text-slate-900">
-              Resident Login
-            </Link>
-            <Link to="/auth" search={{ mode: "admin" } as never} className="hover:text-slate-900">
-              Admin Login
-            </Link>
-            <a href="#features" className="hover:text-slate-900">
+          <div className="flex flex-wrap items-center gap-8 font-medium text-sm text-[#D1DFD3]">
+            <a href="#features" className="transition-colors hover:text-white">
               Features
             </a>
-            <a href="#how-it-works" className="hover:text-slate-900">
-              How It Works
+            <a href="#how-it-works" className="transition-colors hover:text-white">
+              How it works
             </a>
-            <a href="#deadlines" className="hover:text-slate-900">
-              Deadlines
-            </a>
+            <Link to="/auth" className="transition-colors hover:text-white">
+              Sign In
+            </Link>
           </div>
-          <p>© {new Date().getFullYear()} SocietyDesk. Built for apartment societies.</p>
+          <p className="text-xs text-[#8BA490]">
+            © {new Date().getFullYear()} SocietyDesk. Built for apartment societies.
+          </p>
         </div>
       </footer>
     </div>
