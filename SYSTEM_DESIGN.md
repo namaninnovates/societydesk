@@ -24,20 +24,20 @@ SocietyDesk is built on a modern full-stack TypeScript architecture:
                ▼                               ▼
 ┌──────────────────────────────┐  ┌───────────────────────────┐
 │     Data & Storage Layer     │  │     Application Server     │
-│   (Supabase / PostgreSQL)    │  │   (TanStack Start Server)  │
-│  - Supabase Auth (JWT/OAuth) │  │  - Nitro runtime           │
-│  - Row-Level Security (RLS)  │  │  - Server Functions        │
-│  - Storage (complaint-photos)│  │  - Resend Email Service    │
-│  - Neon Serverless Postgres  │  │  - Background triggers     │
+│       (Neon PostgreSQL)      │  │   (TanStack Start Server)  │
+│  - Neon Serverless Postgres  │  │  - Nitro runtime           │
+│  - Jose JWT & Bcrypt Auth    │  │  - Server Functions        │
+│  - Base64 / Neon attachments │  │  - Resend Email Service    │
+│  - Overdue SLA calculation   │  │  - Background triggers     │
 └──────────────────────────────┘  └───────────────────────────┘
 ```
 
 ### Key Architectural Layers:
 
 1. **Frontend / UI**: Single-page application with SSR support via TanStack Start. Client state is cached using `@tanstack/react-query` with optimistic cache invalidation.
-2. **Data & Auth Access**: Client queries interact with PostgreSQL via `@supabase/supabase-js` governed strictly by database-level **Row-Level Security (RLS)** policies.
-3. **Serverless Database & Storage**: Neon PostgreSQL database and Supabase Auth/Storage. Photos undergo client-side canvas compression (JPEG, max 1400px, 0.75 quality) before upload to reduce bandwidth and storage overhead.
-4. **Server Functions & Email Engine**: Server-side logic (`notify.functions.ts`) executes securely within TanStack Start's server environment, invoking Resend API to deliver transactional notifications.
+2. **Data & Auth Access**: Server Functions interact directly with Neon PostgreSQL using `@neondatabase/serverless` connection pool.
+3. **Serverless Database**: Neon PostgreSQL database storing complaints, history, comments, notices, and resident profiles.
+4. **Server Functions & Email Engine**: Server-side logic executes securely within TanStack Start's server environment, invoking Resend API to deliver transactional notifications.
 
 ---
 

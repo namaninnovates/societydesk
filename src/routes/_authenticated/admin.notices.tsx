@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
 import { fetchNotices } from "@/lib/queries";
 import { createNoticeServerFn, deleteNoticeServerFn } from "@/lib/complaints.functions";
 import { cn } from "@/lib/utils";

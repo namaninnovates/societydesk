@@ -2,7 +2,7 @@
 
 A full-stack maintenance complaint tracking platform for apartment/housing societies. Residents raise and track complaints with photos; admins triage, prioritize, resolve, and communicate via a notice board and email notifications.
 
-**Tech stack:** React 19 · TanStack Start · Tailwind CSS v4 · shadcn/ui · Supabase (Auth + Storage + RLS) · Neon PostgreSQL · Resend (email) · Recharts · Nitro (server)
+**Tech stack:** React 19 · TanStack Start · Tailwind CSS v4 · shadcn/ui · Neon PostgreSQL · Jose JWT + bcrypt · Resend (email) · Recharts · Nitro (server)
 
 ---
 
@@ -10,7 +10,7 @@ A full-stack maintenance complaint tracking platform for apartment/housing socie
 
 ### Resident
 
-- **Register & sign in** (email/password + Google OAuth via Supabase Auth)
+- **Register & sign in** (secure email/password with JWT and bcrypt)
 - **Raise complaints** with category, title, description, location, and up to 3 photos (client-side compressed)
 - **Track complaints** — filter by status/category, view full status history timeline, photos in lightbox
 - **Comment** on open complaints for clarifications
@@ -35,8 +35,7 @@ A full-stack maintenance complaint tracking platform for apartment/housing socie
 ### Prerequisites
 
 - **Node.js** ≥ 20
-- A **Supabase** project (free tier works)
-- A **Neon** database (free tier works)
+- A **Neon** PostgreSQL database (free tier works)
 - A **Resend** account for email (free tier, optional — emails are logged in dry-run mode without it)
 
 ### 1. Clone & Install
@@ -63,8 +62,6 @@ The database schema is in [`src/integrations/neon/schema.sql`](src/integrations/
 # Using psql:
 psql $DATABASE_URL < src/integrations/neon/schema.sql
 ```
-
-Supabase tables are managed via migrations in [`supabase/migrations/`](supabase/migrations/).
 
 ### 4. Run Locally
 
