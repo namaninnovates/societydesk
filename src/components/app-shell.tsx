@@ -173,7 +173,7 @@ function AdminShell({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-background lg:flex">
+    <div className="min-h-screen bg-background lg:flex overflow-x-hidden w-full max-w-full">
       <aside className="hidden w-64 shrink-0 sticky top-0 h-screen flex-col justify-between bg-sidebar p-5 lg:flex overflow-hidden z-20">
         <div className="space-y-8">
           <Brand variant="sidebar" linkTo="/admin" />
@@ -198,8 +198,8 @@ function AdminShell({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <div className="flex-1">
-        <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 lg:hidden">
+      <div className="flex-1 min-w-0 overflow-x-hidden w-full max-w-full">
+        <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 lg:hidden w-full max-w-full">
           <Brand linkTo="/admin" />
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" onClick={() => setOpen((v) => !v)}>
@@ -230,7 +230,9 @@ function AdminShell({ children }: { children: ReactNode }) {
             </div>
           </div>
         ) : null}
-        <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">{children}</main>
+        <main className="mx-auto w-full max-w-7xl px-3 sm:px-6 py-4 sm:py-6 overflow-x-hidden">
+          {children}
+        </main>
       </div>
     </div>
   );
@@ -249,20 +251,20 @@ function StaffShell({ children }: { children: ReactNode }) {
   const cleanName = getCleanName(profile?.full_name) || "Staff";
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2.5 sm:py-3">
+    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden w-full max-w-full">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md w-full max-w-full overflow-x-hidden">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3">
           {/* Left: Brand */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <Brand linkTo="/staff" />
           </div>
 
           {/* Right: Staff Name + Badge + IST Clock + Sign Out */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <span className="text-xs sm:text-sm font-semibold text-[#111215] truncate max-w-[160px] sm:max-w-[220px]">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            <span className="text-xs sm:text-sm font-semibold text-[#111215] truncate max-w-[100px] xs:max-w-[140px] sm:max-w-[220px]">
               {cleanName}
             </span>
-            <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 shrink-0">
+            <span className="hidden xs:inline-flex rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 shrink-0">
               Staff
             </span>
             {timeStr && (
@@ -275,16 +277,16 @@ function StaffShell({ children }: { children: ReactNode }) {
               variant="outline"
               size="sm"
               onClick={signOut}
-              className="h-8 rounded-full border-[#DFD9CA] bg-white px-3 text-xs font-medium text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] cursor-pointer shadow-2xs gap-1.5 shrink-0"
+              className="h-7 sm:h-8 rounded-full border-[#DFD9CA] bg-white px-2.5 sm:px-3 text-xs font-medium text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] cursor-pointer shadow-2xs gap-1.5 shrink-0"
             >
               <SignOut className="size-3.5 text-slate-500" />
-              <span>Sign Out</span>
+              <span className="hidden sm:inline">Sign Out</span>
             </Button>
           </div>
         </div>
 
-        <div className="mx-auto max-w-5xl overflow-x-auto px-2 pb-2">
-          <nav className="flex gap-1">
+        <div className="mx-auto max-w-5xl overflow-x-auto px-2 pb-2 scrollbar-none">
+          <nav className="flex gap-1 min-w-max">
             {staffNav.map((item) => {
               const active =
                 item.to === "/staff" ? pathname === "/staff" : pathname.startsWith(item.to);
@@ -305,7 +307,9 @@ function StaffShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
+      <main className="mx-auto w-full max-w-5xl px-3 sm:px-4 py-4 sm:py-6 overflow-x-hidden">
+        {children}
+      </main>
     </div>
   );
 }
@@ -318,17 +322,17 @@ function ResidentShell({ children }: { children: ReactNode }) {
   const cleanName = getCleanName(profile?.full_name) || "Resident";
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2.5 sm:py-3">
+    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden w-full max-w-full">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md w-full max-w-full overflow-x-hidden">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3">
           {/* Left: Brand */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <Brand linkTo="/complaints" />
           </div>
 
           {/* Right: Greeting + Flat Tag + IST Clock + Sign Out */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <span className="text-xs sm:text-sm font-semibold text-[#111215] truncate max-w-[180px] sm:max-w-none">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            <span className="text-xs sm:text-sm font-semibold text-[#111215] truncate max-w-[110px] xs:max-w-[150px] sm:max-w-none">
               {greeting}, {cleanName}
             </span>
             {profile?.unit_number && (
@@ -347,16 +351,16 @@ function ResidentShell({ children }: { children: ReactNode }) {
               variant="outline"
               size="sm"
               onClick={signOut}
-              className="h-8 rounded-full border-[#DFD9CA] bg-white px-3 text-xs font-medium text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] cursor-pointer shadow-2xs gap-1.5 shrink-0"
+              className="h-7 sm:h-8 rounded-full border-[#DFD9CA] bg-white px-2.5 sm:px-3 text-xs font-medium text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] cursor-pointer shadow-2xs gap-1.5 shrink-0"
             >
               <SignOut className="size-3.5 text-slate-500" />
-              <span>Sign Out</span>
+              <span className="hidden sm:inline">Sign Out</span>
             </Button>
           </div>
         </div>
 
-        <div className="mx-auto max-w-5xl overflow-x-auto px-2 pb-2">
-          <nav className="flex gap-1">
+        <div className="mx-auto max-w-5xl overflow-x-auto px-2 pb-2 scrollbar-none">
+          <nav className="flex gap-1 min-w-max">
             {residentNav.map((item) => {
               const active =
                 item.to === "/complaints"
@@ -379,7 +383,9 @@ function ResidentShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-5xl px-4 py-6">{children}</main>
+      <main className="mx-auto w-full max-w-5xl px-3 sm:px-4 py-4 sm:py-6 overflow-x-hidden">
+        {children}
+      </main>
     </div>
   );
 }

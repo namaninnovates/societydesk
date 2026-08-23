@@ -2,7 +2,7 @@
 
 SocietyDesk is a maintenance management system for residential apartment complexes and housing societies. It helps residents report repair problems, helps staff technicians fix them, and helps society management committees track everything in one place instead of messy group chats and paper registers.
 
-**Live Deployment:** [https://societydesk.vercel.app](https://societydesk.vercel.app)
+**Live Deployment:** [https://societydesk-omega.vercel.app](https://societydesk-omega.vercel.app)
 
 **Built with:** React 19, TanStack Start, Tailwind CSS, Neon PostgreSQL, JWT Auth, Resend Email, and Recharts.
 
