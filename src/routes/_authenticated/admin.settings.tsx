@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchOverdueThresholdsServerFn, updateOverdueThresholdServerFn } from "@/lib/complaints.functions";
+import {
+  fetchOverdueThresholdsServerFn,
+  updateOverdueThresholdServerFn,
+} from "@/lib/complaints.functions";
 import { CATEGORIES } from "@/lib/societydesk";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
@@ -100,7 +103,9 @@ function Settings() {
             </div>
             <Button
               variant="outline"
-              onClick={() => save.mutate({ category: r.category, days: Number(valueFor(r.category)) })}
+              onClick={() =>
+                save.mutate({ category: r.category, days: Number(valueFor(r.category)) })
+              }
             >
               Save
             </Button>

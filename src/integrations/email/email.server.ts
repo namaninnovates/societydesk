@@ -6,7 +6,7 @@ let _resend: Resend | undefined;
 
 function getResend(): Resend {
   if (!_resend) {
-    const apiKey = process.env['RESEND_API_KEY'];
+    const apiKey = process.env["RESEND_API_KEY"];
     if (!apiKey) {
       console.warn("[Email] RESEND_API_KEY not set — emails will be logged but not sent.");
     }
@@ -29,7 +29,8 @@ type StatusChangeEmailParams = {
 };
 
 export async function sendStatusChangeEmail(params: StatusChangeEmailParams) {
-  const { to, residentName, complaintTitle, complaintId, oldStatus, newStatus, note, appUrl } = params;
+  const { to, residentName, complaintTitle, complaintId, oldStatus, newStatus, note, appUrl } =
+    params;
 
   const statusLabels: Record<string, string> = {
     open: "Open",
@@ -66,8 +67,10 @@ export async function sendStatusChangeEmail(params: StatusChangeEmailParams) {
 </html>`;
 
   try {
-    if (!process.env['RESEND_API_KEY']) {
-      console.log(`[Email] (dry run) Status change email to ${to} — ${oldStatus} → ${newStatus} for "${complaintTitle}"`);
+    if (!process.env["RESEND_API_KEY"]) {
+      console.log(
+        `[Email] (dry run) Status change email to ${to} — ${oldStatus} → ${newStatus} for "${complaintTitle}"`,
+      );
       return { success: true, dryRun: true };
     }
     const result = await getResend().emails.send({
@@ -114,8 +117,10 @@ export async function sendImportantNoticeEmail(params: NoticeEmailParams) {
 </html>`;
 
   try {
-    if (!process.env['RESEND_API_KEY']) {
-      console.log(`[Email] (dry run) Important notice email to ${to.length} recipients — "${noticeTitle}"`);
+    if (!process.env["RESEND_API_KEY"]) {
+      console.log(
+        `[Email] (dry run) Important notice email to ${to.length} recipients — "${noticeTitle}"`,
+      );
       return { success: true, dryRun: true };
     }
 
@@ -136,7 +141,9 @@ export async function sendImportantNoticeEmail(params: NoticeEmailParams) {
         results.push({ to: recipient, success: false, error: err });
       }
     }
-    console.log(`[Email] Important notice emails sent: ${results.filter((r) => r.success).length}/${to.length}`);
+    console.log(
+      `[Email] Important notice emails sent: ${results.filter((r) => r.success).length}/${to.length}`,
+    );
     return { success: true, results };
   } catch (error) {
     console.error("[Email] Failed to send important notice emails:", error);

@@ -44,7 +44,11 @@ function Residents() {
         <h1 className="text-2xl font-bold">Residents</h1>
         <p className="text-sm text-muted-foreground">{rows.length} people</p>
       </div>
-      <Input placeholder="Search by name, block or unit…" value={q} onChange={(e) => setQ(e.target.value)} />
+      <Input
+        placeholder="Search by name, block or unit…"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+      />
 
       {isLoading ? (
         <Skeleton className="h-64 w-full rounded-xl" />

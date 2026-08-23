@@ -9,6 +9,7 @@ A full-stack maintenance complaint tracking platform for apartment/housing socie
 ## Features
 
 ### Resident
+
 - **Register & sign in** (email/password + Google OAuth via Supabase Auth)
 - **Raise complaints** with category, title, description, location, and up to 3 photos (client-side compressed)
 - **Track complaints** — filter by status/category, view full status history timeline, photos in lightbox
@@ -18,6 +19,7 @@ A full-stack maintenance complaint tracking platform for apartment/housing socie
 - **Email notifications** when complaint status changes
 
 ### Admin
+
 - **Dashboard** — stat tiles (total/open/in-progress/resolved/overdue), bar chart by category, pie chart by status, 30-day raised-vs-resolved trend, average resolution time, recurring issue watchlist
 - **Complaint management** — list + Kanban views, filters by category/status/priority/overdue, search, set priority (Low/Medium/High), change status with required note, view resident contact info
 - **Overdue detection** — per-category configurable thresholds (Admin → Settings), `recalculate_overdue()` function, overdue complaints auto-surface at the top with amber highlight
@@ -31,6 +33,7 @@ A full-stack maintenance complaint tracking platform for apartment/housing socie
 ## Quick Start
 
 ### Prerequisites
+
 - **Node.js** ≥ 20
 - A **Supabase** project (free tier works)
 - A **Neon** database (free tier works)
@@ -127,11 +130,13 @@ npx vite preview   # preview the production build
 ```
 
 ### Custom Types (ENUMs)
+
 - `app_role`: `resident`, `admin`
 - `complaint_status`: `open`, `in_progress`, `resolved`
 - `complaint_priority`: `low`, `medium`, `high`
 
 ### Row-Level Security
+
 - Residents can only read/write their own complaints and comments
 - Admins have full read/write access
 - Both roles can read notices; only admins can write notices and thresholds
@@ -145,12 +150,14 @@ The app uses the **Supabase client SDK** directly from the frontend for CRUD ope
 Server-side operations (email sending, admin user lookups) use **TanStack Start server functions** with the Supabase admin client.
 
 ### Key Server Functions
-| Function | Trigger | Description |
-|----------|---------|-------------|
-| `notifyStatusChange` | Admin changes complaint status | Sends branded HTML email to the affected resident |
-| `notifyImportantNotice` | Admin publishes important notice | Sends email to all registered residents |
+
+| Function                | Trigger                          | Description                                       |
+| ----------------------- | -------------------------------- | ------------------------------------------------- |
+| `notifyStatusChange`    | Admin changes complaint status   | Sends branded HTML email to the affected resident |
+| `notifyImportantNotice` | Admin publishes important notice | Sends email to all registered residents           |
 
 ### Storage
+
 - **Supabase Storage** bucket `complaint-photos` for uploaded images
 - Client-side image compression before upload (max 1400px, JPEG quality 0.75)
 - Public read access via Supabase storage policies

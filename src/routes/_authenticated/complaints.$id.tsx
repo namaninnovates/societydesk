@@ -11,7 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { fetchComments, fetchComplaint, fetchHistory, photoUrl } from "@/lib/queries";
-import { addComplaintCommentServerFn, addResolutionFeedbackServerFn } from "@/lib/complaints.functions";
+import {
+  addComplaintCommentServerFn,
+  addResolutionFeedbackServerFn,
+} from "@/lib/complaints.functions";
 import { STATUS_LABELS, daysOpen } from "@/lib/societydesk";
 import { cn } from "@/lib/utils";
 
@@ -106,8 +109,8 @@ function ComplaintDetail() {
             <p className="mt-1 text-sm text-muted-foreground">
               {c.category}
               {c.location ? ` · ${c.location}` : ""} · raised{" "}
-              {new Date(c.created_at).toLocaleDateString()} · {daysOpen(c.created_at, c.resolved_at)}
-              d
+              {new Date(c.created_at).toLocaleDateString()} ·{" "}
+              {daysOpen(c.created_at, c.resolved_at)}d
             </p>
           </div>
           <div className="flex gap-2">
@@ -234,7 +237,9 @@ function ComplaintDetail() {
 
       <Dialog open={!!lightbox} onOpenChange={(o) => !o && setLightbox(null)}>
         <DialogContent className="max-w-3xl">
-          {lightbox ? <img src={lightbox} alt="Complaint photo" className="w-full rounded-lg" /> : null}
+          {lightbox ? (
+            <img src={lightbox} alt="Complaint photo" className="w-full rounded-lg" />
+          ) : null}
         </DialogContent>
       </Dialog>
     </div>

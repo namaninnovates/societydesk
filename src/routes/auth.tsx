@@ -63,7 +63,10 @@ function AuthPage() {
     }
   }, [session, profile, navigate]);
 
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>, roleHint?: "admin" | "resident") => {
+  const handleSignIn = async (
+    e: React.FormEvent<HTMLFormElement>,
+    roleHint?: "admin" | "resident",
+  ) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const email = String(form.get("email") ?? "").trim();
@@ -73,7 +76,9 @@ function AuthPage() {
     try {
       const res = await signInServerFn({ data: { email, password } });
       setAuth(res.profile, res.token);
-      toast.success(roleHint === "admin" ? "Welcome back, Admin" : `Welcome back, ${res.profile.full_name}`);
+      toast.success(
+        roleHint === "admin" ? "Welcome back, Admin" : `Welcome back, ${res.profile.full_name}`,
+      );
       navigate({ to: res.profile.role === "admin" ? "/admin" : "/complaints", replace: true });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to sign in";
@@ -141,13 +146,22 @@ function AuthPage() {
         <div className="surface p-6 shadow-sm border border-[#DFD9CA] bg-white rounded-2xl">
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="grid w-full grid-cols-3 bg-[#F1EDE1] p-1 rounded-xl">
-              <TabsTrigger value="signin" className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]">
+              <TabsTrigger
+                value="signin"
+                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+              >
                 Resident
               </TabsTrigger>
-              <TabsTrigger value="signup" className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]">
+              <TabsTrigger
+                value="signup"
+                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+              >
                 Register Flat
               </TabsTrigger>
-              <TabsTrigger value="admin" className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]">
+              <TabsTrigger
+                value="admin"
+                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+              >
                 Admin
               </TabsTrigger>
             </TabsList>
@@ -173,7 +187,11 @@ function AuthPage() {
                   placeholder="••••••••"
                   required
                 />
-                <Button type="submit" className="w-full bg-[#1F3622] hover:bg-[#2E4E30]" disabled={busy}>
+                <Button
+                  type="submit"
+                  className="w-full bg-[#1F3622] hover:bg-[#2E4E30]"
+                  disabled={busy}
+                >
                   {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as Resident
                 </Button>
               </form>
@@ -183,14 +201,36 @@ function AuthPage() {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4 pt-4">
                 <Field label="Full name" name="full_name" placeholder="Rahul Sharma" required />
-                <Field label="Email address" name="email" type="email" placeholder="name@email.com" required />
-                <Field label="Create password" name="password" type="password" placeholder="At least 8 characters" required />
+                <Field
+                  label="Email address"
+                  name="email"
+                  type="email"
+                  placeholder="name@email.com"
+                  required
+                />
+                <Field
+                  label="Create password"
+                  name="password"
+                  type="password"
+                  placeholder="At least 8 characters"
+                  required
+                />
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Flat / Unit" name="unit_number" placeholder="B-1204" required />
                   <Field label="Block / Tower" name="block" placeholder="Tower B" required />
                 </div>
-                <Field label="Phone number" name="phone" type="tel" placeholder="+91 98765 43210" required />
-                <Button type="submit" className="w-full bg-[#1F3622] hover:bg-[#2E4E30]" disabled={busy}>
+                <Field
+                  label="Phone number"
+                  name="phone"
+                  type="tel"
+                  placeholder="+91 98765 43210"
+                  required
+                />
+                <Button
+                  type="submit"
+                  className="w-full bg-[#1F3622] hover:bg-[#2E4E30]"
+                  disabled={busy}
+                >
                   {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Register Flat
                 </Button>
               </form>
@@ -200,7 +240,8 @@ function AuthPage() {
             <TabsContent value="admin">
               <form onSubmit={(e) => handleSignIn(e, "admin")} className="space-y-4 pt-4">
                 <div className="rounded-lg bg-[#E8EFEA] border border-[#C2D6CA] p-2.5 text-xs text-[#1F3622]">
-                  <span className="font-bold">Admin Portal:</span> For society committee members & facility managers.
+                  <span className="font-bold">Admin Portal:</span> For society committee members &
+                  facility managers.
                 </div>
                 <Field
                   label="Admin Email"
@@ -218,7 +259,11 @@ function AuthPage() {
                   onChange={(e) => setAdminPassword(e.target.value)}
                   required
                 />
-                <Button type="submit" className="w-full bg-[#1F3622] text-white hover:bg-[#2E4E30]" disabled={busy}>
+                <Button
+                  type="submit"
+                  className="w-full bg-[#1F3622] text-white hover:bg-[#2E4E30]"
+                  disabled={busy}
+                >
                   {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as Admin
                 </Button>
               </form>

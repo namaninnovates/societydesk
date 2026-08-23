@@ -180,8 +180,8 @@ function SocietyDeskLanding() {
 
             <p className="mt-8 max-w-lg text-base leading-relaxed text-[#4A4D54] sm:text-lg">
               SocietyDesk helps residents report maintenance issues with photos and lets society
-              managers assign workers, track deadlines, and keep everyone informed through notices and
-              email updates.
+              managers assign workers, track deadlines, and keep everyone informed through notices
+              and email updates.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -365,7 +365,10 @@ function SocietyDeskLanding() {
       </main>
 
       {/* ── 3-STEP EXPLANATION ──────────────────────────────── */}
-      <section id="how-it-works" className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-16 px-6 sm:px-8">
+      <section
+        id="how-it-works"
+        className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-16 px-6 sm:px-8"
+      >
         <div className="mx-auto max-w-[1400px]">
           <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
             <div>
@@ -383,7 +386,9 @@ function SocietyDeskLanding() {
               <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
                 STEP 02
               </div>
-              <h3 className="mt-2 text-lg font-bold text-[#111215]">Admin Assigns & Sets Priority</h3>
+              <h3 className="mt-2 text-lg font-bold text-[#111215]">
+                Admin Assigns & Sets Priority
+              </h3>
               <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
                 The manager sets priority (Low, Medium, High), writes notes, and tracks due dates so
                 repairs are not forgotten.
@@ -421,8 +426,8 @@ function SocietyDeskLanding() {
               <Drop className="size-6 text-[#1F3622] mb-4" weight="fill" />
               <h3 className="font-bold text-[#111215]">Photos with Every Complaint</h3>
               <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                Add up to 3 photos of the leak, crack, or breakdown. Photos compress automatically on
-                your phone so uploads are fast.
+                Add up to 3 photos of the leak, crack, or breakdown. Photos compress automatically
+                on your phone so uploads are fast.
               </p>
             </div>
 
@@ -430,8 +435,8 @@ function SocietyDeskLanding() {
               <Stack className="size-6 text-[#1F3622] mb-4" weight="fill" />
               <h3 className="font-bold text-[#111215]">List and Board Views for Admins</h3>
               <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                Admins can view complaints in a clean list or drag-and-drop Kanban columns (Open,
-                In Progress, Resolved).
+                Admins can view complaints in a clean list or drag-and-drop Kanban columns (Open, In
+                Progress, Resolved).
               </p>
             </div>
 
@@ -457,8 +462,8 @@ function SocietyDeskLanding() {
               <ChartBar className="size-6 text-[#1F3622] mb-4" weight="fill" />
               <h3 className="font-bold text-[#111215]">Monthly Repair Reports</h3>
               <p className="mt-2 text-xs leading-relaxed text-[#5A5E68]">
-                See total complaints per category, average days to resolve, and watchlists for repeat
-                issues (e.g. lift breaking down 3+ times).
+                See total complaints per category, average days to resolve, and watchlists for
+                repeat issues (e.g. lift breaking down 3+ times).
               </p>
             </div>
 
@@ -475,7 +480,10 @@ function SocietyDeskLanding() {
       </section>
 
       {/* ── REPAIR DEADLINES SECTION ────────────────────────── */}
-      <section id="deadlines" className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-20 px-6 sm:px-8">
+      <section
+        id="deadlines"
+        className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-20 px-6 sm:px-8"
+      >
         <div className="mx-auto max-w-[1400px]">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 items-center">
             <div>
@@ -486,9 +494,9 @@ function SocietyDeskLanding() {
                 Set clear repair timelines. Avoid forgotten complaints.
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-[#5A5E68]">
-                You choose how many days each type of repair should take (for example: Lifts = 1 day,
-                Plumbing = 2 days, Cleaning = 4 days). Any complaint taking longer gets highlighted
-                in amber automatically.
+                You choose how many days each type of repair should take (for example: Lifts = 1
+                day, Plumbing = 2 days, Cleaning = 4 days). Any complaint taking longer gets
+                highlighted in amber automatically.
               </p>
               <div className="mt-6">
                 <Link

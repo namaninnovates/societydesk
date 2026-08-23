@@ -108,9 +108,10 @@ function NewComplaint() {
       setBusy(false);
       toast.success("Complaint raised");
       navigate({ to: "/complaints/$id", params: { id: res.id } });
-    } catch (err: any) {
+    } catch (err) {
       setBusy(false);
-      toast.error(err?.message ?? "Could not create complaint");
+      const msg = err instanceof Error ? err.message : "Could not create complaint";
+      toast.error(msg);
     }
   };
 
@@ -142,7 +143,12 @@ function NewComplaint() {
 
         <div className="space-y-1.5">
           <Label htmlFor="title">Title</Label>
-          <Input id="title" name="title" placeholder="Lift stuck between 4th and 5th" maxLength={120} />
+          <Input
+            id="title"
+            name="title"
+            placeholder="Lift stuck between 4th and 5th"
+            maxLength={120}
+          />
         </div>
 
         <div className="space-y-1.5">

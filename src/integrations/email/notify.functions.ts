@@ -41,7 +41,8 @@ export const notifyStatusChange = createServerFn({ method: "POST" })
       }
 
       const residentName = complaint.full_name ?? "Resident";
-      const appUrl = process.env['VITE_APP_URL'] || process.env['APP_URL'] || "http://localhost:8080";
+      const appUrl =
+        process.env["VITE_APP_URL"] || process.env["APP_URL"] || "http://localhost:8080";
 
       await sendStatusChangeEmail({
         to: email,
@@ -79,16 +80,15 @@ export const notifyImportantNotice = createServerFn({ method: "POST" })
         SELECT email FROM profiles WHERE role = 'resident' AND email IS NOT NULL
       `) as unknown as { email: string | null }[];
 
-      const emails = rows
-        .map((r) => r.email)
-        .filter((e): e is string => Boolean(e));
+      const emails = rows.map((r) => r.email).filter((e): e is string => Boolean(e));
 
       if (emails.length === 0) {
         console.log("[Email] No resident emails found, skipping notice email.");
         return { sent: false, count: 0 };
       }
 
-      const appUrl = process.env['VITE_APP_URL'] || process.env['APP_URL'] || "http://localhost:8080";
+      const appUrl =
+        process.env["VITE_APP_URL"] || process.env["APP_URL"] || "http://localhost:8080";
 
       await sendImportantNoticeEmail({
         to: emails,

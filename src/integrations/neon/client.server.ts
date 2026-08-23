@@ -4,7 +4,7 @@
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 
 function createNeonClient(): NeonQueryFunction<false, false> {
-  const databaseUrl = process.env['DATABASE_URL'];
+  const databaseUrl = process.env["DATABASE_URL"];
 
   if (!databaseUrl) {
     const message = "Missing DATABASE_URL environment variable. Please check your .env file.";
@@ -17,7 +17,9 @@ function createNeonClient(): NeonQueryFunction<false, false> {
 
 let _sql: NeonQueryFunction<false, false> | undefined;
 
-export const sql: NeonQueryFunction<false, false> = ((...args: Parameters<NeonQueryFunction<false, false>>) => {
+export const sql: NeonQueryFunction<false, false> = ((
+  ...args: Parameters<NeonQueryFunction<false, false>>
+) => {
   if (!_sql) {
     _sql = createNeonClient();
   }

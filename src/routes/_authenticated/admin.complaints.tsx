@@ -18,12 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { fetchComplaints, type ComplaintRow } from "@/lib/queries";
 import { updateComplaintStatusServerFn } from "@/lib/complaints.functions";
@@ -130,9 +125,15 @@ function AdminComplaints() {
     const header = "id,title,category,status,priority,overdue,created_at\n";
     const body = rows
       .map((r) =>
-        [r.id, `"${r.title.replace(/"/g, '""')}"`, r.category, r.status, r.priority, r.is_overdue, r.created_at].join(
-          ",",
-        ),
+        [
+          r.id,
+          `"${r.title.replace(/"/g, '""')}"`,
+          r.category,
+          r.status,
+          r.priority,
+          r.is_overdue,
+          r.created_at,
+        ].join(","),
       )
       .join("\n");
     const url = URL.createObjectURL(new Blob([header + body], { type: "text/csv" }));
@@ -145,7 +146,9 @@ function AdminComplaints() {
 
   const openDialog = (c: ComplaintRow) => {
     setActive(c);
-    setNextStatus(c.status === "open" ? "in_progress" : c.status === "in_progress" ? "resolved" : "open");
+    setNextStatus(
+      c.status === "open" ? "in_progress" : c.status === "in_progress" ? "resolved" : "open",
+    );
     setNote("");
   };
 
@@ -157,7 +160,11 @@ function AdminComplaints() {
           <p className="text-sm text-muted-foreground">{rows.length} shown</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setView(view === "list" ? "board" : "list")}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setView(view === "list" ? "board" : "list")}
+          >
             {view === "list" ? "Kanban view" : "List view"}
           </Button>
           <Button variant="outline" size="sm" onClick={exportCsv}>
@@ -169,25 +176,35 @@ function AdminComplaints() {
       <div className="surface grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-5">
         <Input placeholder="Search…" value={search} onChange={(e) => setSearch(e.target.value)} />
         <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectTrigger>
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All statuses</SelectItem>
             {(["open", "in_progress", "resolved"] as const).map((s) => (
-              <SelectItem key={s} value={s}>{STATUS_LABELS[s]}</SelectItem>
+              <SelectItem key={s} value={s}>
+                {STATUS_LABELS[s]}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
+          <SelectTrigger>
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All categories</SelectItem>
             {CATEGORIES.map((c) => (
-              <SelectItem key={c} value={c}>{c}</SelectItem>
+              <SelectItem key={c} value={c}>
+                {c}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <Select value={priority} onValueChange={setPriority}>
-          <SelectTrigger><SelectValue placeholder="Priority" /></SelectTrigger>
+          <SelectTrigger>
+            <SelectValue placeholder="Priority" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All priorities</SelectItem>
             <SelectItem value="low">Low</SelectItem>
@@ -225,7 +242,11 @@ function AdminComplaints() {
       ) : (
         <ul className="space-y-3">
           {rows.map((r) => (
-            <ComplaintCard key={r.id} row={r} onManage={() => openDialog(r)} wide
+            <ComplaintCard
+              key={r.id}
+              row={r}
+              onManage={() => openDialog(r)}
+              wide
               onPriority={(value) => setPriorityMut.mutate({ id: r.id, value })}
             />
           ))}
@@ -243,9 +264,13 @@ function AdminComplaints() {
                 <Label>Priority</Label>
                 <Select
                   value={active.priority}
-                  onValueChange={(v) => setPriorityMut.mutate({ id: active.id, value: v as Priority })}
+                  onValueChange={(v) =>
+                    setPriorityMut.mutate({ id: active.id, value: v as Priority })
+                  }
                 >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="low">Low</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
@@ -256,12 +281,16 @@ function AdminComplaints() {
               <div className="space-y-1.5">
                 <Label>{active.status === "resolved" ? "Reopen as" : "Change status to"}</Label>
                 <Select value={nextStatus} onValueChange={(v) => setNextStatus(v as Status)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {(["open", "in_progress", "resolved"] as const)
                       .filter((s) => s !== active.status)
                       .map((s) => (
-                        <SelectItem key={s} value={s}>{STATUS_LABELS[s]}</SelectItem>
+                        <SelectItem key={s} value={s}>
+                          {STATUS_LABELS[s]}
+                        </SelectItem>
                       ))}
                   </SelectContent>
                 </Select>
@@ -308,7 +337,9 @@ function ComplaintCard({
         row.is_overdue && "border border-warning/40 bg-warning-soft/40",
       )}
     >
-      <div className={cn("gap-3", wide ? "flex flex-wrap items-center justify-between" : "space-y-2")}>
+      <div
+        className={cn("gap-3", wide ? "flex flex-wrap items-center justify-between" : "space-y-2")}
+      >
         <div className="min-w-0">
           <Link
             to="/complaints/$id"
@@ -328,7 +359,9 @@ function ComplaintCard({
           <PriorityTag priority={row.priority} />
           {onPriority ? (
             <Select value={row.priority} onValueChange={(v) => onPriority(v as Priority)}>
-              <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-8 w-28 text-xs">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="low">Low</SelectItem>
                 <SelectItem value="medium">Medium</SelectItem>

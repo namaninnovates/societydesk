@@ -23,8 +23,8 @@ export function BrandMark({
         variant === "sidebar"
           ? "text-[#EDF3EA]"
           : variant === "mono"
-          ? "text-current"
-          : "text-[#1F3622]",
+            ? "text-current"
+            : "text-[#1F3622]",
         className,
       )}
       viewBox="0 0 32 32"
@@ -53,8 +53,8 @@ export function BrandLogo({
           variant === "sidebar"
             ? "text-white"
             : variant === "footer"
-            ? "text-slate-900"
-            : "text-[#111215]",
+              ? "text-slate-900"
+              : "text-[#111215]",
           textClassName,
         )}
       >

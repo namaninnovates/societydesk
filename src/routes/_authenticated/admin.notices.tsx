@@ -98,18 +98,31 @@ function AdminNotices() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Notice Board</h1>
-        <p className="text-sm text-muted-foreground">Post announcements visible to every resident.</p>
+        <p className="text-sm text-muted-foreground">
+          Post announcements visible to every resident.
+        </p>
       </div>
 
       <div className="surface space-y-4 p-5">
         <h2 className="text-base font-semibold">New notice</h2>
         <div className="space-y-1.5">
           <Label htmlFor="title">Title</Label>
-          <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} />
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            maxLength={120}
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="body">Body</Label>
-          <Textarea id="body" rows={5} value={body} onChange={(e) => setBody(e.target.value)} maxLength={4000} />
+          <Textarea
+            id="body"
+            rows={5}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            maxLength={4000}
+          />
         </div>
         <div className="flex items-center gap-3">
           <Switch id="important" checked={important} onCheckedChange={setImportant} />
@@ -124,7 +137,10 @@ function AdminNotices() {
         {(data ?? []).map((n) => (
           <li
             key={n.id}
-            className={cn("surface p-5", n.is_important && "border border-warning/40 bg-warning-soft/50")}
+            className={cn(
+              "surface p-5",
+              n.is_important && "border border-warning/40 bg-warning-soft/50",
+            )}
           >
             <div className="flex items-start justify-between gap-3">
               <h2 className="text-base font-semibold">{n.title}</h2>

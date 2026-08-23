@@ -144,7 +144,12 @@ function AdminDashboard() {
   if (isLoading) return <Skeleton className="h-96 w-full rounded-xl" />;
 
   const stats = [
-    { label: "Total Complaints", value: rows.length, icon: Tray, tone: "border-[#DFD9CA] bg-white" },
+    {
+      label: "Total Complaints",
+      value: rows.length,
+      icon: Tray,
+      tone: "border-[#DFD9CA] bg-white",
+    },
     {
       label: "Open Tickets",
       value: rows.filter((r) => r.status === "open").length,
@@ -233,8 +238,11 @@ function AdminDashboard() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#111215]">Society Dashboard</h1>
           <p className="text-sm text-muted-foreground">
-            Average resolution time: <span className="font-semibold text-slate-900">{avgResolution} days</span>
-            {hasActiveFilters ? ` · Showing ${rows.length} of ${rawRows.length} filtered complaints` : ""}
+            Average resolution time:{" "}
+            <span className="font-semibold text-slate-900">{avgResolution} days</span>
+            {hasActiveFilters
+              ? ` · Showing ${rows.length} of ${rawRows.length} filtered complaints`
+              : ""}
           </p>
         </div>
       </div>

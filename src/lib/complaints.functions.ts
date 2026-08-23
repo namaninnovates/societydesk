@@ -32,6 +32,38 @@ export type ComplaintQueryResult = {
   complaint_photos: { id: string; storage_path: string }[];
 };
 
+type ComplaintDbRow = Omit<ComplaintQueryResult, "created_at" | "resolved_at"> & {
+  created_at: unknown;
+  resolved_at: unknown;
+};
+
+type HistoryDbRow = {
+  id: string;
+  old_status: string;
+  new_status: string;
+  note: string | null;
+  created_at: unknown;
+  actor_id: string | null;
+  profiles: { full_name: string; role: string } | null;
+};
+
+type CommentDbRow = {
+  id: string;
+  comment: string;
+  created_at: unknown;
+  author_id: string;
+  profiles: { full_name: string; role: string } | null;
+};
+
+type NoticeDbRow = {
+  id: string;
+  title: string;
+  body: string;
+  is_important: boolean;
+  created_at: unknown;
+  profiles: { full_name: string } | null;
+};
+
 function toIso(val: unknown): string {
   if (!val) return new Date().toISOString();
   if (typeof val === "string") return val;
@@ -49,14 +81,18 @@ function toIsoOrNull(val: unknown): string | null {
 // ── 1. FETCH COMPLAINTS (WITH FILTERS) ─────────────────────────
 export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
   .validator(
-    (d: {
-      residentId?: string | undefined;
-      status?: string | undefined;
-      category?: string | undefined;
-      priority?: string | undefined;
-      block?: string | undefined;
-      search?: string | undefined;
-    } | undefined) => d,
+    (
+      d:
+        | {
+            residentId?: string | undefined;
+            status?: string | undefined;
+            category?: string | undefined;
+            priority?: string | undefined;
+            block?: string | undefined;
+            search?: string | undefined;
+          }
+        | undefined,
+    ) => d,
   )
   .handler(async ({ data }) => {
     const sql = getSql();
@@ -90,7 +126,7 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
       FROM complaints c
       LEFT JOIN profiles p ON p.id = c.resident_id
       ORDER BY c.is_overdue DESC, c.created_at DESC
-    `) as unknown as any[];
+    `) as unknown as ComplaintDbRow[];
 
     let result = rows;
     if (data?.residentId) {
@@ -104,9 +140,7 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
       }
     }
     if (data?.category && data.category !== "all") {
-      result = result.filter(
-        (r) => r.category.toLowerCase() === data.category?.toLowerCase(),
-      );
+      result = result.filter((r) => r.category.toLowerCase() === data.category?.toLowerCase());
     }
     if (data?.priority && data.priority !== "all") {
       result = result.filter((r) => r.priority === data.priority);
@@ -173,7 +207,7 @@ export const fetchComplaintByIdServerFn = createServerFn({ method: "GET" })
       LEFT JOIN profiles p ON p.id = c.resident_id
       WHERE c.id = ${data.id}
       LIMIT 1
-    `) as unknown as any[];
+    `) as unknown as ComplaintDbRow[];
     if (!rows[0]) return null;
     const r = rows[0];
     return {
@@ -202,7 +236,7 @@ export const fetchComplaintHistoryServerFn = createServerFn({ method: "GET" })
       WHERE h.complaint_id = ${data.complaintId}
       ORDER BY h.created_at ASC
     `;
-    return rows.map((r: any) => ({
+    return (rows as unknown as HistoryDbRow[]).map((r) => ({
       ...r,
       created_at: toIso(r.created_at),
     }));
@@ -225,7 +259,7 @@ export const fetchComplaintCommentsServerFn = createServerFn({ method: "GET" })
       WHERE c.complaint_id = ${data.complaintId}
       ORDER BY c.created_at ASC
     `;
-    return rows.map((r: any) => ({
+    return (rows as unknown as CommentDbRow[]).map((r) => ({
       ...r,
       created_at: toIso(r.created_at),
     }));
@@ -233,13 +267,7 @@ export const fetchComplaintCommentsServerFn = createServerFn({ method: "GET" })
 
 // ── 5. ADD COMPLAINT COMMENT ───────────────────────────────────
 export const addComplaintCommentServerFn = createServerFn({ method: "POST" })
-  .validator(
-    (d: {
-      complaintId: string;
-      authorId: string;
-      comment: string;
-    }) => d,
-  )
+  .validator((d: { complaintId: string; authorId: string; comment: string }) => d)
   .handler(async ({ data }) => {
     const sql = getSql();
     const rows = await sql`
@@ -252,13 +280,7 @@ export const addComplaintCommentServerFn = createServerFn({ method: "POST" })
 
 // ── 6. ADD RESOLUTION FEEDBACK ─────────────────────────────────
 export const addResolutionFeedbackServerFn = createServerFn({ method: "POST" })
-  .validator(
-    (d: {
-      complaintId: string;
-      rating: number;
-      comment?: string | undefined;
-    }) => d,
-  )
+  .validator((d: { complaintId: string; rating: number; comment?: string | undefined }) => d)
   .handler(async ({ data }) => {
     const sql = getSql();
     const rows = await sql`
@@ -363,10 +385,9 @@ export const createComplaintServerFn = createServerFn({ method: "POST" })
   });
 
 // ── 9. NOTICES (FETCH, CREATE, DELETE) ─────────────────────────
-export const fetchNoticesServerFn = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const sql = getSql();
-    const rows = await sql`
+export const fetchNoticesServerFn = createServerFn({ method: "GET" }).handler(async () => {
+  const sql = getSql();
+  const rows = await sql`
       SELECT 
         n.id,
         n.title,
@@ -378,22 +399,14 @@ export const fetchNoticesServerFn = createServerFn({ method: "GET" }).handler(
       LEFT JOIN profiles p ON p.id = n.author_id
       ORDER BY n.is_important DESC, n.created_at DESC
     `;
-    return rows.map((r: any) => ({
-      ...r,
-      created_at: toIso(r.created_at),
-    }));
-  },
-);
+  return (rows as unknown as NoticeDbRow[]).map((r) => ({
+    ...r,
+    created_at: toIso(r.created_at),
+  }));
+});
 
 export const createNoticeServerFn = createServerFn({ method: "POST" })
-  .validator(
-    (d: {
-      authorId: string;
-      title: string;
-      body: string;
-      isImportant: boolean;
-    }) => d,
-  )
+  .validator((d: { authorId: string; title: string; body: string; isImportant: boolean }) => d)
   .handler(async ({ data }) => {
     const sql = getSql();
     const rows = await sql`

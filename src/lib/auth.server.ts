@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 
 const JWT_SECRET_STRING =
-  process.env['JWT_SECRET'] || "societydesk_jwt_super_secret_key_2026_production_safe_token";
+  process.env["JWT_SECRET"] || "societydesk_jwt_super_secret_key_2026_production_safe_token";
 const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STRING);
 
 export async function hashPassword(password: string): Promise<string> {
@@ -45,11 +45,11 @@ export async function createJwtToken(user: TokenPayload): Promise<string> {
 export async function verifyJwtToken(token: string): Promise<TokenPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    if (!payload.sub || !payload['email'] || !payload['role']) return null;
+    if (!payload.sub || !payload["email"] || !payload["role"]) return null;
     return {
       id: payload.sub,
-      email: String(payload['email']),
-      role: payload['role'] as "admin" | "resident",
+      email: String(payload["email"]),
+      role: payload["role"] as "admin" | "resident",
     };
   } catch {
     return null;

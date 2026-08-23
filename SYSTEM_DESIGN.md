@@ -1,6 +1,7 @@
 # SocietyDesk — System Design Document
 
 ## 1. Executive Summary & Problem Context
+
 Residential societies handle dozens of maintenance complaints weekly across plumbing, electrical, elevators, housekeeping, and common infrastructure. Without a centralized tracking platform, issues are lost in chat threads, SLAs are breached without visibility, admins lack historical analytics, and residents face uncertainty regarding fix timelines.
 
 **SocietyDesk** provides a multi-tenant-ready, role-based maintenance management platform. It pairs a mobile-first resident portal for rapid photo-assisted issue filing with an admin triage console featuring live Kanban tracking, automated overdue SLA calculation, broadcast notice boards, and transactional email updates.
@@ -32,6 +33,7 @@ SocietyDesk is built on a modern full-stack TypeScript architecture:
 ```
 
 ### Key Architectural Layers:
+
 1. **Frontend / UI**: Single-page application with SSR support via TanStack Start. Client state is cached using `@tanstack/react-query` with optimistic cache invalidation.
 2. **Data & Auth Access**: Client queries interact with PostgreSQL via `@supabase/supabase-js` governed strictly by database-level **Row-Level Security (RLS)** policies.
 3. **Serverless Database & Storage**: Neon PostgreSQL database and Supabase Auth/Storage. Photos undergo client-side canvas compression (JPEG, max 1400px, 0.75 quality) before upload to reduce bandwidth and storage overhead.
@@ -61,6 +63,7 @@ Complaint turnaround is enforced via SLA thresholds:
 $$\text{is\_overdue} = (\text{status} \neq \text{'resolved'}) \land (\text{now}() - \text{created\_at} > \text{COALESCE}(\text{threshold}_{\text{cat}}, \text{threshold}_{\text{global}}, 3 \text{ days}))$$
 
 ### Implementation Mechanics:
+
 - An administrative settings interface enables dynamic adjustment of SLA day counts per category (e.g., Security = 1 day, Housekeeping = 5 days).
 - A stored PL/pgSQL function (`recalculate_overdue()`) scans open tickets against thresholds and updates `is_overdue`.
 - Overdue tickets automatically sort to the top of triage views and trigger amber warning visual indicators across list and Kanban boards.
