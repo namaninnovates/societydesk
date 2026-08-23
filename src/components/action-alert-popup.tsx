@@ -121,7 +121,7 @@ export function ActionAlertPopup() {
                 : "text-[#5A5E68] hover:text-[#111215]",
             )}
           >
-            <span>Overdue SLA</span>
+            <span>Overdue Deadlines</span>
             <span
               className={cn(
                 "rounded-full px-1.5 py-0.2 text-[10px]",
@@ -141,7 +141,7 @@ export function ActionAlertPopup() {
             <div className="py-7 text-center text-xs text-muted-foreground">
               {tab === "unassigned"
                 ? "All active complaints are assigned."
-                : "No overdue complaints. All SLAs on track."}
+                : "No overdue complaints. All deadlines on track."}
             </div>
           ) : (
             activeList.slice(0, 5).map((c) => {

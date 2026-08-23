@@ -210,7 +210,7 @@ export function ComplaintsTableSkeleton({ count = 5 }: { count?: number }) {
           <div>
             <p className="text-xs font-bold text-[#111215]">Fetching Active Complaints...</p>
             <p className="text-[10px] text-muted-foreground">
-              Checking resolution SLA timelines and assignments
+              Checking resolution deadlines and staff assignments
             </p>
           </div>
         </div>

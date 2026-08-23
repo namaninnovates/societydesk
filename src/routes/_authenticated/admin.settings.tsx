@@ -26,10 +26,16 @@ import { SocietyMaintenanceLoader } from "@/components/society-loader";
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   head: () => ({
     meta: [
-      { title: "SLA & Settings — SocietyDesk" },
-      { name: "description", content: "Configure overdue thresholds per category." },
-      { property: "og:title", content: "SLA & Settings — SocietyDesk" },
-      { property: "og:description", content: "Society-level SocietyDesk configuration." },
+      { title: "Resolution Deadlines — SocietyDesk" },
+      {
+        name: "description",
+        content: "Configure overdue thresholds and target resolution deadlines per category.",
+      },
+      { property: "og:title", content: "Resolution Deadlines — SocietyDesk" },
+      {
+        property: "og:description",
+        content: "Society-level complaint resolution deadlines configuration.",
+      },
     ],
   }),
   component: Settings,
@@ -50,36 +56,34 @@ function Settings() {
   const [drafts, setDrafts] = useState<Record<string, number>>({});
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Initialize drafts when server data arrives
+  // Sync loaded thresholds into local draft state
   useEffect(() => {
     if (data) {
-      const initial: Record<string, number> = {};
-      const globalRow = data.find((t) => !t.category || t.category === "__global");
-      initial["__global"] = globalRow ? Number(globalRow.days) : 3;
-
-      for (const cat of CATEGORIES) {
-        const row = data.find((t) => t.category?.toLowerCase() === cat.toLowerCase());
-        if (row) {
-          initial[cat] = Number(row.days);
+      const next: Record<string, number> = {};
+      for (const t of data) {
+        if (t.category === null || t.category === "__global") {
+          next["__global"] = Number(t.days);
+        } else {
+          next[t.category] = Number(t.days);
         }
       }
-      setDrafts(initial);
+      setDrafts(next);
       setHasChanges(false);
     }
   }, [data]);
 
   const globalDefault = drafts["__global"] ?? 3;
 
-  const setDays = (key: string, days: number) => {
-    const clamped = Math.max(1, Math.min(90, days));
-    setDrafts((prev) => ({ ...prev, [key]: clamped }));
+  const setDays = (categoryKey: string, val: number) => {
+    const clamped = Math.max(1, Math.min(30, val));
+    setDrafts((prev) => ({ ...prev, [categoryKey]: clamped }));
     setHasChanges(true);
   };
 
-  const resetToDefault = (key: string) => {
+  const resetToDefault = (cat: string) => {
     setDrafts((prev) => {
       const next = { ...prev };
-      delete next[key];
+      delete next[cat];
       return next;
     });
     setHasChanges(true);
@@ -103,7 +107,7 @@ function Settings() {
       queryClient.invalidateQueries({ queryKey: ["thresholds"] });
       queryClient.invalidateQueries({ queryKey: ["complaints"] });
       setHasChanges(false);
-      toast.success("All SLA threshold settings saved successfully");
+      toast.success("Resolution deadline settings saved successfully");
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -122,9 +126,7 @@ function Settings() {
     return <SocietyMaintenanceLoader fullScreen text="Verifying admin permissions..." />;
   if (!profile || !isAdmin) return null;
   if (isLoading && !data)
-    return (
-      <SocietyMaintenanceLoader fullScreen text="Loading SLA thresholds & society settings..." />
-    );
+    return <SocietyMaintenanceLoader fullScreen text="Loading resolution deadline settings..." />;
 
   const customCount = CATEGORIES.filter((c) => drafts[c] !== undefined).length;
 
@@ -134,7 +136,7 @@ function Settings() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-[#111215] sm:text-2xl">
-            SLA & Resolution Settings
+            Resolution Deadlines & Settings
           </h1>
           <p className="text-xs text-muted-foreground">
             Set target deadlines for maintenance issues before automated overdue alerts trigger.
@@ -175,7 +177,7 @@ function Settings() {
 
       {/* ── NO-SCROLL COMPACT 2-COLUMN DASHBOARD ──────────────── */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-        {/* LEFT COLUMN: Global Default SLA + Status (4 cols) */}
+        {/* LEFT COLUMN: Global Default Policy + Status (4 cols) */}
         <div className="space-y-3 lg:col-span-4">
           {/* Global Default Card */}
           <div className="rounded-2xl border border-[#DFD9CA] bg-white p-4 shadow-xs">
@@ -196,7 +198,7 @@ function Settings() {
 
             {/* Stepper Display */}
             <div className="mt-3 flex items-center justify-between rounded-xl bg-[#F6F4ED] p-2 border border-[#E9E4D7]">
-              <span className="text-xs font-semibold text-[#4A4D54]">Target SLA:</span>
+              <span className="text-xs font-semibold text-[#4A4D54]">Target Deadline:</span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setDays("__global", globalDefault - 1)}
