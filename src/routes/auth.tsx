@@ -13,7 +13,7 @@ import { signInServerFn, signUpServerFn } from "@/lib/auth.functions";
 import { BrandLogo } from "@/components/brand";
 
 const authSearchSchema = z.object({
-  mode: z.enum(["signin", "signup", "admin"]).optional(),
+  mode: z.enum(["signin", "signup", "admin", "staff"]).optional(),
 });
 
 export const Route = createFileRoute("/auth")({
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign In / Register — SocietyDesk" },
-      { name: "description", content: "Sign in as admin or register as resident on SocietyDesk." },
+      { name: "description", content: "Sign in as admin, staff, or resident on SocietyDesk." },
       { property: "og:title", content: "Sign In / Register — SocietyDesk" },
       { property: "og:description", content: "Access your society maintenance portal." },
     ],
@@ -46,8 +46,10 @@ function AuthPage() {
   const [tab, setTab] = useState<string>(search.mode || "signin");
 
   // Controlled form states for 1-click filling
-  const [adminEmail, setAdminEmail] = useState("admin@societydesk.com");
+  const [adminEmail, setAdminEmail] = useState("naman@societydesk.com");
   const [adminPassword, setAdminPassword] = useState("SocietyDesk@2026!");
+  const [staffEmail, setStaffEmail] = useState("ramesh.staff@societydesk.com");
+  const [staffPassword, setStaffPassword] = useState("Staff@2026!");
   const [residentEmail, setResidentEmail] = useState("resident@societydesk.com");
   const [residentPassword, setResidentPassword] = useState("Resident@2026!");
 
@@ -80,7 +82,7 @@ function AuthPage() {
       setAuth(res.profile, res.token);
       toast.success(
         res.profile.role === "admin"
-          ? "Welcome back, Admin"
+          ? `Welcome back, ${res.profile.full_name} (Admin)`
           : res.profile.role === "staff"
             ? `Welcome back, ${res.profile.full_name} (Staff)`
             : `Welcome back, ${res.profile.full_name}`,
@@ -133,18 +135,46 @@ function AuthPage() {
     }
   };
 
-  const fillAdmin = () => {
+  const fillSuperAdmin = () => {
     setTab("admin");
-    setAdminEmail("admin@societydesk.com");
+    setAdminEmail("naman@societydesk.com");
     setAdminPassword("SocietyDesk@2026!");
-    toast.info("Admin credentials loaded");
+    toast.info("Naman Gupta (Super Admin) loaded");
   };
 
-  const fillResident = () => {
+  const fillAdmin2 = () => {
+    setTab("admin");
+    setAdminEmail("rohit.admin@societydesk.com");
+    setAdminPassword("SocietyDesk@2026!");
+    toast.info("Rohit Khanna (Admin) loaded");
+  };
+
+  const fillStaffElectrician = () => {
+    setTab("staff");
+    setStaffEmail("ramesh.staff@societydesk.com");
+    setStaffPassword("Staff@2026!");
+    toast.info("Ramesh Kumar (Staff - Electrician) loaded");
+  };
+
+  const fillStaffPlumber = () => {
+    setTab("staff");
+    setStaffEmail("suresh.staff@societydesk.com");
+    setStaffPassword("Staff@2026!");
+    toast.info("Suresh Sharma (Staff - Plumber) loaded");
+  };
+
+  const fillResidentPriya = () => {
     setTab("signin");
     setResidentEmail("resident@societydesk.com");
     setResidentPassword("Resident@2026!");
-    toast.info("Demo Resident credentials loaded");
+    toast.info("Priya Sharma (Resident) loaded");
+  };
+
+  const fillResidentVikram = () => {
+    setTab("signin");
+    setResidentEmail("vikram.malhotra@societydesk.com");
+    setResidentPassword("Resident@2026!");
+    toast.info("Vikram Malhotra (Resident) loaded");
   };
 
   return (
@@ -157,24 +187,30 @@ function AuthPage() {
 
         <div className="surface p-6 shadow-sm border border-[#DFD9CA] bg-white rounded-2xl">
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="grid w-full grid-cols-3 bg-[#F1EDE1] p-1 rounded-xl">
+            <TabsList className="grid w-full grid-cols-4 bg-[#F1EDE1] p-1 rounded-xl">
               <TabsTrigger
                 value="signin"
-                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+                className="text-[11px] sm:text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
               >
                 Resident
               </TabsTrigger>
               <TabsTrigger
-                value="signup"
-                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+                value="staff"
+                className="text-[11px] sm:text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
               >
-                Register Flat
+                Staff
               </TabsTrigger>
               <TabsTrigger
                 value="admin"
-                className="text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+                className="text-[11px] sm:text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
               >
                 Admin
+              </TabsTrigger>
+              <TabsTrigger
+                value="signup"
+                className="text-[11px] sm:text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#111215]"
+              >
+                Register
               </TabsTrigger>
             </TabsList>
 
@@ -182,7 +218,7 @@ function AuthPage() {
             <TabsContent value="signin">
               <form onSubmit={(e) => handleSignIn(e, "resident")} className="space-y-4 pt-4">
                 <Field
-                  label="Email address"
+                  label="Resident Email"
                   name="email"
                   type="email"
                   value={residentEmail}
@@ -205,6 +241,74 @@ function AuthPage() {
                   disabled={busy}
                 >
                   {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as Resident
+                </Button>
+              </form>
+            </TabsContent>
+
+            {/* STAFF SIGN IN */}
+            <TabsContent value="staff">
+              <form onSubmit={(e) => handleSignIn(e, "staff")} className="space-y-4 pt-4">
+                <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-2.5 text-xs text-emerald-800">
+                  <span className="font-bold">Staff Technician Portal:</span> For electricians,
+                  plumbers, security, and maintenance crew.
+                </div>
+                <Field
+                  label="Staff Email"
+                  name="email"
+                  type="email"
+                  value={staffEmail}
+                  onChange={(e) => setStaffEmail(e.target.value)}
+                  placeholder="ramesh.staff@societydesk.com"
+                  required
+                />
+                <Field
+                  label="Staff Password"
+                  name="password"
+                  type="password"
+                  value={staffPassword}
+                  onChange={(e) => setStaffPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+                <Button
+                  type="submit"
+                  className="w-full bg-[#1F3622] hover:bg-[#2E4E30]"
+                  disabled={busy}
+                >
+                  {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as Staff
+                </Button>
+              </form>
+            </TabsContent>
+
+            {/* ADMIN SIGN IN */}
+            <TabsContent value="admin">
+              <form onSubmit={(e) => handleSignIn(e, "admin")} className="space-y-4 pt-4">
+                <div className="rounded-lg bg-[#E8EFEA] border border-[#C2D6CA] p-2.5 text-xs text-[#1F3622]">
+                  <span className="font-bold">Admin Portal:</span> For Naman Gupta (Super Admin) &
+                  society management committee.
+                </div>
+                <Field
+                  label="Admin Email"
+                  name="email"
+                  type="email"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  required
+                />
+                <Field
+                  label="Admin Password"
+                  name="password"
+                  type="password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  required
+                />
+                <Button
+                  type="submit"
+                  className="w-full bg-[#1F3622] text-white hover:bg-[#2E4E30]"
+                  disabled={busy}
+                >
+                  {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as Admin
                 </Button>
               </form>
             </TabsContent>
@@ -247,64 +351,86 @@ function AuthPage() {
                 </Button>
               </form>
             </TabsContent>
-
-            {/* ADMIN SIGN IN */}
-            <TabsContent value="admin">
-              <form onSubmit={(e) => handleSignIn(e, "admin")} className="space-y-4 pt-4">
-                <div className="rounded-lg bg-[#E8EFEA] border border-[#C2D6CA] p-2.5 text-xs text-[#1F3622]">
-                  <span className="font-bold">Admin Portal:</span> For society committee members &
-                  facility managers.
-                </div>
-                <Field
-                  label="Admin Email"
-                  name="email"
-                  type="email"
-                  value={adminEmail}
-                  onChange={(e) => setAdminEmail(e.target.value)}
-                  required
-                />
-                <Field
-                  label="Admin Password"
-                  name="password"
-                  type="password"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  required
-                />
-                <Button
-                  type="submit"
-                  className="w-full bg-[#1F3622] text-white hover:bg-[#2E4E30]"
-                  disabled={busy}
-                >
-                  {busy ? <SpinnerGap className="size-4 animate-spin" /> : null} Sign in as Admin
-                </Button>
-              </form>
-            </TabsContent>
           </Tabs>
 
           {/* Quick Demo Credentials Bar */}
-          <div className="mt-6 rounded-xl border border-dashed border-[#DFD9CA] bg-[#FAF8F2] p-3 text-xs">
+          <div className="mt-6 rounded-xl border border-dashed border-[#DFD9CA] bg-[#FAF8F2] p-3 text-xs space-y-2.5">
             <div className="flex items-center gap-1.5 font-semibold text-slate-700">
               <Key className="size-3.5 text-[#1F3622]" />
-              Quick Demo Logins:
+              Quick 1-Click Demo Accounts:
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={fillAdmin}
-                className="flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2.5 py-1 font-medium text-slate-800 hover:bg-slate-50 shadow-2xs cursor-pointer"
-              >
-                <ShieldCheck className="size-3 text-emerald-600" />
-                Fill Admin (admin@societydesk.com)
-              </button>
-              <button
-                type="button"
-                onClick={fillResident}
-                className="flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2.5 py-1 font-medium text-slate-800 hover:bg-slate-50 shadow-2xs cursor-pointer"
-              >
-                <UserCheck className="size-3 text-blue-600" />
-                Fill Resident
-              </button>
+
+            {/* Super Admin & Admins */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">
+                👑 Super Admin & Committee (2)
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={fillSuperAdmin}
+                  className="flex items-center gap-1 rounded-md bg-white border border-[#DFD9CA] px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:text-[#1F3622] transition-colors cursor-pointer"
+                >
+                  <ShieldCheck className="size-3 text-emerald-700" />
+                  Naman Gupta (Super Admin)
+                </button>
+                <button
+                  type="button"
+                  onClick={fillAdmin2}
+                  className="flex items-center gap-1 rounded-md bg-white border border-[#DFD9CA] px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:text-[#1F3622] transition-colors cursor-pointer"
+                >
+                  <ShieldCheck className="size-3 text-emerald-700" />
+                  Rohit Khanna (Admin)
+                </button>
+              </div>
+            </div>
+
+            {/* 5 Staff Technicians */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">
+                🔧 Staff Workers (5)
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={fillStaffElectrician}
+                  className="flex items-center gap-1 rounded-md bg-white border border-emerald-200 px-2 py-1 text-[11px] font-medium text-emerald-900 hover:bg-emerald-50 transition-colors cursor-pointer"
+                >
+                  Ramesh Kumar (Electrician)
+                </button>
+                <button
+                  type="button"
+                  onClick={fillStaffPlumber}
+                  className="flex items-center gap-1 rounded-md bg-white border border-emerald-200 px-2 py-1 text-[11px] font-medium text-emerald-900 hover:bg-emerald-50 transition-colors cursor-pointer"
+                >
+                  Suresh Sharma (Plumber)
+                </button>
+              </div>
+            </div>
+
+            {/* Residents */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">
+                🏠 Residents
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={fillResidentPriya}
+                  className="flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  <UserCheck className="size-3 text-blue-600" />
+                  Priya Sharma (Flat 402)
+                </button>
+                <button
+                  type="button"
+                  onClick={fillResidentVikram}
+                  className="flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  <UserCheck className="size-3 text-blue-600" />
+                  Vikram Malhotra (Flat 801)
+                </button>
+              </div>
             </div>
           </div>
         </div>
