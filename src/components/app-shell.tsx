@@ -19,6 +19,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand";
 import { SocietyMaintenanceLoader } from "@/components/society-loader";
+import { ActionAlertPopup } from "@/components/action-alert-popup";
 
 const adminNav = [
   { to: "/admin", label: "Dashboard", icon: SquaresFour },
@@ -81,9 +82,18 @@ export function AppShell({ children }: { children: ReactNode }) {
     return null;
   }
 
-  if (isAdmin) return <AdminShell>{children}</AdminShell>;
-  if (isStaff) return <StaffShell>{children}</StaffShell>;
-  return <ResidentShell>{children}</ResidentShell>;
+  return (
+    <>
+      {isAdmin ? (
+        <AdminShell>{children}</AdminShell>
+      ) : isStaff ? (
+        <StaffShell>{children}</StaffShell>
+      ) : (
+        <ResidentShell>{children}</ResidentShell>
+      )}
+      <ActionAlertPopup />
+    </>
+  );
 }
 
 function AdminShell({ children }: { children: ReactNode }) {
