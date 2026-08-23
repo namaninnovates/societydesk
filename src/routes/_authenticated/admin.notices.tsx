@@ -35,9 +35,13 @@ const schema = z.object({
 });
 
 function AdminNotices() {
-  const { profile } = useAuth();
+  const { profile, isAdmin, profileLoading } = useAuth();
   const queryClient = useQueryClient();
-  const { data } = useQuery({ queryKey: ["notices"], queryFn: fetchNotices });
+  const { data } = useQuery({
+    queryKey: ["notices"],
+    queryFn: fetchNotices,
+    enabled: Boolean(isAdmin && profile?.role === "admin"),
+  });
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [important, setImportant] = useState(false);
@@ -93,6 +97,9 @@ function AdminNotices() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  if (profileLoading) return <div className="h-64 w-full animate-pulse rounded-xl bg-slate-200" />;
+  if (!profile || !isAdmin) return null;
 
   return (
     <div className="space-y-6">

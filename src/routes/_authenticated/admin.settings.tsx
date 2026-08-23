@@ -12,6 +12,7 @@ import {
   updateOverdueThresholdServerFn,
 } from "@/lib/complaints.functions";
 import { CATEGORIES } from "@/lib/societydesk";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   head: () => ({
@@ -26,13 +27,16 @@ export const Route = createFileRoute("/_authenticated/admin/settings")({
 });
 
 function Settings() {
+  const { profile, isAdmin, profileLoading } = useAuth();
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["thresholds"],
     queryFn: async () => {
       return await fetchOverdueThresholdsServerFn();
     },
+    enabled: Boolean(isAdmin && profile?.role === "admin"),
   });
+
   const [draft, setDraft] = useState<Record<string, string>>({});
 
   const save = useMutation({
@@ -63,6 +67,8 @@ function Settings() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  if (profileLoading) return <Skeleton className="h-64 w-full rounded-xl" />;
+  if (!profile || !isAdmin) return null;
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;
 
   const valueFor = (category: string | null) => {

@@ -72,9 +72,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     window.addEventListener("storage", syncAuthFromStorage);
     window.addEventListener("popstate", syncAuthFromStorage);
+    window.addEventListener("pageshow", syncAuthFromStorage);
     return () => {
       window.removeEventListener("storage", syncAuthFromStorage);
       window.removeEventListener("popstate", syncAuthFromStorage);
+      window.removeEventListener("pageshow", syncAuthFromStorage);
     };
   }, [queryClient]);
 

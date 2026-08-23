@@ -55,9 +55,10 @@ function ProfilePage() {
   const handleSignOut = async () => {
     await signOut();
     queryClient.clear();
-    await router.invalidate();
     toast.success("Signed out successfully");
-    navigate({ to: "/auth", replace: true });
+    if (typeof window !== "undefined") {
+      window.location.replace("/auth");
+    }
   };
 
   const save = async () => {

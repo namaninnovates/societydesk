@@ -39,11 +39,12 @@ export const Route = createFileRoute("/_authenticated/admin/complaints")({
 });
 
 function AdminComplaints() {
-  const { session, profile } = useAuth();
+  const { session, profile, isAdmin, profileLoading } = useAuth();
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["complaints", "all"],
     queryFn: () => fetchComplaints(),
+    enabled: Boolean(isAdmin && profile?.role === "admin"),
   });
 
   const [search, setSearch] = useState("");
@@ -151,6 +152,9 @@ function AdminComplaints() {
     );
     setNote("");
   };
+
+  if (profileLoading) return <Skeleton className="h-64 w-full rounded-xl" />;
+  if (!profile || !isAdmin) return null;
 
   return (
     <div className="space-y-6">

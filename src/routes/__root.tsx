@@ -124,12 +124,49 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function SecurityAuthWatcher() {
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      if (typeof window === "undefined") return;
+      const pathname = window.location.pathname;
+      const isProtected =
+        pathname.startsWith("/admin") ||
+        pathname.startsWith("/complaints") ||
+        pathname.startsWith("/notices") ||
+        pathname.startsWith("/profile");
+
+      const token = localStorage.getItem("societydesk_token");
+      if (isProtected && !token) {
+        window.location.replace("/auth");
+      }
+    };
+
+    window.addEventListener("pageshow", checkAuthStatus);
+    window.addEventListener("popstate", checkAuthStatus);
+    window.addEventListener("focus", checkAuthStatus);
+    window.addEventListener("storage", checkAuthStatus);
+
+    // Initial sync
+    checkAuthStatus();
+
+    return () => {
+      window.removeEventListener("pageshow", checkAuthStatus);
+      window.removeEventListener("popstate", checkAuthStatus);
+      window.removeEventListener("focus", checkAuthStatus);
+      window.removeEventListener("storage", checkAuthStatus);
+    };
+  }, []);
+
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <SecurityAuthWatcher />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <Toaster position="top-right" richColors />

@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchResidentsServerFn } from "@/lib/auth.functions";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/admin/residents")({
   head: () => ({
@@ -21,12 +22,14 @@ export const Route = createFileRoute("/_authenticated/admin/residents")({
 });
 
 function Residents() {
+  const { profile, isAdmin, profileLoading } = useAuth();
   const [q, setQ] = useState("");
   const { data, isLoading } = useQuery({
     queryKey: ["residents"],
     queryFn: async () => {
       return await fetchResidentsServerFn();
     },
+    enabled: Boolean(isAdmin && profile?.role === "admin"),
   });
 
   const term = q.trim().toLowerCase();
@@ -37,6 +40,9 @@ function Residents() {
       (r.unit_number ?? "").toLowerCase().includes(term) ||
       (r.block ?? "").toLowerCase().includes(term),
   );
+
+  if (profileLoading) return <Skeleton className="h-64 w-full rounded-xl" />;
+  if (!profile || !isAdmin) return null;
 
   return (
     <div className="space-y-6">

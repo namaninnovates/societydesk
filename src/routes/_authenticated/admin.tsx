@@ -1,4 +1,5 @@
 import { createFileRoute, Navigate, Outlet, redirect } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/use-auth";
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
       try {
         const parsed = JSON.parse(stored);
         if (parsed?.role !== "admin") {
-          throw redirect({ to: "/complaints" });
+          throw redirect({ to: "/auth" });
         }
       } catch {
         throw redirect({ to: "/auth" });
@@ -27,13 +28,35 @@ export const Route = createFileRoute("/_authenticated/admin")({
 function AdminLayout() {
   const { isAdmin, profile, profileLoading } = useAuth();
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("societydesk_token");
+      if (!token) {
+        window.location.replace("/auth");
+      }
+    }
+  }, [profile, isAdmin]);
+
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("societydesk_token");
-    if (!token) return <Navigate to="/auth" replace />;
+    const stored = localStorage.getItem("societydesk_profile");
+    if (!token || !stored) return <Navigate to="/auth" replace />;
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed?.role !== "admin") return <Navigate to="/auth" replace />;
+    } catch {
+      return <Navigate to="/auth" replace />;
+    }
   }
 
-  if (profileLoading) return <Skeleton className="h-64 w-full rounded-xl" />;
-  if (!profile) return <Navigate to="/auth" replace />;
-  if (!isAdmin) return <Navigate to="/complaints" replace />;
+  if (profileLoading && !profile) {
+    return (
+      <div className="flex h-64 w-full items-center justify-center">
+        <div className="size-8 animate-spin rounded-full border-4 border-[#1F3622] border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!profile || !isAdmin) return <Navigate to="/auth" replace />;
   return <Outlet />;
 }

@@ -36,8 +36,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PriorityTag, StatusPill } from "@/components/status";
+import { EmptyState } from "@/components/empty-state";
 import { fetchComplaints } from "@/lib/queries";
 import { CATEGORIES, daysOpen } from "@/lib/societydesk";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({
@@ -56,6 +59,7 @@ const CHART_COLORS = ["#1F3622", "#2E4E30", "#5F8E63", "#C8DAC2"];
 const BLOCKS = ["Tower A", "Tower B", "Tower C", "Tower D", "Clubhouse"];
 
 function AdminDashboard() {
+  const { profile, isAdmin, profileLoading } = useAuth();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -66,9 +70,10 @@ function AdminDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["complaints", "all"],
     queryFn: () => fetchComplaints(),
+    enabled: Boolean(isAdmin && profile?.role === "admin"),
   });
 
-  const rawRows = data ?? [];
+  const rawRows = useMemo(() => data ?? [], [data]);
 
   // Filtered rows based on current filter states
   const rows = useMemo(() => {
@@ -83,35 +88,23 @@ function AdminDashboard() {
         const created = new Date(r.created_at).getTime();
         if (created < cutoffTime) return false;
       }
-
       // Status filter
-      if (statusFilter !== "all") {
-        if (statusFilter === "overdue" && !r.is_overdue) return false;
-        if (statusFilter !== "overdue" && r.status !== statusFilter) return false;
-      }
-
+      if (statusFilter !== "all" && r.status !== statusFilter) return false;
       // Category filter
-      if (categoryFilter !== "all" && r.category.toLowerCase() !== categoryFilter.toLowerCase()) {
-        return false;
-      }
-
-      // Priority filter
-      if (priorityFilter !== "all" && r.priority !== priorityFilter) {
-        return false;
-      }
-
-      // Block / Tower filter
+      if (categoryFilter !== "all" && r.category !== categoryFilter) return false;
+      // Block filter
       if (blockFilter !== "all") {
         const blockMatch =
           r.profiles?.block?.toLowerCase() === blockFilter.toLowerCase() ||
           r.location?.toLowerCase().includes(blockFilter.toLowerCase());
         if (!blockMatch) return false;
       }
-
-      // Search query
+      // Priority filter
+      if (priorityFilter !== "all" && r.priority !== priorityFilter) return false;
+      // Search term
       if (q) {
         const matchTitle = r.title.toLowerCase().includes(q);
-        const matchDesc = r.description.toLowerCase().includes(q);
+        const matchDesc = (r.description ?? "").toLowerCase().includes(q);
         const matchLoc = (r.location ?? "").toLowerCase().includes(q);
         const matchName = (r.profiles?.full_name ?? "").toLowerCase().includes(q);
         const matchUnit = (r.profiles?.unit_number ?? "").toLowerCase().includes(q);
@@ -119,7 +112,6 @@ function AdminDashboard() {
           return false;
         }
       }
-
       return true;
     });
   }, [rawRows, search, statusFilter, categoryFilter, blockFilter, priorityFilter, timeRange]);
@@ -141,6 +133,8 @@ function AdminDashboard() {
     setTimeRange("30");
   };
 
+  if (profileLoading) return <Skeleton className="h-64 w-full rounded-xl" />;
+  if (!profile || !isAdmin) return null;
   if (isLoading) return <Skeleton className="h-96 w-full rounded-xl" />;
 
   const stats = [

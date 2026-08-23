@@ -36,12 +36,11 @@ const residentNav = [
 
 function useSignOut() {
   const { signOut } = useAuth();
-  const navigate = useNavigate();
-  const router = useRouter();
   return async () => {
     await signOut();
-    await router.invalidate();
-    navigate({ to: "/auth", replace: true });
+    if (typeof window !== "undefined") {
+      window.location.replace("/auth");
+    }
   };
 }
 
@@ -58,7 +57,27 @@ export function Brand({
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { isAdmin } = useAuth();
+  const { isAdmin, profile, profileLoading } = useAuth();
+
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("societydesk_token");
+    if (!token) {
+      return null;
+    }
+  }
+
+  if (profileLoading && !profile) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F6F4ED]">
+        <div className="size-8 animate-spin rounded-full border-4 border-[#1F3622] border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return null;
+  }
+
   return isAdmin ? <AdminShell>{children}</AdminShell> : <ResidentShell>{children}</ResidentShell>;
 }
 
