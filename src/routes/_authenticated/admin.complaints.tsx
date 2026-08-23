@@ -346,7 +346,7 @@ function AdminComplaints() {
       </div>
 
       {/* ── COMPLAINT CONTENT ─────────────────────────────────── */}
-      {isLoading ? (
+      {isLoading && rows.length === 0 ? (
         <ComplaintsTableSkeleton count={5} />
       ) : rows.length === 0 ? (
         <EmptyState icon={Tray} title="No complaints match" body="Try clearing a filter or two." />

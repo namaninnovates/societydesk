@@ -136,7 +136,7 @@ function ComplaintDetail() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (complaintQ.isLoading)
+  if (complaintQ.isLoading && !complaintQ.data)
     return (
       <SocietyMaintenanceLoader
         fullScreen

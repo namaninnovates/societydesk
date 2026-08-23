@@ -98,7 +98,8 @@ function AdminNotices() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (profileLoading) return <SocietyMaintenanceLoader fullScreen text="Loading notice board..." />;
+  if (!profile && profileLoading)
+    return <SocietyMaintenanceLoader fullScreen text="Loading notice board..." />;
   if (!profile || !isAdmin) return null;
 
   return (

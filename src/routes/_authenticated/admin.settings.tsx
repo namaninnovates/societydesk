@@ -118,10 +118,10 @@ function Settings() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (profileLoading)
+  if (!profile && profileLoading)
     return <SocietyMaintenanceLoader fullScreen text="Verifying admin permissions..." />;
   if (!profile || !isAdmin) return null;
-  if (isLoading)
+  if (isLoading && !data)
     return (
       <SocietyMaintenanceLoader fullScreen text="Loading SLA thresholds & society settings..." />
     );

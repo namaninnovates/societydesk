@@ -207,7 +207,7 @@ function UserManagement() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (profileLoading) return <Skeleton className="h-64 w-full rounded-2xl" />;
+  if (!profile && profileLoading) return <UsersDirectorySkeleton />;
   if (!profile || !isAdmin) return null;
 
   return (

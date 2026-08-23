@@ -166,9 +166,9 @@ function AdminDashboard() {
     setTimeRange("30");
   };
 
-  if (profileLoading) return <DashboardSkeleton />;
+  if (!profile && profileLoading) return <DashboardSkeleton />;
   if (!profile || !isAdmin) return null;
-  if (isLoading) return <DashboardSkeleton />;
+  if (isLoading && rows.length === 0) return <DashboardSkeleton />;
 
   const stats = [
     {

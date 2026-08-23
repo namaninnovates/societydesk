@@ -213,3 +213,99 @@
 @utility animate-multiplier-glow {
   animation: multiplier-glow 2.2s ease-in-out infinite;
 }
+
+/* ── CUSTOM SOCIETY MAINTENANCE ANIMATION KEYFRAMES ── */
+@keyframes wrench-repair {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-25deg);
+  }
+  40% {
+    transform: rotate(15deg);
+  }
+  60% {
+    transform: rotate(-20deg);
+  }
+  80% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes gear-spin-smooth {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gear-spin-reverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes elevator-glide {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-24px);
+  }
+}
+
+@keyframes window-light {
+  0%,
+  100% {
+    opacity: 0.3;
+    fill: #2e4e30;
+  }
+  50% {
+    opacity: 1;
+    fill: #facc15;
+  }
+}
+
+@keyframes radar-wave {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@utility animate-wrench {
+  animation: wrench-repair 1.8s ease-in-out infinite;
+  transform-origin: bottom right;
+}
+
+@utility animate-gear-fast {
+  animation: gear-spin-smooth 3s linear infinite;
+  transform-origin: center;
+}
+
+@utility animate-gear-rev {
+  animation: gear-spin-reverse 4s linear infinite;
+  transform-origin: center;
+}
+
+@utility animate-elevator {
+  animation: elevator-travel 2.4s ease-in-out infinite;
+}
+
+@utility animate-radar {
+  animation: radar-wave 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}

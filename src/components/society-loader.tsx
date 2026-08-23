@@ -1,9 +1,16 @@
-import { Buildings, Wrench, Gear, Lightning, Sparkle } from "@phosphor-icons/react";
+import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
+const STATUS_MESSAGES = [
+  "Connecting to society records...",
+  "Syncing complaint resolution status...",
+  "Checking maintenance crew schedules...",
+  "Loading live society data...",
+];
+
 export function SocietyMaintenanceLoader({
-  text = "Loading society records...",
+  text,
   fullScreen = false,
   className,
 }: {
@@ -11,49 +18,175 @@ export function SocietyMaintenanceLoader({
   fullScreen?: boolean;
   className?: string;
 }) {
+  const [msgIndex, setMsgIndex] = useState(0);
+
+  useEffect(() => {
+    if (text) return;
+    const timer = setInterval(() => {
+      setMsgIndex((prev) => (prev + 1) % STATUS_MESSAGES.length);
+    }, 1800);
+    return () => clearInterval(timer);
+  }, [text]);
+
+  const displayMessage = text || STATUS_MESSAGES[msgIndex];
+
   const content = (
-    <div className={cn("flex flex-col items-center justify-center p-8 text-center", className)}>
-      {/* Animated Society Maintenance Badge */}
-      <div className="relative mb-4 flex items-center justify-center">
-        {/* Glowing aura */}
-        <div className="absolute size-20 rounded-full bg-emerald-500/15 animate-ping" />
-        <div className="absolute size-16 rounded-full bg-[#1F3622]/10 animate-pulse" />
+    <div className={cn("flex flex-col items-center justify-center p-6 text-center", className)}>
+      {/* ── CUSTOM ANIMATED SOCIETY MAINTENANCE SVG ── */}
+      <div className="relative mb-5 flex size-28 items-center justify-center">
+        {/* Radar wave pulse rings */}
+        <div className="absolute size-24 rounded-full border border-emerald-500/30 animate-radar" />
+        <div
+          className="absolute size-20 rounded-full border border-[#1F3622]/20 animate-radar"
+          style={{ animationDelay: "0.8s" }}
+        />
 
-        {/* Main Building Frame */}
-        <div className="relative flex size-14 items-center justify-center rounded-2xl bg-[#1F3622] text-white shadow-md border border-[#2E4E30]">
-          <Buildings className="size-7 text-[#EAE6DA]" weight="duotone" />
+        <svg
+          viewBox="0 0 120 120"
+          className="size-24 drop-shadow-md"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Ground Base */}
+          <rect x="15" y="102" width="90" height="4" rx="2" fill="#DFD9CA" />
 
-          {/* Animated Wrench Overlay */}
-          <div className="absolute -bottom-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full bg-emerald-500 text-white shadow-sm ring-2 ring-white animate-bounce">
-            <Wrench className="size-3.5" weight="bold" />
-          </div>
+          {/* Society Building Tower */}
+          <rect
+            x="30"
+            y="26"
+            width="60"
+            height="76"
+            rx="5"
+            fill="#1F3622"
+            stroke="#2E4E30"
+            strokeWidth="2"
+          />
 
-          {/* Rotating mini gear */}
-          <div className="absolute -top-1 -left-1 flex size-5 items-center justify-center rounded-full bg-[#FAF8F2] text-[#1F3622] border border-[#DFD9CA] shadow-2xs">
-            <Gear className="size-3 animate-spin text-[#1F3622]" weight="bold" />
-          </div>
-        </div>
+          {/* Roof Antenna / Rooftop Equipment */}
+          <line
+            x1="60"
+            y1="26"
+            x2="60"
+            y2="14"
+            stroke="#788F54"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+          <circle cx="60" cy="14" r="3" fill="#10B981" className="animate-pulse" />
+
+          {/* Building Windows (Grid of 6) */}
+          <g>
+            {/* Top row */}
+            <rect x="38" y="34" width="8" height="8" rx="1.5" fill="#E8E4D8" opacity="0.85" />
+            <rect x="52" y="34" width="8" height="8" rx="1.5" fill="#E8E4D8" opacity="0.4" />
+            <rect x="66" y="34" width="8" height="8" rx="1.5" fill="#E8E4D8" opacity="0.9" />
+
+            {/* Middle row */}
+            <rect x="38" y="48" width="8" height="8" rx="1.5" fill="#E8E4D8" opacity="0.5" />
+            <rect
+              x="52"
+              y="48"
+              width="8"
+              height="8"
+              rx="1.5"
+              fill="#10B981"
+              opacity="0.9"
+              className="animate-pulse"
+            />
+            <rect x="66" y="48" width="8" height="8" rx="1.5" fill="#E8E4D8" opacity="0.6" />
+
+            {/* Lower row */}
+            <rect x="38" y="62" width="8" height="8" rx="1.5" fill="#E8E4D8" opacity="0.75" />
+            <rect x="52" y="62" width="8" height="8" rx="1.5" fill="#E8E4D8" opacity="0.8" />
+            <rect x="66" y="62" width="8" height="8" rx="1.5" fill="#E8E4D8" opacity="0.3" />
+          </g>
+
+          {/* Entrance Door */}
+          <rect x="53" y="86" width="14" height="16" rx="2" fill="#FAF8F2" opacity="0.95" />
+
+          {/* Elevator Track on Side */}
+          <line
+            x1="82"
+            y1="32"
+            x2="82"
+            y2="96"
+            stroke="#2E4E30"
+            strokeWidth="1.5"
+            strokeDasharray="2 2"
+          />
+
+          {/* Animated Elevator Cab */}
+          <g className="animate-elevator">
+            <rect
+              x="77"
+              y="70"
+              width="10"
+              height="14"
+              rx="2"
+              fill="#EAE6DA"
+              stroke="#1F3622"
+              strokeWidth="1"
+            />
+            <rect x="79" y="72" width="6" height="5" rx="1" fill="#788F54" opacity="0.8" />
+          </g>
+
+          {/* Animated Rotating Maintenance Gear */}
+          <g transform="translate(24, 76)">
+            <circle cx="0" cy="0" r="10" fill="#EAE6DA" stroke="#1F3622" strokeWidth="1.5" />
+            <path
+              d="M-2 -12 H2 V-8 H-2 Z M-2 8 H2 V12 H-2 Z M-12 -2 H-8 V2 H-12 Z M8 -2 H12 V2 H8 Z"
+              fill="#1F3622"
+              className="animate-gear-fast"
+            />
+            <circle cx="0" cy="0" r="4" fill="#788F54" />
+          </g>
+
+          {/* Animated Working Wrench (Swinging/Tightening) */}
+          <g transform="translate(94, 78)">
+            <g className="animate-wrench">
+              {/* Wrench Handle */}
+              <rect
+                x="-3"
+                y="-18"
+                width="6"
+                height="18"
+                rx="2"
+                fill="#3E4D28"
+                stroke="#1F3622"
+                strokeWidth="1"
+              />
+              {/* Wrench Head */}
+              <path
+                d="M-7 -18 C-7 -24, 7 -24, 7 -18 C7 -15, 3 -13, 0 -13 C-3 -13, -7 -15, -7 -18 Z"
+                fill="#829758"
+              />
+              <circle cx="0" cy="-18" r="3" fill="#1F3622" />
+            </g>
+          </g>
+        </svg>
       </div>
 
-      {/* Text & Progress indicator */}
+      {/* Dynamic Status Text */}
       <div className="space-y-1">
-        <p className="text-sm font-semibold text-[#111215] tracking-tight">{text}</p>
-        <p className="text-xs text-[#7C8074] flex items-center justify-center gap-1">
-          <Lightning className="size-3 text-emerald-600 animate-pulse" weight="fill" />
-          SocietyDesk Live Sync
+        <p className="text-sm font-bold tracking-tight text-[#111215] transition-all duration-300">
+          {displayMessage}
+        </p>
+        <p className="text-xs text-[#788F54] font-medium flex items-center justify-center gap-1.5">
+          <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
+          SocietyDesk Service Engine
         </p>
       </div>
 
-      {/* Animated progress bar */}
-      <div className="mt-3.5 h-1 w-32 overflow-hidden rounded-full bg-[#E8E4D8]">
-        <div className="h-full w-full bg-[#1F3622] animate-pulse rounded-full" />
+      {/* Progress Line */}
+      <div className="mt-3.5 h-1 w-36 overflow-hidden rounded-full bg-[#EAE6DA]">
+        <div className="h-full w-full bg-[#1F3622] rounded-full animate-pulse" />
       </div>
     </div>
   );
 
   if (fullScreen) {
     return (
-      <div className="flex min-h-[60vh] w-full items-center justify-center bg-[#F6F4ED]/50">
+      <div className="flex min-h-[50vh] w-full items-center justify-center bg-[#F6F4ED]/60">
         {content}
       </div>
     );
@@ -68,26 +201,26 @@ export function SocietyMaintenanceLoader({
 export function ComplaintsTableSkeleton({ count = 5 }: { count?: number }) {
   return (
     <div className="space-y-4">
-      {/* Maintenance Animation Header */}
+      {/* Maintenance Sync Banner */}
       <div className="flex items-center justify-between rounded-xl bg-white border border-[#DFD9CA] p-3 shadow-xs">
         <div className="flex items-center gap-2.5">
           <div className="flex size-7 items-center justify-center rounded-lg bg-[#EDF4EE] text-[#1F3622]">
-            <Wrench className="size-3.5 animate-spin text-[#1F3622]" />
+            <span className="text-xs">🔧</span>
           </div>
           <div>
             <p className="text-xs font-bold text-[#111215]">Fetching Active Complaints...</p>
             <p className="text-[10px] text-muted-foreground">
-              Checking resolution timelines and SLA status
+              Checking resolution SLA timelines and assignments
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
-          <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#3E4D28] bg-[#3E4D28]/10 px-2 py-0.5 rounded-full border border-[#3E4D28]/20">
+          <span className="size-2 rounded-full bg-[#788F54] animate-pulse" />
           Syncing DB
         </div>
       </div>
 
-      {/* Cards Skeletons */}
+      {/* Ticket Cards Skeleton */}
       <div className="space-y-3">
         {Array.from({ length: count }).map((_, i) => (
           <div
@@ -123,7 +256,7 @@ export function DashboardSkeleton() {
       <div className="flex items-center justify-between rounded-2xl bg-white border border-[#DFD9CA] p-4 shadow-xs">
         <div className="flex items-center gap-3">
           <div className="flex size-9 items-center justify-center rounded-xl bg-[#EDF4EE] text-[#1F3622]">
-            <Buildings className="size-5 text-[#1F3622]" />
+            <span className="text-base">🏢</span>
           </div>
           <div>
             <p className="text-sm font-bold text-[#111215]">Loading Society Dashboard...</p>
@@ -132,8 +265,8 @@ export function DashboardSkeleton() {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-          <Sparkle className="size-3.5 text-emerald-600 animate-spin" />
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#3E4D28] bg-[#3E4D28]/10 px-2.5 py-1 rounded-full border border-[#3E4D28]/20">
+          <span className="size-2 rounded-full bg-[#788F54] animate-pulse" />
           Live Metrics
         </div>
       </div>
@@ -181,7 +314,7 @@ export function UsersDirectorySkeleton() {
       <div className="flex items-center justify-between rounded-xl bg-white border border-[#DFD9CA] p-3 shadow-xs">
         <div className="flex items-center gap-2.5">
           <div className="flex size-7 items-center justify-center rounded-lg bg-[#EDF4EE] text-[#1F3622]">
-            <Wrench className="size-3.5 text-[#1F3622]" />
+            <span className="text-xs">👥</span>
           </div>
           <div>
             <p className="text-xs font-bold text-[#111215]">Loading User & Staff Directory...</p>
