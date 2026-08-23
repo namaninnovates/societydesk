@@ -610,3 +610,40 @@ export const updateAllOverdueThresholdsServerFn = createServerFn({ method: "POST
     }
     return { success: true };
   });
+
+// ── 11. DELETE / WITHDRAW COMPLAINT ────────────────────────────
+export const deleteComplaintServerFn = createServerFn({ method: "POST" })
+  .validator((d: { complaintId: string; requesterId: string }) => d)
+  .handler(async ({ data }) => {
+    const sql = getSql();
+
+    // Verify complaint existence and permissions
+    const complaint = (await sql`
+      SELECT c.id, c.resident_id, p.role
+      FROM complaints c
+      LEFT JOIN profiles p ON p.id = ${data.requesterId}
+      WHERE c.id = ${data.complaintId}
+      LIMIT 1
+    `) as { id: string; resident_id: string; role: string }[];
+
+    if (complaint.length === 0 || !complaint[0]) {
+      throw new Error("Complaint not found");
+    }
+
+    const row = complaint[0];
+    const isOwner = row.resident_id === data.requesterId;
+    const isAdmin = row.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      throw new Error("You do not have permission to remove this complaint.");
+    }
+
+    // Cascade delete related records
+    await sql`DELETE FROM resolution_feedback WHERE complaint_id = ${data.complaintId}`;
+    await sql`DELETE FROM complaint_photos WHERE complaint_id = ${data.complaintId}`;
+    await sql`DELETE FROM complaint_comments WHERE complaint_id = ${data.complaintId}`;
+    await sql`DELETE FROM complaint_history WHERE complaint_id = ${data.complaintId}`;
+    await sql`DELETE FROM complaints WHERE id = ${data.complaintId}`;
+
+    return { success: true };
+  });

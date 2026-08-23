@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams, useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ChatCircleDots,
@@ -9,6 +9,7 @@ import {
   User,
   Buildings,
   CheckCircle,
+  Trash,
 } from "@phosphor-icons/react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -37,6 +38,7 @@ import { fetchStaffMembersServerFn } from "@/lib/auth.functions";
 import {
   addComplaintCommentServerFn,
   addResolutionFeedbackServerFn,
+  deleteComplaintServerFn,
 } from "@/lib/complaints.functions";
 import { STATUS_LABELS, daysOpen } from "@/lib/societydesk";
 import { cn } from "@/lib/utils";
@@ -136,6 +138,27 @@ function ComplaintDetail() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const navigate = useNavigate();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+
+  const deleteComplaint = useMutation({
+    mutationFn: async () => {
+      if (!profile?.id) throw new Error("Please sign in");
+      await deleteComplaintServerFn({
+        data: {
+          complaintId: id,
+          requesterId: profile.id,
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["complaints"] });
+      toast.success("Complaint removed successfully");
+      navigate({ to: backDestination, replace: true });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   if (complaintQ.isLoading && !complaintQ.data)
     return (
       <SocietyMaintenanceLoader
@@ -146,16 +169,65 @@ function ComplaintDetail() {
   const c = complaintQ.data;
   if (!c) return <p className="text-muted-foreground">Complaint not found.</p>;
 
-  const isOwner = c.resident_id === session?.user.id;
+  const isOwner = c.resident_id === profile?.id;
   const backDestination = isAdmin ? "/admin/complaints" : isStaff ? "/staff" : "/complaints";
 
   return (
     <div className="space-y-6">
-      <Button asChild variant="ghost" size="sm" className="-ml-2">
-        <Link to={backDestination}>
-          <ArrowLeft className="size-4 mr-1" /> Back
-        </Link>
-      </Button>
+      <div className="flex items-center justify-between">
+        <Button asChild variant="ghost" size="sm" className="-ml-2 cursor-pointer">
+          <Link to={backDestination}>
+            <ArrowLeft className="size-4 mr-1" /> Back
+          </Link>
+        </Button>
+
+        {(isOwner || isAdmin) && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setDeleteConfirmOpen(true)}
+            className="text-xs text-red-700 border-red-200 hover:bg-red-50 hover:text-red-800 cursor-pointer gap-1.5"
+          >
+            <Trash className="size-3.5" />
+            <span>Remove Complaint</span>
+          </Button>
+        )}
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="max-w-md p-6">
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-base font-bold text-[#111215]">Remove Complaint?</h3>
+              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                Are you sure you want to remove &ldquo;{c.title}&rdquo;? This will withdraw the
+                complaint from the active maintenance queue. This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDeleteConfirmOpen(false)}
+                disabled={deleteComplaint.isPending}
+                className="cursor-pointer text-xs"
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => deleteComplaint.mutate()}
+                disabled={deleteComplaint.isPending}
+                className="bg-red-600 hover:bg-red-700 text-white cursor-pointer text-xs gap-1.5"
+              >
+                <Trash className="size-3.5" />
+                <span>{deleteComplaint.isPending ? "Removing..." : "Confirm Remove"}</span>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Main Complaint Overview */}
       <div className="rounded-2xl border border-[#DFD9CA] bg-white p-4 sm:p-6 shadow-xs space-y-4">

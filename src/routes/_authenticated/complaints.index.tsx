@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ClipboardText, PlusCircle, MagnifyingGlass } from "@phosphor-icons/react";
+import { ClipboardText, PlusCircle, MagnifyingGlass, Trash } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { EmptyState } from "@/components/empty-state";
 import { PriorityTag, StatusPill } from "@/components/status";
@@ -15,10 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
-import { fetchComplaints, photoUrl } from "@/lib/queries";
+import { fetchComplaints, photoUrl, type ComplaintRow } from "@/lib/queries";
 import { CATEGORIES, CATEGORY_ICONS, daysOpen } from "@/lib/societydesk";
 import { ComplaintsTableSkeleton } from "@/components/society-loader";
+import { deleteComplaintServerFn } from "@/lib/complaints.functions";
 
 export const Route = createFileRoute("/_authenticated/complaints/")({
   head: () => ({
@@ -34,9 +37,29 @@ export const Route = createFileRoute("/_authenticated/complaints/")({
 
 function MyComplaints() {
   const { profile } = useAuth();
+  const queryClient = useQueryClient();
   const [status, setStatus] = useState("all");
   const [category, setCategory] = useState("all");
   const [q, setQ] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<ComplaintRow | null>(null);
+
+  const deleteComplaint = useMutation({
+    mutationFn: async (complaintId: string) => {
+      if (!profile?.id) throw new Error("Please sign in");
+      await deleteComplaintServerFn({
+        data: {
+          complaintId,
+          requesterId: profile.id,
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["complaints"] });
+      toast.success("Complaint removed successfully");
+      setDeleteTarget(null);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["complaints", "mine", profile?.id],
@@ -105,6 +128,42 @@ function MyComplaints() {
         </Select>
       </div>
 
+      {/* Delete Confirmation Modal */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent className="max-w-md p-6">
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-base font-bold text-[#111215]">Remove Complaint?</h3>
+              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                Are you sure you want to remove &ldquo;{deleteTarget?.title}&rdquo;? This will
+                withdraw the complaint from the active maintenance queue. This action cannot be
+                undone.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleteComplaint.isPending}
+                className="cursor-pointer text-xs"
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => deleteTarget && deleteComplaint.mutate(deleteTarget.id)}
+                disabled={deleteComplaint.isPending}
+                className="bg-red-600 hover:bg-red-700 text-white cursor-pointer text-xs gap-1.5"
+              >
+                <Trash className="size-3.5" />
+                <span>{deleteComplaint.isPending ? "Removing..." : "Confirm Remove"}</span>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {isLoading ? (
         <ComplaintsTableSkeleton count={3} />
       ) : rows.length === 0 ? (
@@ -124,11 +183,11 @@ function MyComplaints() {
             const Icon = CATEGORY_ICONS[c.category] ?? ClipboardText;
             const thumb = c.complaint_photos?.[0];
             return (
-              <li key={c.id}>
+              <li key={c.id} className="relative group">
                 <Link
                   to="/complaints/$id"
                   params={{ id: c.id }}
-                  className="surface flex items-center gap-4 p-4 transition-shadow hover:shadow-lift"
+                  className="surface flex items-center gap-4 p-4 transition-shadow hover:shadow-lift pr-12 sm:pr-24"
                 >
                   {thumb ? (
                     <img
@@ -156,6 +215,21 @@ function MyComplaints() {
                     </div>
                   </div>
                 </Link>
+
+                {/* Quick Remove Button */}
+                <button
+                  type="button"
+                  title="Remove complaint"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDeleteTarget(c);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-lg border border-transparent px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:border-red-200 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
+                >
+                  <Trash className="size-3.5" />
+                  <span className="hidden sm:inline">Remove</span>
+                </button>
               </li>
             );
           })}
