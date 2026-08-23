@@ -237,8 +237,8 @@ function ComplaintDetail() {
             </div>
           </div>
 
-          {/* Admin / Staff Reassignment actions */}
-          {isAdmin && (
+          {/* Admin / Staff Reassignment actions - only when not resolved */}
+          {isAdmin && c.status !== "resolved" && (
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs text-muted-foreground">Reassign:</span>
               <Select
@@ -262,7 +262,7 @@ function ComplaintDetail() {
             </div>
           )}
 
-          {isStaff && !c.assigned_to && (
+          {isStaff && c.status !== "resolved" && !c.assigned_to && (
             <Button
               size="sm"
               onClick={() => assignStaffMut.mutate(profile?.id ?? null)}

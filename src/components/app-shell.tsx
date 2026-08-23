@@ -119,7 +119,7 @@ function AdminShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background lg:flex">
-      <aside className="hidden w-64 shrink-0 flex-col justify-between bg-sidebar p-5 lg:flex">
+      <aside className="hidden w-64 shrink-0 sticky top-0 h-screen flex-col justify-between bg-sidebar p-5 lg:flex overflow-hidden z-20">
         <div className="space-y-8">
           <Brand variant="sidebar" linkTo="/admin" />
           {nav}

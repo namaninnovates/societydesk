@@ -555,8 +555,8 @@ function ComplaintCard({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {/* Quick Assign / Reassign Staff Dropdown */}
-          {onAssign && (
+          {/* Quick Assign / Reassign Staff Dropdown - only for Open & In-Progress */}
+          {onAssign && row.status !== "resolved" ? (
             <div className="flex items-center">
               <Select
                 value={row.assigned_to ?? "none"}
@@ -592,7 +592,12 @@ function ComplaintCard({
                 </SelectContent>
               </Select>
             </div>
-          )}
+          ) : row.assigned_profile ? (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-[#FAF8F2] border border-[#E9E4D7] rounded-full px-2.5 py-1">
+              <Wrench className="size-3 text-slate-400" />
+              {row.assigned_profile.full_name}
+            </span>
+          ) : null}
 
           <StatusPill status={row.status} overdue={row.is_overdue} />
           <PriorityTag priority={row.priority} />
