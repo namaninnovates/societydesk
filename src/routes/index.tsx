@@ -153,8 +153,6 @@ function ScrambleText() {
 const SOCIETY_FEATURES = [
   {
     id: "photos",
-    pin: "01",
-    tab: "Photos",
     tag: "Visual Evidence",
     title: "Photos with Every Complaint",
     desc: "Add up to 3 photos of the leak, crack, or breakdown. Photos compress automatically on your phone so uploads are lightning fast.",
@@ -163,8 +161,6 @@ const SOCIETY_FEATURES = [
   },
   {
     id: "kanban",
-    pin: "02",
-    tab: "Kanban Board",
     tag: "Admin Workspace",
     title: "List & Board Views for Admins",
     desc: "Admins can view complaints in a clean list or drag-and-drop Kanban columns (Open, In Progress, Resolved) for rapid triage.",
@@ -173,8 +169,6 @@ const SOCIETY_FEATURES = [
   },
   {
     id: "notices",
-    pin: "03",
-    tab: "Notices",
     tag: "Broadcast",
     title: "Notice Board & Email Alerts",
     desc: "Post important society notices with pinned priority cards. Residents receive email alerts instantly when an urgent notice is published.",
@@ -183,8 +177,6 @@ const SOCIETY_FEATURES = [
   },
   {
     id: "sla",
-    pin: "04",
-    tab: "Overdue SLA",
     tag: "SLA Tracker",
     title: "Automated Overdue Warnings",
     desc: "Set deadline days per category. Delayed complaints turn amber with a blinking alert and auto-surface to the top of the triage list.",
@@ -193,8 +185,6 @@ const SOCIETY_FEATURES = [
   },
   {
     id: "analytics",
-    pin: "05",
-    tab: "Reports",
     tag: "Intelligence",
     title: "Monthly Repair Reports",
     desc: "See total complaints per category, average days to resolve, and watchlists for repeat issues (e.g. lift breaking down 3+ times).",
@@ -203,8 +193,6 @@ const SOCIETY_FEATURES = [
   },
   {
     id: "feedback",
-    pin: "06",
-    tab: "Ratings",
     tag: "Resident Voice",
     title: "1 to 5 Star Resident Feedback",
     desc: "Residents rate the repair quality once completed so the management committee knows which technicians deliver great work.",
@@ -214,166 +202,110 @@ const SOCIETY_FEATURES = [
 ];
 
 function PinnedFeaturesCarousel() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activePin, setActivePin] = useState(0);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [maxTranslate, setMaxTranslate] = useState(0);
 
-  const checkScroll = useCallback(() => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-    setCanScrollLeft(scrollLeft > 20);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 20);
+  const calculateScroll = useCallback(() => {
+    if (!sectionRef.current || !trackRef.current) return;
 
-    const cardWidth = 380 + 24;
-    const index = Math.round(scrollLeft / cardWidth);
-    setActivePin(Math.min(Math.max(index, 0), SOCIETY_FEATURES.length - 1));
+    const rect = sectionRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const totalScrollDistance = rect.height - windowHeight;
+
+    if (totalScrollDistance <= 0) return;
+
+    const currentScroll = -rect.top;
+    const progress = Math.min(Math.max(currentScroll / totalScrollDistance, 0), 1);
+    setScrollProgress(progress);
+
+    const trackWidth = trackRef.current.scrollWidth;
+    const containerWidth = trackRef.current.parentElement?.clientWidth || window.innerWidth;
+    const maxShift = Math.max(trackWidth - containerWidth + 64, 0);
+    setMaxTranslate(maxShift);
   }, []);
 
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", checkScroll, { passive: true });
-    checkScroll();
-    return () => el.removeEventListener("scroll", checkScroll);
-  }, [checkScroll]);
+    const handleScroll = () => {
+      requestAnimationFrame(calculateScroll);
+    };
 
-  const scrollToPin = (idx: number) => {
-    if (!scrollRef.current) return;
-    const cardWidth = 380 + 24;
-    scrollRef.current.scrollTo({
-      left: idx * cardWidth,
-      behavior: "smooth",
-    });
-    setActivePin(idx);
-  };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    calculateScroll();
 
-  const scrollPrev = () => {
-    if (activePin > 0) scrollToPin(activePin - 1);
-  };
-
-  const scrollNext = () => {
-    if (activePin < SOCIETY_FEATURES.length - 1) scrollToPin(activePin + 1);
-  };
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [calculateScroll]);
 
   return (
-    <div className="space-y-8">
-      {/* Header & Controls */}
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-xl">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
-            Built for Societies
-          </span>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#111215] sm:text-4xl">
-            Everything your society needs to manage repairs.
-          </h2>
-        </div>
+    <section
+      ref={sectionRef}
+      id="features"
+      className="relative h-[280vh] border-t border-[#E8E4D8] bg-[#F6F4ED]"
+    >
+      <div className="sticky top-0 flex h-screen w-full flex-col justify-center overflow-hidden px-6 sm:px-8">
+        <div className="mx-auto w-full max-w-[1400px]">
+          {/* Header */}
+          <div className="mb-10 max-w-xl">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+              Built for Societies
+            </span>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#111215] sm:text-4xl">
+              Everything your society needs to manage repairs.
+            </h2>
+          </div>
 
-        {/* Carousel Navigation Pins & Arrows */}
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="rounded-full bg-[#EAE5D9] px-3.5 py-1.5 text-xs font-bold tabular-nums text-[#1F3622]">
-            0{activePin + 1} / 0{SOCIETY_FEATURES.length}
-          </span>
+          {/* Horizontal Track translated by vertical scroll */}
+          <div
+            ref={trackRef}
+            className="flex gap-7 will-change-transform"
+            style={{
+              transform: `translateX(-${scrollProgress * maxTranslate}px)`,
+              transition: "transform 0.05s ease-out",
+            }}
+          >
+            {SOCIETY_FEATURES.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.id}
+                  className="w-[320px] sm:w-[380px] lg:w-[420px] shrink-0 rounded-3xl border border-[#DFD9CA] bg-white p-8 shadow-sm transition-all duration-300 flex flex-col justify-between hover:border-[#1F3622] hover:shadow-md"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="text-xs font-bold uppercase tracking-wider text-[#687063]">
+                        {item.tag}
+                      </div>
+                      <div className="flex size-12 items-center justify-center rounded-2xl bg-[#EDF4EE] text-[#1F3622]">
+                        <Icon className="size-6" weight="fill" />
+                      </div>
+                    </div>
 
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={scrollPrev}
-              disabled={!canScrollLeft}
-              className="flex size-10 items-center justify-center rounded-full border border-[#D9D3C5] bg-white text-[#111215] transition-all hover:bg-[#1F3622] hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#111215] cursor-pointer disabled:cursor-not-allowed shadow-sm"
-              aria-label="Previous card"
-            >
-              <CaretLeft className="size-5" />
-            </button>
-            <button
-              onClick={scrollNext}
-              disabled={!canScrollRight}
-              className="flex size-10 items-center justify-center rounded-full border border-[#D9D3C5] bg-white text-[#111215] transition-all hover:bg-[#1F3622] hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#111215] cursor-pointer disabled:cursor-not-allowed shadow-sm"
-              aria-label="Next card"
-            >
-              <CaretRight className="size-5" />
-            </button>
+                    <h3 className="text-xl font-bold tracking-tight text-[#111215] leading-snug">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-relaxed text-[#5A5E68]">{item.desc}</p>
+                  </div>
+
+                  <div className="mt-8 flex items-center justify-between border-t border-[#F0EBE0] pt-4">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold bg-[#FAF7EE] border-[#E2DDD0] text-[#1F3622]">
+                      <Sparkle className="size-3.5 text-emerald-600" weight="fill" />
+                      {item.pill}
+                    </span>
+                    <span className="text-xs font-medium text-[#7C8074]">SocietyDesk Core</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
-
-      {/* Pin Selector Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-        {SOCIETY_FEATURES.map((item, idx) => {
-          const isActive = activePin === idx;
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={() => scrollToPin(idx)}
-              className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
-                isActive
-                  ? "bg-[#1F3622] text-white shadow-sm"
-                  : "bg-white text-[#4A4D54] border border-[#E0DACE] hover:border-[#1F3622] hover:text-[#111215]"
-              }`}
-            >
-              <Icon className="size-3.5" weight={isActive ? "fill" : "regular"} />
-              <span>
-                {item.pin} {item.tab}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Horizontal Carousel Track */}
-      <div
-        ref={scrollRef}
-        className="flex gap-6 overflow-x-auto pb-6 pt-2 scroll-smooth snap-x snap-mandatory scrollbar-none"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        {SOCIETY_FEATURES.map((item, idx) => {
-          const Icon = item.icon;
-          const isActive = activePin === idx;
-          return (
-            <div
-              key={item.id}
-              onClick={() => scrollToPin(idx)}
-              className={`w-[320px] sm:w-[380px] shrink-0 snap-start rounded-3xl border bg-white p-7 shadow-sm transition-all duration-300 flex flex-col justify-between cursor-pointer ${
-                isActive
-                  ? "border-[#1F3622] ring-2 ring-[#1F3622]/15 shadow-md scale-[1.01]"
-                  : "border-[#DFD9CA] hover:border-[#B5ADA0] hover:shadow-md"
-              }`}
-            >
-              <div>
-                {/* Header with Pin and Icon */}
-                <div className="flex items-center justify-between mb-5">
-                  <span className="flex items-center gap-1.5 rounded-md bg-[#F4EFE6] px-2.5 py-1 text-[11px] font-bold text-[#1F3622]">
-                    <PushPin className="size-3.5 text-[#1F3622]" weight="fill" /> PIN {item.pin}
-                  </span>
-                  <div className="flex size-11 items-center justify-center rounded-2xl bg-[#EDF4EE] text-[#1F3622]">
-                    <Icon className="size-6" weight="fill" />
-                  </div>
-                </div>
-
-                <div className="text-[11px] font-bold uppercase tracking-wider text-[#687063] mb-1">
-                  {item.tag}
-                </div>
-
-                <h3 className="text-xl font-bold tracking-tight text-[#111215] leading-snug">
-                  {item.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-relaxed text-[#5A5E68]">{item.desc}</p>
-              </div>
-
-              {/* Card Footer Badge */}
-              <div className="mt-8 flex items-center justify-between border-t border-[#F0EBE0] pt-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold bg-[#FAF7EE] border-[#E2DDD0] text-[#1F3622]">
-                  <Sparkle className="size-3.5 text-emerald-600" weight="fill" />
-                  {item.pill}
-                </span>
-                <span className="text-xs font-medium text-[#7C8074]">SocietyDesk Core</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    </section>
   );
 }
 
@@ -727,12 +659,8 @@ function SocietyDeskLanding() {
         </div>
       </section>
 
-      {/* ── FEATURES SECTION ────────────────────────────────── */}
-      <section id="features" className="border-t border-[#E8E4D8] bg-[#F6F4ED] py-20 px-6 sm:px-8">
-        <div className="mx-auto max-w-[1400px]">
-          <PinnedFeaturesCarousel />
-        </div>
-      </section>
+      {/* ── FEATURES SECTION (PINNED HORIZONTAL SCROLL) ─────── */}
+      <PinnedFeaturesCarousel />
 
       {/* ── REPAIR DEADLINES SECTION ────────────────────────── */}
       <section
