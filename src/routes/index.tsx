@@ -331,6 +331,12 @@ function SocietyDeskLanding() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToStep = (idx: number) => {
+    setActiveStep(idx);
+    const refs = [step0Ref, step1Ref, step2Ref, step3Ref];
+    refs[idx]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
       <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-4 py-3.5 backdrop-blur-md sm:px-8 sm:py-4">
@@ -448,59 +454,97 @@ function SocietyDeskLanding() {
           {/* Parallax 2-Column Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 pt-10">
             {/* LEFT COLUMN: The Narrative Explanations (Scrolls naturally) */}
-            <div className="lg:col-span-6 space-y-12 lg:space-y-20">
-              {FLOW_STEPS.map((stepItem, idx) => (
-                <div
-                  key={stepItem.step}
-                  ref={
-                    idx === 0 ? step0Ref : idx === 1 ? step1Ref : idx === 2 ? step2Ref : step3Ref
-                  }
-                  onClick={() => setActiveStep(idx)}
-                  className={`cursor-pointer rounded-2xl p-6 sm:p-7 transition-all duration-500 border ${
-                    activeStep === idx
-                      ? "border-[#1F3622]/40 bg-white shadow-sm ring-1 ring-[#1F3622]/10"
-                      : "border-transparent bg-transparent opacity-60 hover:opacity-90"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`flex size-8 items-center justify-center rounded-full text-xs font-bold transition-colors ${
-                        activeStep === idx
-                          ? "bg-[#1F3622] text-white ring-4 ring-[#EDF4EE]"
-                          : "bg-[#DFD9CA] text-slate-700"
+            <div className="lg:col-span-6 space-y-8 lg:space-y-12">
+              {FLOW_STEPS.map((stepItem, idx) => {
+                const isActive = activeStep === idx;
+                return (
+                  <div
+                    key={stepItem.step}
+                    ref={
+                      idx === 0 ? step0Ref : idx === 1 ? step1Ref : idx === 2 ? step2Ref : step3Ref
+                    }
+                    onClick={() => scrollToStep(idx)}
+                    className={`group relative cursor-pointer rounded-2xl p-6 sm:p-7 transition-all duration-400 border ${
+                      isActive
+                        ? "border-[#1F3622] bg-white shadow-[0_16px_36px_rgba(31,54,34,0.08)] ring-2 ring-[#1F3622]/20 translate-x-1"
+                        : "border-[#E5DFD1] bg-[#FAF8F2]/70 hover:bg-white hover:border-[#DFD9CA] opacity-75 hover:opacity-100"
+                    }`}
+                  >
+                    {/* Active Left Indicator Bar */}
+                    {isActive && (
+                      <div className="absolute left-0 top-6 bottom-6 w-1.5 rounded-r-full bg-[#1F3622]" />
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`flex size-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                            isActive
+                              ? "bg-[#1F3622] text-white ring-4 ring-[#EDF4EE] shadow-sm scale-110"
+                              : "bg-[#EAE4D6] text-slate-700 font-semibold"
+                          }`}
+                        >
+                          {stepItem.step}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {isActive && (
+                            <span className="size-2 rounded-full bg-[#1F3622] animate-ping" />
+                          )}
+                          <span
+                            className={`text-xs font-bold uppercase tracking-wider ${
+                              isActive ? "text-[#1F3622]" : "text-slate-500"
+                            }`}
+                          >
+                            {stepItem.tag}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Outflow Energy Badge on Active Step */}
+                      {isActive && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[#EDF4EE] border border-[#CADACD] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#1F3622] shadow-2xs">
+                          Active Flow <ArrowRight className="size-3 animate-pulse" />
+                        </span>
+                      )}
+                    </div>
+
+                    <h3
+                      className={`mt-3.5 text-lg sm:text-xl font-bold leading-snug transition-colors ${
+                        isActive ? "text-[#111215]" : "text-[#3A3E47]"
                       }`}
                     >
-                      {stepItem.step}
-                    </span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
-                      {stepItem.tag}
-                    </span>
+                      {stepItem.title}
+                    </h3>
+
+                    <p
+                      className={`mt-2 text-xs sm:text-sm leading-relaxed transition-colors ${
+                        isActive ? "text-[#3E434D]" : "text-[#6A6E78]"
+                      }`}
+                    >
+                      {stepItem.desc}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {stepItem.highlights.map((hl) => (
+                        <span
+                          key={hl}
+                          className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
+                            isActive
+                              ? "bg-[#EDF4EE] border border-[#C5DAC9] text-[#1F3622] font-semibold"
+                              : "bg-[#FAF8F2] border border-[#DFD9CA] text-slate-600"
+                          }`}
+                        >
+                          <Check className="size-3 text-[#1F3622]" weight="bold" />
+                          {hl}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-
-                  <h3 className="mt-3 text-lg sm:text-xl font-bold text-[#111215] leading-snug">
-                    {stepItem.title}
-                  </h3>
-
-                  <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-[#5A5E68]">
-                    {stepItem.desc}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {stepItem.highlights.map((hl) => (
-                      <span
-                        key={hl}
-                        className="inline-flex items-center gap-1 rounded-md bg-[#FAF8F2] border border-[#DFD9CA] px-2.5 py-1 text-[11px] font-medium text-slate-700"
-                      >
-                        <Check className="size-3 text-[#1F3622]" weight="bold" />
-                        {hl}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            {/* RIGHT COLUMN: Sticky Parallax Canvas with Curvy Flowy Stream */}
+            {/* RIGHT COLUMN: Sticky Parallax Canvas with Real Physics Curvy Stream */}
             <div className="lg:col-span-6 relative">
               <div className="sticky top-24 lg:top-28 space-y-4">
                 {/* Stage Stepper Navigation */}
@@ -509,10 +553,10 @@ function SocietyDeskLanding() {
                     <button
                       key={s.step}
                       type="button"
-                      onClick={() => setActiveStep(idx)}
+                      onClick={() => scrollToStep(idx)}
                       className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         activeStep === idx
-                          ? "bg-[#1F3622] text-white shadow-xs"
+                          ? "bg-[#1F3622] text-white shadow-xs scale-102"
                           : "text-slate-600 hover:text-[#111215] hover:bg-[#FAF8F2]"
                       }`}
                     >
@@ -522,69 +566,136 @@ function SocietyDeskLanding() {
                   ))}
                 </div>
 
-                {/* Showcase Container with Curvy Outflow Visualizer */}
-                <div className="relative overflow-hidden rounded-3xl border border-[#DFD9CA] bg-white p-5 sm:p-6 shadow-[0_12px_36px_rgba(0,0,0,0.06)] min-h-[420px] flex flex-col justify-between">
-                  {/* Organic Background Curvy Flow Line */}
-                  <div className="pointer-events-none absolute right-3 top-0 bottom-0 w-16 z-0 hidden sm:block">
+                {/* Showcase Container with Physics Fluid Wave Stream */}
+                <div className="relative overflow-hidden rounded-3xl border border-[#DFD9CA] bg-white p-5 sm:p-7 shadow-[0_16px_40px_rgba(0,0,0,0.06)] min-h-[440px] flex flex-col justify-between">
+                  {/* Real Physics Animated SVG Stream Track */}
+                  <div className="pointer-events-none absolute right-4 top-4 bottom-4 w-14 z-0 hidden sm:block">
                     <svg
-                      className="h-full w-full"
-                      viewBox="0 0 60 420"
+                      className="h-full w-full overflow-visible"
+                      viewBox="0 0 50 420"
                       fill="none"
                       preserveAspectRatio="none"
                     >
+                      <defs>
+                        <linearGradient id="physics-stream-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#1F3622" stopOpacity="0.9" />
+                          <stop offset="35%" stopColor="#4E7A4A" stopOpacity="0.8" />
+                          <stop offset="70%" stopColor="#788F54" stopOpacity="0.9" />
+                          <stop offset="100%" stopColor="#1F3622" stopOpacity="1" />
+                        </linearGradient>
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feGaussianBlur stdDeviation="3" result="blur" />
+                          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                      </defs>
+
+                      {/* Ambient Guide Rail */}
                       <path
-                        d="M 30 10 C 55 80 5 140 30 210 C 55 280 10 350 30 410"
-                        stroke="#1F3622"
-                        strokeOpacity="0.15"
-                        strokeWidth="3"
-                        strokeDasharray="6 4"
+                        d="M 25 15 C 48 85 2 155 25 220 C 48 285 2 355 25 405"
+                        stroke="#E8E2D5"
+                        strokeWidth="5"
+                        strokeLinecap="round"
                       />
-                      {/* Dynamic Active Segment */}
+
+                      {/* Active Fluid Physics Stream */}
                       <path
                         d={
                           activeStep === 0
-                            ? "M 30 10 C 55 80 5 140 30 110"
+                            ? "M 25 15 C 48 85 2 120 25 125"
                             : activeStep === 1
-                              ? "M 30 10 C 55 80 5 140 30 210"
+                              ? "M 25 15 C 48 85 2 155 25 220"
                               : activeStep === 2
-                                ? "M 30 10 C 55 80 5 140 30 210 C 55 280 10 350 30 310"
-                                : "M 30 10 C 55 80 5 140 30 210 C 55 280 10 350 30 410"
+                                ? "M 25 15 C 48 85 2 155 25 220 C 48 285 2 320 25 320"
+                                : "M 25 15 C 48 85 2 155 25 220 C 48 285 2 355 25 405"
                         }
-                        stroke="#1F3622"
-                        strokeWidth="3.5"
+                        stroke="url(#physics-stream-grad)"
+                        strokeWidth="4"
+                        strokeDasharray="10 6"
                         strokeLinecap="round"
-                        className="transition-all duration-700"
+                        filter="url(#glow)"
+                        className="animate-stream-flow transition-all duration-700 ease-out"
                       />
-                      {/* Flowing Milestone Dots */}
+
+                      {/* Traveling Particle Dots */}
                       <circle
-                        cx="30"
-                        cy="15"
+                        cx={
+                          activeStep === 0
+                            ? "28"
+                            : activeStep === 1
+                              ? "25"
+                              : activeStep === 2
+                                ? "22"
+                                : "25"
+                        }
+                        cy={
+                          activeStep === 0
+                            ? "25"
+                            : activeStep === 1
+                              ? "150"
+                              : activeStep === 2
+                                ? "275"
+                                : "400"
+                        }
+                        r="6"
+                        fill="#1F3622"
+                        className="animate-ping transition-all duration-700 ease-out"
+                      />
+                      <circle
+                        cx={
+                          activeStep === 0
+                            ? "28"
+                            : activeStep === 1
+                              ? "25"
+                              : activeStep === 2
+                                ? "22"
+                                : "25"
+                        }
+                        cy={
+                          activeStep === 0
+                            ? "25"
+                            : activeStep === 1
+                              ? "150"
+                              : activeStep === 2
+                                ? "275"
+                                : "400"
+                        }
                         r="5"
+                        fill="#FAF8F2"
+                        stroke="#1F3622"
+                        strokeWidth="2.5"
+                        className="transition-all duration-700 ease-out"
+                      />
+
+                      {/* Milestone Stage Nodes */}
+                      <circle
+                        cx="25"
+                        cy="15"
+                        r="4"
                         fill={activeStep >= 0 ? "#1F3622" : "#DFD9CA"}
                       />
                       <circle
-                        cx="30"
-                        cy="140"
-                        r="5"
+                        cx="25"
+                        cy="145"
+                        r="4"
                         fill={activeStep >= 1 ? "#1F3622" : "#DFD9CA"}
                       />
                       <circle
-                        cx="30"
-                        cy="270"
-                        r="5"
+                        cx="25"
+                        cy="275"
+                        r="4"
                         fill={activeStep >= 2 ? "#1F3622" : "#DFD9CA"}
                       />
                       <circle
-                        cx="30"
+                        cx="25"
                         cy="405"
-                        r="5"
+                        r="4"
                         fill={activeStep >= 3 ? "#1F3622" : "#DFD9CA"}
                       />
                     </svg>
                   </div>
 
                   {/* Morphing Step Card Content */}
-                  <div className="relative z-10">
+                  <div className="relative z-10 sm:pr-8">
                     {/* STEP 01: RESIDENT DISPATCH */}
                     {activeStep === 0 && (
                       <div className="space-y-4 animate-in fade-in zoom-in-95 duration-400">

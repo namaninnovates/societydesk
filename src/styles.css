@@ -308,3 +308,47 @@
 @utility animate-radar {
   animation: radar-wave 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
+
+@keyframes stream-flow {
+  0% {
+    stroke-dashoffset: 60;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes physics-particle {
+  0% {
+    offset-distance: 0%;
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0.2;
+  }
+}
+
+@keyframes stream-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px rgba(31, 54, 34, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(78, 122, 74, 0.6));
+  }
+}
+
+.animate-stream-flow {
+  animation: stream-flow 2.2s linear infinite;
+}
+
+.animate-stream-glow {
+  animation: stream-glow 3s ease-in-out infinite;
+}
