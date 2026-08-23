@@ -149,6 +149,13 @@ function AuthPage() {
     toast.info("Rohit Khanna (Admin) loaded");
   };
 
+  const fillAdmin3 = () => {
+    setTab("admin");
+    setAdminEmail("meera.admin@societydesk.com");
+    setAdminPassword("SocietyDesk@2026!");
+    toast.info("Meera Sengupta (Admin) loaded");
+  };
+
   const fillStaffElectrician = () => {
     setTab("staff");
     setStaffEmail("ramesh.staff@societydesk.com");
@@ -360,10 +367,10 @@ function AuthPage() {
               Quick 1-Click Demo Accounts:
             </div>
 
-            {/* Super Admin & Admins */}
+            {/* Exactly 3 Admins */}
             <div className="space-y-1">
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">
-                👑 Super Admin & Committee (2)
+                👑 Society Admins (3 Total)
               </span>
               <div className="flex flex-wrap gap-1.5">
                 <button
@@ -381,6 +388,14 @@ function AuthPage() {
                 >
                   <ShieldCheck className="size-3 text-emerald-700" />
                   Rohit Khanna (Admin)
+                </button>
+                <button
+                  type="button"
+                  onClick={fillAdmin3}
+                  className="flex items-center gap-1 rounded-md bg-white border border-[#DFD9CA] px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:text-[#1F3622] transition-colors cursor-pointer"
+                >
+                  <ShieldCheck className="size-3 text-emerald-700" />
+                  Meera Sengupta (Admin)
                 </button>
               </div>
             </div>

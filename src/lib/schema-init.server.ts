@@ -22,9 +22,9 @@ export async function ensureDatabaseSchema() {
       ADD COLUMN IF NOT EXISTS assigned_to UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
     `;
 
-    // Standard seed accounts (Super Admin, 2 Admins, 5 Staff Technicians, Residents)
+    // 3. Seed exact 3 Admins, 5 Staff, and Residents
     const seedUsers = [
-      // 1. Super Admin
+      // 1. Super Admin (Naman Gupta)
       {
         email: "naman@societydesk.com",
         full_name: "Naman Gupta",
@@ -34,17 +34,8 @@ export async function ensureDatabaseSchema() {
         phone: "+91 98765 00001",
         password: "SocietyDesk@2026!",
       },
-      {
-        email: "admin@societydesk.com",
-        full_name: "Naman Gupta (Super Admin)",
-        role: "admin" as const,
-        block: "Tower A",
-        unit_number: "Penthouse 01",
-        phone: "+91 98765 00001",
-        password: "SocietyDesk@2026!",
-      },
 
-      // 2. 2 Additional Admins
+      // 2. 2 Committee Admins
       {
         email: "rohit.admin@societydesk.com",
         full_name: "Rohit Khanna",
@@ -196,6 +187,20 @@ export async function ensureDatabaseSchema() {
         `;
       }
     }
+
+    // Strictly enforce exactly 3 total admins in the system
+    await sql`
+      UPDATE public.profiles
+      SET role = 'resident'::public.app_role
+      WHERE role = 'admin'::public.app_role
+        AND LOWER(email) NOT IN ('naman@societydesk.com', 'rohit.admin@societydesk.com', 'meera.admin@societydesk.com')
+    `;
+
+    // Remove legacy placeholder admin email
+    await sql`
+      DELETE FROM public.profiles
+      WHERE LOWER(email) = 'admin@societydesk.com'
+    `;
 
     initialized = true;
   } catch (err) {
