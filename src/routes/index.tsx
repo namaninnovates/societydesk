@@ -3,23 +3,11 @@ import {
   ArrowRight,
   ArrowUp,
   ChartBar,
-  Buildings,
-  Check,
-  CaretDown,
-  CaretLeft,
-  CaretRight,
   Drop,
   Stack,
   PushPin,
-  ShieldCheck,
-  Sparkle,
   Star,
   Timer,
-  Users,
-  Wrench,
-  Lightning,
-  Clock,
-  ChatCircleDots,
 } from "@phosphor-icons/react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { BrandLogo } from "@/components/brand";
@@ -54,20 +42,20 @@ const SCENARIOS = [
     prompt:
       "Water dripping in Tower B lift shaft. Need emergency technician to inspect and fix before evening rush.",
     workflow: [
-      { done: true, text: "CHECK PAST LIFT COMPLAINTS" },
-      { done: true, text: "CREATE WORK ORDER #104" },
-      { done: true, text: "SET PRIORITY: HIGH" },
-      { done: false, text: "ASSIGN OTIS LIFT TEAM" },
-      { done: false, text: "NOTIFY TOWER B RESIDENTS" },
-      { done: false, text: "SEND EMAIL UPDATE" },
+      { done: true, text: "Check past lift reports" },
+      { done: true, text: "Create ticket #104" },
+      { done: true, text: "Set priority: High" },
+      { done: false, text: "Assign lift technician" },
+      { done: false, text: "Notify Tower B residents" },
+      { done: false, text: "Send email update" },
     ],
     rules: [
-      { title: "TOWER B RESIDENTS", desc: "Notice posted on society board" },
-      { title: "TARGET FIX TIME", desc: "4 hours (Urgent lift repairs)" },
-      { title: "OVERDUE ALERT", desc: "Alerts manager if delayed past deadline" },
+      { title: "Tower B Residents", desc: "Notice posted on society board" },
+      { title: "Target Deadline", desc: "4 hours (Emergency lift repair)" },
+      { title: "Overdue Warning", desc: "Alerts manager if delayed past deadline" },
     ],
     resolution: {
-      tag: "FIXED IN 1 HOUR 45 MINS",
+      tag: "RESOLVED IN 1H 45M",
       title: "Tower B Lift Repaired & Tested",
       desc: "Water seal replaced and lift tested for 15 round trips. Working normally.",
       action: "View repair details",
@@ -82,20 +70,20 @@ const SCENARIOS = [
     prompt:
       "Main water pump valve leaking near parking slot 14. Plumber needed to tighten connection.",
     workflow: [
-      { done: true, text: "LOG PLUMBING COMPLAINT" },
-      { done: true, text: "ASSIGN SOCIETY PLUMBER" },
-      { done: true, text: "SET PRIORITY: MEDIUM" },
-      { done: false, text: "CLOSE MAIN VALVE 4B" },
-      { done: false, text: "POST WATER NOTICE" },
-      { done: false, text: "UPDATE REPAIR TIMELINE" },
+      { done: true, text: "Log plumbing complaint" },
+      { done: true, text: "Assign society plumber" },
+      { done: true, text: "Set priority: Medium" },
+      { done: false, text: "Close main valve 4B" },
+      { done: false, text: "Post water notice" },
+      { done: false, text: "Update repair timeline" },
     ],
     rules: [
-      { title: "TOWERS A & B AFFECTED", desc: "Switched to backup water tank" },
-      { title: "TARGET FIX TIME", desc: "24 hours standard plumbing" },
-      { title: "RESIDENT NOTIFICATION", desc: "Email sent with repair update" },
+      { title: "Towers A & B", desc: "Switched to backup water supply" },
+      { title: "Target Deadline", desc: "24 hours standard plumbing" },
+      { title: "Resident Notice", desc: "Email sent with repair schedule" },
     ],
     resolution: {
-      tag: "FIXED IN 50 MINS",
+      tag: "RESOLVED IN 50M",
       title: "Pump Valve Sealed & Checked",
       desc: "Worn gasket replaced and water pressure verified across all floors.",
       action: "View repair details",
@@ -103,101 +91,54 @@ const SCENARIOS = [
   },
 ];
 
-const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-function ScrambleText() {
-  const [displayText, setDisplayText] = useState("multiplied");
-
-  const scramble = useCallback((target = "multiplied") => {
-    let iteration = 0;
-    const maxIterations = target.length * 3;
-
-    const interval = setInterval(() => {
-      const revealedLength = Math.floor(iteration / 3);
-
-      const scrambled = target
-        .split("")
-        .map((char, index) => {
-          if (index < revealedLength) {
-            return char;
-          }
-          return SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
-        })
-        .join("");
-
-      setDisplayText(scrambled);
-      iteration++;
-
-      if (iteration > maxIterations) {
-        clearInterval(interval);
-        setDisplayText(target);
-      }
-    }, 35);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      scramble("multiplied");
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [scramble]);
-
-  return (
-    <span className="font-bold text-[#1F3622] tracking-tight inline-block">{displayText}</span>
-  );
-}
-
 const SOCIETY_FEATURES = [
   {
     id: "photos",
-    tag: "Visual Evidence",
+    tag: "Photos",
     title: "Photos with Every Complaint",
-    desc: "Add up to 3 photos of the leak, crack, or breakdown. Photos compress automatically on your phone so uploads are lightning fast.",
+    desc: "Add up to 3 photos of the leak, electrical issue, or breakdown directly from your phone.",
     icon: Drop,
-    pill: "Auto Compression",
+    pill: "Photo Uploads",
   },
   {
     id: "kanban",
-    tag: "Admin Workspace",
-    title: "List & Board Views for Admins",
-    desc: "Admins can view complaints in a clean list or drag-and-drop Kanban columns (Open, In Progress, Resolved) for rapid triage.",
+    tag: "Triage",
+    title: "List & Kanban Views for Admins",
+    desc: "Admins can view complaints in a clean list or drag cards across Open, In Progress, and Resolved columns.",
     icon: Stack,
-    pill: "Drag & Drop",
+    pill: "Kanban Board",
   },
   {
     id: "notices",
-    tag: "Broadcast",
+    tag: "Notices",
     title: "Notice Board & Email Alerts",
-    desc: "Post important society notices with pinned priority cards. Residents receive email alerts instantly when an urgent notice is published.",
+    desc: "Post society notices with pinned priority cards. Residents receive email alerts for important notices.",
     icon: PushPin,
-    pill: "Pinned Alerts",
+    pill: "Email Alerts",
   },
   {
-    id: "sla",
-    tag: "SLA Tracker",
-    title: "Automated Overdue Warnings",
-    desc: "Set deadline days per category. Delayed complaints turn amber with a blinking alert and auto-surface to the top of the triage list.",
+    id: "deadlines",
+    tag: "Deadlines",
+    title: "Resolution Deadlines",
+    desc: "Set target days per category. Delayed complaints turn amber and auto-surface to the top of the triage list.",
     icon: Timer,
-    pill: "Live Alert",
+    pill: "Auto Escalation",
   },
   {
     id: "analytics",
-    tag: "Intelligence",
+    tag: "Reports",
     title: "Monthly Repair Reports",
-    desc: "See total complaints per category, average days to resolve, and watchlists for repeat issues (e.g. lift breaking down 3+ times).",
+    desc: "Track complaints by category, average days to resolve, and watchlists for repeat maintenance issues.",
     icon: ChartBar,
-    pill: "30-Day Trends",
+    pill: "Monthly Metrics",
   },
   {
     id: "feedback",
-    tag: "Resident Voice",
-    title: "1 to 5 Star Resident Feedback",
-    desc: "Residents rate the repair quality once completed so the management committee knows which technicians deliver great work.",
+    tag: "Feedback",
+    title: "Resident Ratings & Feedback",
+    desc: "Residents rate completed repairs from 1 to 5 stars so the committee knows technician performance.",
     icon: Star,
-    pill: "5-Star Rating",
+    pill: "Star Ratings",
   },
 ];
 
@@ -296,10 +237,9 @@ function PinnedFeaturesCarousel() {
 
                   <div className="mt-6 flex items-center justify-between border-t border-[#F0EBE0] pt-4">
                     <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold bg-[#FAF7EE] border-[#E2DDD0] text-[#1F3622]">
-                      <Sparkle className="size-3.5 text-emerald-600" weight="fill" />
                       {item.pill}
                     </span>
-                    <span className="text-xs font-medium text-[#7C8074]">SocietyDesk Core</span>
+                    <span className="text-xs font-medium text-[#7C8074]">SocietyDesk</span>
                   </div>
                 </div>
               );
@@ -376,16 +316,15 @@ function SocietyDeskLanding() {
 
           {/* Foreground Hero Content */}
           <div className="relative z-10 max-w-2xl">
-            <h1 className="text-4xl font-light leading-[1.05] tracking-tight text-[#111215] sm:text-6xl md:text-7xl lg:text-[82px] sm:leading-[0.95]">
-              <span className="font-light text-[#111215]/90">The society manager,</span>
+            <h1 className="text-4xl font-light leading-[1.05] tracking-tight text-[#111215] sm:text-6xl md:text-7xl lg:text-[76px] sm:leading-[0.98]">
+              <span className="font-light text-[#111215]/90">Maintenance complaints,</span>
               <br />
-              <ScrambleText />
+              <span className="font-bold text-[#1F3622]">resolved on time.</span>
             </h1>
 
             <p className="mt-5 max-w-lg text-sm leading-relaxed text-[#4A4D54] sm:mt-8 sm:text-base md:text-lg">
-              SocietyDesk helps residents report maintenance issues with photos and lets society
-              managers assign workers, track deadlines, and keep everyone informed through notices
-              and email updates.
+              SocietyDesk replaces lost WhatsApp messages and paper registers with an organized,
+              photo-enabled complaint desk for residents, technicians, and society management.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-4 sm:mt-8">
@@ -405,7 +344,7 @@ function SocietyDeskLanding() {
           {/* Scenario Toggle */}
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div className="text-xs font-semibold uppercase tracking-wider text-[#6B707B]">
-              Interactive Simulation
+              Interactive Preview
             </div>
             <div className="flex items-center gap-2 text-xs">
               <span className="font-semibold text-[#8E929B] uppercase">Try sample issue:</span>

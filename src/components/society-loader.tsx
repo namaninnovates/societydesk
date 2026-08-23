@@ -4,10 +4,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const STATUS_MESSAGES = [
-  "Connecting to society records...",
-  "Syncing complaint resolution status...",
-  "Checking maintenance crew schedules...",
-  "Loading live society data...",
+  "Loading complaints...",
+  "Fetching technician updates...",
+  "Loading notice board...",
+  "Updating status records...",
 ];
 
 export function SocietyMaintenanceLoader({
@@ -209,15 +209,15 @@ export function ComplaintsTableSkeleton({ count = 5 }: { count?: number }) {
             <Wrench className="size-3.5 text-[#1F3622]" />
           </div>
           <div>
-            <p className="text-xs font-bold text-[#111215]">Fetching Active Complaints...</p>
+            <p className="text-xs font-bold text-[#111215]">Loading Complaints...</p>
             <p className="text-[10px] text-muted-foreground">
-              Checking resolution deadlines and staff assignments
+              Fetching ticket status and assigned technicians
             </p>
           </div>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#3E4D28] bg-[#3E4D28]/10 px-2 py-0.5 rounded-full border border-[#3E4D28]/20">
           <span className="size-2 rounded-full bg-[#788F54] animate-pulse" />
-          Syncing DB
+          Complaints
         </div>
       </div>
 
@@ -260,15 +260,15 @@ export function DashboardSkeleton() {
             <Buildings className="size-5 text-[#1F3622]" />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#111215]">Loading Society Dashboard...</p>
+            <p className="text-sm font-bold text-[#111215]">Loading Dashboard...</p>
             <p className="text-xs text-muted-foreground">
-              Aggregating live repair metrics & overdue alerts
+              Aggregating monthly metrics and pending repairs
             </p>
           </div>
         </div>
         <div className="flex items-center gap-1.5 text-xs font-semibold text-[#3E4D28] bg-[#3E4D28]/10 px-2.5 py-1 rounded-full border border-[#3E4D28]/20">
           <span className="size-2 rounded-full bg-[#788F54] animate-pulse" />
-          Live Metrics
+          Dashboard
         </div>
       </div>
 
@@ -318,9 +318,9 @@ export function UsersDirectorySkeleton() {
             <Users className="size-3.5 text-[#1F3622]" />
           </div>
           <div>
-            <p className="text-xs font-bold text-[#111215]">Loading User & Staff Directory...</p>
+            <p className="text-xs font-bold text-[#111215]">Loading Directory...</p>
             <p className="text-[10px] text-muted-foreground">
-              Fetching assigned technicians and flat details
+              Fetching resident and technician records
             </p>
           </div>
         </div>
