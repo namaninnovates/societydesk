@@ -693,30 +693,30 @@ function SocietyDeskLanding() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 text-xs space-y-3 shadow-md">
-              <div className="flex justify-between border-b pb-2 text-slate-700 font-bold">
+            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 text-xs space-y-3 shadow-xs">
+              <div className="flex justify-between border-b border-[#DFD9CA] pb-2 text-[#111215] font-bold">
                 <span>Category</span>
                 <span>Target Resolution Time</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center text-slate-700">
                 <span>Lift & Elevator</span>
-                <span className="font-semibold text-red-600">1 Day (Urgent)</span>
+                <span className="font-semibold text-[#1F3622]">1 Day (High Priority)</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center text-slate-700">
                 <span>Plumbing & Water Supply</span>
-                <span className="font-semibold text-blue-600">2 Days</span>
+                <span className="font-semibold text-[#3E4D28]">2 Days</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center text-slate-700">
                 <span>Electrical & Power</span>
-                <span className="font-semibold text-blue-600">2 Days</span>
+                <span className="font-semibold text-[#3E4D28]">2 Days</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center text-slate-700">
                 <span>Housekeeping & Common Area</span>
-                <span className="font-semibold text-slate-600">4 Days</span>
+                <span className="font-semibold text-[#5A5E68]">4 Days</span>
               </div>
-              <div className="flex justify-between text-slate-500 pt-2 border-t text-[11px]">
+              <div className="flex justify-between items-center text-slate-500 pt-2 border-t border-[#DFD9CA] text-[11px]">
                 <span>Default for other complaints</span>
-                <span>3 Days</span>
+                <span className="font-medium text-[#788F54]">3 Days</span>
               </div>
             </div>
           </div>
