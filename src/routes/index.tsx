@@ -322,7 +322,7 @@ function SocietyDeskLanding() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col justify-between bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
+    <div className="flex min-h-screen flex-col bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
       {/* ── TOP NAVIGATION BAR ──────────────────────────────── */}
       <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-6 py-4 backdrop-blur-md sm:px-8">
         <div className="mx-auto grid max-w-[1400px] grid-cols-3 items-center">

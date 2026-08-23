@@ -156,11 +156,13 @@
     border-color: var(--color-border);
   }
 
+  html,
   body {
-    background-color: var(--color-background);
+    background-color: #f6f4ed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
   }
 
   h1,
