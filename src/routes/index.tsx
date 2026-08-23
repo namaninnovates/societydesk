@@ -339,24 +339,15 @@ function SocietyDeskLanding() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-[#DFD9CA] bg-[#FAF8F2] p-5 sm:p-7 shadow-xs">
-          {/* Header & Scenario Selector */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#EAE6DA]">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex size-2 rounded-full bg-[#1F3622]" />
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1F3622]">
-                  Interactive Workflow
-                </span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111215] mt-1">
-                From resident report to verified fix
-              </h3>
+        <div>
+          {/* Scenario Toggle */}
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+              Interactive Preview
             </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-tight">
-                Try scenario:
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-semibold text-slate-500 uppercase tracking-tight">
+                Try sample issue:
               </span>
               {SCENARIOS.map((sc, i) => (
                 <button
@@ -364,8 +355,8 @@ function SocietyDeskLanding() {
                   onClick={() => switchScenario(i)}
                   className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                     activeScenarioIdx === i
-                      ? "bg-[#1F3622] text-white shadow-xs"
-                      : "bg-white border border-[#DFD9CA] text-[#4A4D54] hover:bg-[#F3EFE6]"
+                      ? "bg-[#1F3622] text-white shadow-xs scale-105"
+                      : "bg-[#EAE6DA] text-[#4A4D54] hover:bg-[#DFDACB]"
                   }`}
                 >
                   {sc.label}
@@ -374,191 +365,176 @@ function SocietyDeskLanding() {
             </div>
           </div>
 
-          {/* 4 Pipeline Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 pt-6">
-            {/* Step 1: Report Issue */}
-            <div className="flex flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-4 sm:p-5 shadow-2xs">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <span className="flex size-5 items-center justify-center rounded-full bg-[#1F3622] text-white text-[10px] font-bold">
-                      1
-                    </span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-                      Report Issue
-                    </span>
-                  </div>
-                  <span className="rounded-md bg-amber-50 border border-amber-200/60 text-amber-800 px-2 py-0.5 text-[10px] font-semibold">
-                    {scenario.unitBadge}
-                  </span>
-                </div>
+          <div className="relative min-h-[380px] w-full pt-2">
+            {/* Connecting Flow Line behind Step Badges */}
+            <div className="pointer-events-none absolute top-5.5 left-8 right-8 z-0 hidden border-t-2 border-dashed border-[#1F3622]/30 lg:block" />
 
-                <div className="mt-3 space-y-3">
-                  <textarea
-                    value={customPrompt}
-                    onChange={(e) => setCustomPrompt(e.target.value)}
-                    rows={3}
-                    className="w-full resize-none rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-2.5 text-xs leading-relaxed text-[#111215] outline-none shadow-2xs focus:border-[#1F3622] focus:bg-white transition-colors"
-                  />
-
-                  <div className="flex items-center gap-2 rounded-xl bg-[#FAF8F2] border border-[#DFD9CA] p-2">
-                    <div className="size-8 shrink-0 overflow-hidden rounded-lg border border-slate-200">
-                      <img
-                        src={scenario.image}
-                        alt="Thumbnail"
-                        className="size-full object-cover"
-                      />
-                    </div>
-                    <span className="text-xs font-medium text-[#4A4D54] truncate">
-                      {scenario.photoLabel}
-                    </span>
-                  </div>
-                </div>
+            {/* 4 Step Labels */}
+            <div className="relative z-10 mb-7 hidden grid-cols-12 gap-6 text-xs font-semibold uppercase tracking-wider text-[#4A4D54] lg:grid">
+              <div className="col-span-3">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-[#FAF8F2] px-3.5 py-1 text-[#111215] shadow-2xs">
+                  <span className="font-bold text-[#1F3622]">1.</span> REPORT ISSUE
+                </span>
               </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] font-medium text-slate-500">Resident filing</span>
-                <Link
-                  to="/auth"
-                  className="inline-flex items-center gap-1 rounded-lg bg-[#1F3622] px-2.5 py-1 text-xs font-semibold text-white hover:bg-[#2E4E30] transition-colors"
-                >
-                  Submit <ArrowUp className="size-3" weight="bold" />
-                </Link>
+              <div className="col-span-3 pl-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-[#FAF8F2] px-3.5 py-1 text-[#111215] shadow-2xs">
+                  <span className="font-bold text-[#1F3622]">2.</span> ASSIGN WORKER
+                </span>
               </div>
-            </div>
-
-            {/* Step 2: Assign Worker */}
-            <div className="flex flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-4 sm:p-5 shadow-2xs">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <span className="flex size-5 items-center justify-center rounded-full bg-[#1F3622] text-white text-[10px] font-bold">
-                      2
-                    </span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-                      Assign Worker
-                    </span>
-                  </div>
-                  <span className="rounded-md bg-emerald-50 border border-emerald-200/60 text-emerald-800 px-2 py-0.5 text-[10px] font-semibold">
-                    Admin Action
-                  </span>
-                </div>
-
-                <div className="mt-3 space-y-2">
-                  {scenario.workflow.slice(0, 4).map((item) => (
-                    <div
-                      key={item.text}
-                      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium transition-all ${
-                        item.done
-                          ? "border-[#DFD9CA] bg-[#FAF8F2] text-[#111215]"
-                          : "border-dashed border-slate-200 bg-slate-50/50 text-slate-400"
-                      }`}
-                    >
-                      <span
-                        className={`flex size-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold ${
-                          item.done ? "bg-[#1F3622] text-white" : "bg-slate-200 text-slate-500"
-                        }`}
-                      >
-                        {item.done ? <Check className="size-2.5" weight="bold" /> : "•"}
-                      </span>
-                      <span className="truncate">{item.text}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="col-span-3 pl-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-[#FAF8F2] px-3.5 py-1 text-[#111215] shadow-2xs">
+                  <span className="font-bold text-[#1F3622]">3.</span> TRACK DEADLINE
+                </span>
               </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] font-medium text-slate-500">Auto work order</span>
-                <span className="text-xs font-bold text-[#1F3622]">
-                  WO #{activeScenarioIdx === 0 ? "104" : "109"}
+              <div className="col-span-3 pl-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-[#FAF8F2] px-3.5 py-1 text-[#111215] shadow-2xs">
+                  <span className="font-bold text-[#1F3622]">4.</span> VERIFY & RATE
                 </span>
               </div>
             </div>
 
-            {/* Step 3: Track Deadline */}
-            <div className="flex flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-4 sm:p-5 shadow-2xs">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <span className="flex size-5 items-center justify-center rounded-full bg-[#1F3622] text-white text-[10px] font-bold">
-                      3
-                    </span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-                      Track Deadline
-                    </span>
-                  </div>
-                  <span className="rounded-md bg-[#EDF4EE] border border-[#1F3622]/15 text-[#1F3622] px-2 py-0.5 text-[10px] font-semibold">
-                    Live SLA
-                  </span>
-                </div>
-
-                <div className="mt-3 space-y-2">
-                  {scenario.rules.map((r) => (
-                    <div
-                      key={r.title}
-                      className="rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-2.5 shadow-2xs space-y-0.5"
-                    >
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#111215]">
-                        <Clock className="size-3 text-[#1F3622]" weight="bold" />
-                        <span>{r.title}</span>
-                      </div>
-                      <p className="text-[11px] text-slate-600 pl-4.5">{r.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] font-medium text-slate-500">Auto alerts</span>
-                <span className="text-[11px] font-semibold text-emerald-800">✓ SLA active</span>
-              </div>
-            </div>
-
-            {/* Step 4: Verify & Rate */}
-            <div className="flex flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-4 sm:p-5 shadow-2xs">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <span className="flex size-5 items-center justify-center rounded-full bg-[#1F3622] text-white text-[10px] font-bold">
-                      4
-                    </span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-                      Verify & Rate
-                    </span>
-                  </div>
-                  <span className="rounded-md bg-emerald-50 border border-emerald-200/60 text-emerald-800 px-2 py-0.5 text-[10px] font-semibold">
-                    {scenario.resolution.tag}
-                  </span>
-                </div>
-
-                <div className="mt-3 space-y-2">
-                  <div className="rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-3 shadow-2xs space-y-2">
+            {/* 4 Columns */}
+            <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
+              {/* Col 1: Resident Report Card */}
+              <div className="lg:col-span-3">
+                <div className="relative flex min-h-[240px] flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-[0_8px_24px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_12px_28px_rgba(0,0,0,0.07)]">
+                  <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <div className="flex text-amber-500">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        Resident Ticket
+                      </span>
+                      <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+                        {scenario.unitBadge}
+                      </span>
+                    </div>
+                    <textarea
+                      value={customPrompt}
+                      onChange={(e) => setCustomPrompt(e.target.value)}
+                      rows={3}
+                      className="w-full resize-none border-none bg-transparent p-0 text-sm leading-relaxed text-[#111215] outline-none"
+                    />
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                    <div className="flex items-center gap-2">
+                      <div className="size-7 shrink-0 overflow-hidden rounded-md border border-slate-200 shadow-2xs">
+                        <img
+                          src={scenario.image}
+                          alt="Thumbnail"
+                          className="size-full object-cover"
+                        />
+                      </div>
+                      <span className="max-w-[130px] truncate text-xs font-medium text-[#4A4D54]">
+                        {scenario.photoLabel}
+                      </span>
+                    </div>
+                    <Link
+                      to="/auth"
+                      className="flex size-7 items-center justify-center rounded-lg bg-[#1F3622] text-white shadow-xs transition-all hover:bg-[#2E4E30] hover:scale-105 active:scale-95"
+                      title="Submit issue"
+                    >
+                      <ArrowUp className="size-4" weight="bold" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Col 2: Task Checklist */}
+              <div className="space-y-2 lg:col-span-3 lg:pl-4">
+                {scenario.workflow.map((item) => (
+                  <div
+                    key={item.text}
+                    className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all ${
+                      item.done
+                        ? "border-[#DFD9CA] bg-[#FAF8F2] text-[#111215] shadow-2xs"
+                        : "border-[#EAE6DA] bg-[#FAF8F2]/60 text-slate-400"
+                    }`}
+                  >
+                    <span
+                      className={`flex size-4.5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
+                        item.done ? "bg-[#1F3622] text-white" : "bg-slate-200 text-slate-500"
+                      }`}
+                    >
+                      {item.done ? <Check className="size-2.5" weight="bold" /> : "•"}
+                    </span>
+                    <span className="tracking-tight">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Col 3: Rules & Targets */}
+              <div className="space-y-3 text-xs leading-relaxed lg:col-span-3 lg:pl-4">
+                {scenario.rules.map((r) => (
+                  <div
+                    key={r.title}
+                    className="flex items-start gap-3 rounded-xl border border-[#DFD9CA] bg-white p-3.5 shadow-2xs transition-all hover:border-[#1F3622]/30"
+                  >
+                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-[#EDF4EE] text-[#1F3622]">
+                      <PushPin className="size-3.5" weight="fill" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-[#111215]">{r.title}</div>
+                      <div className="mt-0.5 text-slate-600 leading-snug">{r.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Col 4: Completed Card with Photo Header */}
+              <div className="lg:col-span-3 lg:pl-4">
+                <div className="group relative overflow-hidden rounded-2xl border border-[#233827] bg-[#142317] text-white shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-all hover:border-[#385B3D]">
+                  {/* Photo Header */}
+                  <div className="relative h-36 w-full overflow-hidden">
+                    <img
+                      src={scenario.image}
+                      alt={scenario.resolution.title}
+                      className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    {/* Gradient Overlay Scrim */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#142317] via-[#142317]/40 to-black/30" />
+
+                    {/* Status Badge Tag */}
+                    <div className="absolute top-3 left-3">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/90 px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-emerald-300 shadow-sm backdrop-blur-md">
+                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        {scenario.resolution.tag}
+                      </span>
+                    </div>
+
+                    {/* Star Rating Overlay */}
+                    <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-xs text-amber-400">
+                      <div className="flex">
                         {[...Array(5)].map((_, idx) => (
                           <Star key={idx} className="size-3.5" weight="fill" />
                         ))}
                       </div>
-                      <span className="text-[11px] font-semibold text-slate-700">5.0 Star</span>
+                      <span className="text-[11px] font-medium text-slate-200">
+                        5.0 Star Rating
+                      </span>
                     </div>
-                    <h4 className="text-xs font-bold text-[#111215] leading-snug">
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="p-4 pt-3">
+                    <h4 className="text-sm font-semibold tracking-tight text-white leading-snug">
                       {scenario.resolution.title}
                     </h4>
-                    <p className="text-[11px] text-slate-600 leading-relaxed">
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-300/85">
                       {scenario.resolution.desc}
                     </p>
+                    <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+                      <Link
+                        to="/auth"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
+                      >
+                        {scenario.resolution.action} <ArrowRight className="size-3.5" />
+                      </Link>
+                      <span className="font-mono text-[10px] text-slate-400">
+                        WO #{activeScenarioIdx === 0 ? "104" : "109"}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <Link
-                  to="/auth"
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#1F3622] hover:underline"
-                >
-                  {scenario.resolution.action} <ArrowRight className="size-3" />
-                </Link>
-                <span className="text-[11px] font-semibold text-emerald-800">Closed</span>
               </div>
             </div>
           </div>
