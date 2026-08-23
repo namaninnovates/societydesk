@@ -19,7 +19,7 @@ import {
   Clock,
   ChatCircleDots,
 } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrandLogo } from "@/components/brand";
 
 export const Route = createFileRoute("/")({
@@ -101,6 +101,39 @@ const SCENARIOS = [
   },
 ];
 
+function AnimatedMultiplier() {
+  const multipliers = ["×2", "×4", "×8", "×10"];
+  const [index, setIndex] = useState(3);
+  const [pulse, setPulse] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPulse(true);
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % multipliers.length);
+        setPulse(false);
+      }, 180);
+    }, 2400);
+    return () => clearInterval(timer);
+  }, [multipliers.length]);
+
+  return (
+    <span className="inline-flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <span className="font-bold text-[#1F3622]">multiplied</span>
+      <span
+        className={`inline-flex items-center gap-1 self-center rounded-xl border border-[#3E6542] bg-[#1F3622] px-2.5 py-0.5 text-2xl font-black text-white shadow-md select-none transition-all duration-300 animate-multiplier-glow sm:rounded-2xl sm:px-3 sm:py-1 sm:text-3xl lg:text-4xl ${
+          pulse ? "scale-110 rotate-1" : "scale-100 rotate-0"
+        }`}
+      >
+        <span className="font-black text-emerald-400">×</span>
+        <span className="font-black tracking-tight text-[#EDF7EE] tabular-nums">
+          {multipliers[index]?.replace("×", "")}
+        </span>
+      </span>
+    </span>
+  );
+}
+
 function SocietyDeskLanding() {
   const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
   const scenario = SCENARIOS[activeScenarioIdx]!;
@@ -169,7 +202,7 @@ function SocietyDeskLanding() {
             <h1 className="text-6xl font-medium leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
               The society manager,
               <br />
-              <span className="font-bold text-[#1F3622]">multiplied</span>
+              <AnimatedMultiplier />
             </h1>
 
             <p className="mt-8 max-w-lg text-base leading-relaxed text-[#4A4D54] sm:text-lg">

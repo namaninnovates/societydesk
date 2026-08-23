@@ -193,3 +193,21 @@
 @utility pulse-dot {
   animation: overdue-pulse 1.6s ease-in-out infinite;
 }
+
+@keyframes multiplier-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 4px 20px rgba(31, 54, 34, 0.25),
+      0 0 0 0 rgba(74, 222, 128, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 8px 28px rgba(31, 54, 34, 0.4),
+      0 0 0 5px rgba(74, 222, 128, 0);
+  }
+}
+
+@utility animate-multiplier-glow {
+  animation: multiplier-glow 2.2s ease-in-out infinite;
+}
