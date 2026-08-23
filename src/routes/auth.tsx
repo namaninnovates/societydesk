@@ -361,89 +361,94 @@ function AuthPage() {
           </Tabs>
 
           {/* Quick Demo Credentials Bar */}
-          <div className="mt-6 rounded-xl border border-dashed border-[#DFD9CA] bg-[#FAF8F2] p-3 text-xs space-y-2.5">
-            <div className="flex items-center gap-1.5 font-semibold text-slate-700">
-              <Key className="size-3.5 text-[#1F3622]" />
-              Quick 1-Click Demo Accounts:
+          <div className="mt-6 rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-3 text-xs space-y-3">
+            <div className="flex items-center justify-between text-slate-700 font-semibold">
+              <span className="flex items-center gap-1.5 text-xs text-[#1F3622]">
+                <Key className="size-3.5" />
+                Quick 1-Click Demo Accounts
+              </span>
+              <span className="text-[10px] text-muted-foreground font-normal">Click to fill</span>
             </div>
 
             {/* Exactly 3 Admins */}
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">
-                👑 Society Admins (3 Total)
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                Society Admins (3)
               </span>
               <div className="flex flex-wrap gap-1.5">
                 <button
                   type="button"
                   onClick={fillSuperAdmin}
-                  className="flex items-center gap-1 rounded-md bg-white border border-[#DFD9CA] px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:text-[#1F3622] transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-md bg-white border border-[#DFD9CA] px-2.5 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:border-[#1F3622] hover:text-[#1F3622] transition-colors cursor-pointer"
                 >
-                  <ShieldCheck className="size-3 text-emerald-700" />
+                  <span className="size-1.5 rounded-full bg-[#1F3622]" />
                   Naman Gupta (Super Admin)
                 </button>
                 <button
                   type="button"
                   onClick={fillAdmin2}
-                  className="flex items-center gap-1 rounded-md bg-white border border-[#DFD9CA] px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:text-[#1F3622] transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-md bg-white border border-[#DFD9CA] px-2.5 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:border-[#1F3622] hover:text-[#1F3622] transition-colors cursor-pointer"
                 >
-                  <ShieldCheck className="size-3 text-emerald-700" />
+                  <span className="size-1.5 rounded-full bg-[#1F3622]" />
                   Rohit Khanna (Admin)
                 </button>
                 <button
                   type="button"
                   onClick={fillAdmin3}
-                  className="flex items-center gap-1 rounded-md bg-white border border-[#DFD9CA] px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:text-[#1F3622] transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-md bg-white border border-[#DFD9CA] px-2.5 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:border-[#1F3622] hover:text-[#1F3622] transition-colors cursor-pointer"
                 >
-                  <ShieldCheck className="size-3 text-emerald-700" />
+                  <span className="size-1.5 rounded-full bg-[#1F3622]" />
                   Meera Sengupta (Admin)
                 </button>
               </div>
             </div>
 
             {/* 5 Staff Technicians */}
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">
-                🔧 Staff Workers (5)
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                Staff Technicians (5)
               </span>
               <div className="flex flex-wrap gap-1.5">
                 <button
                   type="button"
                   onClick={fillStaffElectrician}
-                  className="flex items-center gap-1 rounded-md bg-white border border-emerald-200 px-2 py-1 text-[11px] font-medium text-emerald-900 hover:bg-emerald-50 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-md bg-white border border-[#DFD9CA] px-2.5 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:border-[#1F3622] hover:text-[#1F3622] transition-colors cursor-pointer"
                 >
+                  <span className="size-1.5 rounded-full bg-[#788F54]" />
                   Ramesh Kumar (Electrician)
                 </button>
                 <button
                   type="button"
                   onClick={fillStaffPlumber}
-                  className="flex items-center gap-1 rounded-md bg-white border border-emerald-200 px-2 py-1 text-[11px] font-medium text-emerald-900 hover:bg-emerald-50 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-md bg-white border border-[#DFD9CA] px-2.5 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:border-[#1F3622] hover:text-[#1F3622] transition-colors cursor-pointer"
                 >
+                  <span className="size-1.5 rounded-full bg-[#788F54]" />
                   Suresh Sharma (Plumber)
                 </button>
               </div>
             </div>
 
             {/* Residents */}
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">
-                🏠 Residents
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                Residents
               </span>
               <div className="flex flex-wrap gap-1.5">
                 <button
                   type="button"
                   onClick={fillResidentPriya}
-                  className="flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-md bg-white border border-[#DFD9CA] px-2.5 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:border-[#1F3622] hover:text-[#1F3622] transition-colors cursor-pointer"
                 >
-                  <UserCheck className="size-3 text-blue-600" />
-                  Priya Sharma (Flat 402)
+                  <span className="size-1.5 rounded-full bg-slate-400" />
+                  Priya Sharma (Unit 402)
                 </button>
                 <button
                   type="button"
                   onClick={fillResidentVikram}
-                  className="flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2 py-1 text-[11px] font-medium text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-md bg-white border border-[#DFD9CA] px-2.5 py-1 text-[11px] font-medium text-slate-800 hover:bg-[#EDF4EE] hover:border-[#1F3622] hover:text-[#1F3622] transition-colors cursor-pointer"
                 >
-                  <UserCheck className="size-3 text-blue-600" />
-                  Vikram Malhotra (Flat 801)
+                  <span className="size-1.5 rounded-full bg-slate-400" />
+                  Vikram Malhotra (Unit 801)
                 </button>
               </div>
             </div>

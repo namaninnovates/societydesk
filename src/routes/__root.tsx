@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import { Warning } from "@phosphor-icons/react";
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/hooks/use-auth";
 import { Toaster } from "@/components/ui/sonner";
@@ -66,7 +67,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-screen items-center justify-center bg-[#F6F4ED] px-4 py-12">
       <div className="w-full max-w-lg rounded-3xl border border-red-200 bg-white p-8 text-center shadow-md space-y-6">
         <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-red-100 text-red-700">
-          <span className="text-2xl font-bold">⚠️</span>
+          <Warning className="size-8 text-red-700" weight="fill" />
         </div>
         <div className="space-y-2">
           <span className="inline-block rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800 uppercase tracking-wider">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Wrench, Buildings, Users } from "@phosphor-icons/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -205,7 +206,7 @@ export function ComplaintsTableSkeleton({ count = 5 }: { count?: number }) {
       <div className="flex items-center justify-between rounded-xl bg-white border border-[#DFD9CA] p-3 shadow-xs">
         <div className="flex items-center gap-2.5">
           <div className="flex size-7 items-center justify-center rounded-lg bg-[#EDF4EE] text-[#1F3622]">
-            <span className="text-xs">🔧</span>
+            <Wrench className="size-3.5 text-[#1F3622]" />
           </div>
           <div>
             <p className="text-xs font-bold text-[#111215]">Fetching Active Complaints...</p>
@@ -256,7 +257,7 @@ export function DashboardSkeleton() {
       <div className="flex items-center justify-between rounded-2xl bg-white border border-[#DFD9CA] p-4 shadow-xs">
         <div className="flex items-center gap-3">
           <div className="flex size-9 items-center justify-center rounded-xl bg-[#EDF4EE] text-[#1F3622]">
-            <span className="text-base">🏢</span>
+            <Buildings className="size-5 text-[#1F3622]" />
           </div>
           <div>
             <p className="text-sm font-bold text-[#111215]">Loading Society Dashboard...</p>
@@ -314,7 +315,7 @@ export function UsersDirectorySkeleton() {
       <div className="flex items-center justify-between rounded-xl bg-white border border-[#DFD9CA] p-3 shadow-xs">
         <div className="flex items-center gap-2.5">
           <div className="flex size-7 items-center justify-center rounded-lg bg-[#EDF4EE] text-[#1F3622]">
-            <span className="text-xs">👥</span>
+            <Users className="size-3.5 text-[#1F3622]" />
           </div>
           <div>
             <p className="text-xs font-bold text-[#111215]">Loading User & Staff Directory...</p>
