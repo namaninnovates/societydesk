@@ -129,14 +129,14 @@ function AdminShell({ children }: { children: ReactNode }) {
             <p className="text-xs font-semibold text-sidebar-foreground">
               {profile?.full_name || "Administrator"}
             </p>
-            <span className="inline-block mt-0.5 rounded bg-sidebar-accent px-1.5 py-0.5 text-[10px] font-medium text-[#1F3622] uppercase tracking-wider">
+            <span className="inline-block mt-1 rounded-full bg-white/15 border border-white/25 px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
               Admin
             </span>
           </div>
           <Button
             variant="ghost"
             onClick={signOut}
-            className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            className="w-full justify-start text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer"
           >
             <SignOut className="size-4" /> Sign out
           </Button>
@@ -152,7 +152,29 @@ function AdminShell({ children }: { children: ReactNode }) {
             </Button>
           </div>
         </header>
-        {open ? <div className="bg-sidebar p-4 lg:hidden">{nav}</div> : null}
+        {open ? (
+          <div className="bg-sidebar p-4 lg:hidden border-b border-sidebar-border space-y-4">
+            {nav}
+            <div className="pt-3 border-t border-sidebar-border flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-white">
+                  {profile?.full_name || "Administrator"}
+                </p>
+                <span className="inline-block mt-1 rounded-full bg-white/15 border border-white/25 px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
+                  Admin
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={signOut}
+                className="text-white/80 hover:text-white hover:bg-white/10 text-xs"
+              >
+                <SignOut className="size-4 mr-1.5" /> Sign out
+              </Button>
+            </div>
+          </div>
+        ) : null}
         <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">{children}</main>
       </div>
     </div>

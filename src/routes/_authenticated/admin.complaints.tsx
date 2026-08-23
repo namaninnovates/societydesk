@@ -555,16 +555,43 @@ function ComplaintCard({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {/* Assigned Technician Badge */}
-          {row.assigned_profile ? (
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-300 rounded-full px-2 py-0.5">
-              <Wrench className="size-3 text-emerald-700" />
-              {row.assigned_profile.full_name}
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 bg-slate-100 border border-slate-200 rounded-full px-2 py-0.5">
-              Unassigned
-            </span>
+          {/* Quick Assign / Reassign Staff Dropdown */}
+          {onAssign && (
+            <div className="flex items-center">
+              <Select
+                value={row.assigned_to ?? "none"}
+                onValueChange={(val) => onAssign(val === "none" ? null : val)}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "h-8 text-xs cursor-pointer gap-1.5 px-2.5 transition-colors",
+                    row.assigned_profile
+                      ? "bg-emerald-50 border-emerald-300 text-emerald-900 font-medium hover:bg-emerald-100/70"
+                      : "bg-white border-[#DFD9CA] text-slate-700 hover:border-[#1F3622] hover:bg-[#FAF8F2]",
+                  )}
+                >
+                  <Wrench
+                    className={cn(
+                      "size-3.5 shrink-0",
+                      row.assigned_profile ? "text-emerald-700" : "text-[#1F3622]",
+                    )}
+                  />
+                  <span className="truncate max-w-[120px]">
+                    {row.assigned_profile ? row.assigned_profile.full_name : "Assign Staff"}
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">
+                    <span className="text-slate-400">Unassigned</span>
+                  </SelectItem>
+                  {staffList.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      <span className="font-medium text-slate-900">{s.full_name}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
           <StatusPill status={row.status} overdue={row.is_overdue} />
