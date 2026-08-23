@@ -107,10 +107,8 @@ const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
 
 function ScrambleText() {
   const [displayText, setDisplayText] = useState("multiplied");
-  const [isScrambling, setIsScrambling] = useState(false);
 
   const scramble = useCallback((target = "multiplied") => {
-    setIsScrambling(true);
     let iteration = 0;
     const maxIterations = target.length * 3;
 
@@ -133,7 +131,6 @@ function ScrambleText() {
       if (iteration > maxIterations) {
         clearInterval(interval);
         setDisplayText(target);
-        setIsScrambling(false);
       }
     }, 35);
 
@@ -141,29 +138,15 @@ function ScrambleText() {
   }, []);
 
   useEffect(() => {
-    const initialTimer = setTimeout(() => scramble("multiplied"), 600);
-    const timer = setInterval(() => {
+    const timer = setTimeout(() => {
       scramble("multiplied");
-    }, 4000);
+    }, 400);
 
-    return () => {
-      clearTimeout(initialTimer);
-      clearInterval(timer);
-    };
+    return () => clearTimeout(timer);
   }, [scramble]);
 
   return (
-    <span
-      className="font-bold text-[#1F3622] tracking-tight select-none cursor-pointer inline-block"
-      onMouseEnter={() => {
-        if (!isScrambling) scramble("multiplied");
-      }}
-      onClick={() => {
-        if (!isScrambling) scramble("multiplied");
-      }}
-    >
-      {displayText}
-    </span>
+    <span className="font-bold text-[#1F3622] tracking-tight inline-block">{displayText}</span>
   );
 }
 
