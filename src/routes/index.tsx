@@ -361,23 +361,20 @@ function SocietyDeskLanding() {
           </div>
 
           <div className="relative min-h-[380px] w-full pt-2">
-            {/* Connecting Animated Flow Line (Strictly across step header row, completely above cards) */}
-            <div className="pointer-events-none absolute inset-x-0 top-2 h-7 z-0 hidden lg:block overflow-hidden">
+            {/* Connecting Animated Flow Line */}
+            <div className="pointer-events-none absolute inset-0 z-0 hidden lg:block">
               <svg
                 className="h-full w-full"
-                viewBox="0 0 1200 28"
+                viewBox="0 0 1340 380"
                 fill="none"
                 preserveAspectRatio="none"
               >
-                <line
-                  x1="0"
-                  y1="14"
-                  x2="1200"
-                  y2="14"
+                <path
+                  d="M 0 18 L 315 18 C 330 18 340 28 340 42 L 340 50 C 340 64 350 74 365 74 L 1340 74"
                   stroke="#1F3622"
                   strokeWidth="2"
                   strokeLinecap="round"
-                  strokeDasharray="8 6"
+                  strokeDasharray="6 3"
                   className="animate-flow-dash"
                 />
               </svg>

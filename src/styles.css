@@ -311,7 +311,7 @@
 
 @keyframes flow-dash {
   from {
-    stroke-dashoffset: 28;
+    stroke-dashoffset: 9;
   }
   to {
     stroke-dashoffset: 0;
