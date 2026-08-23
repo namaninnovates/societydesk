@@ -103,34 +103,57 @@ const SCENARIOS = [
   },
 ];
 
-function AnimatedMultiplier() {
-  const multipliers = ["×2", "×4", "×8", "×10"];
-  const [index, setIndex] = useState(3);
-  const [pulse, setPulse] = useState(false);
+const SLOT_WORDS = ["multiplied", "streamlined", "automated", "supercharged", "amplified"];
+
+function SlotMachineReel() {
+  const [index, setIndex] = useState(0);
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  const spin = useCallback(() => {
+    setIsSpinning(true);
+    setIndex((prev) => (prev + 1) % SLOT_WORDS.length);
+    const timer = setTimeout(() => {
+      setIsSpinning(false);
+    }, 650);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setPulse(true);
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % multipliers.length);
-        setPulse(false);
-      }, 180);
-    }, 2400);
-    return () => clearInterval(timer);
-  }, [multipliers.length]);
+    const interval = setInterval(spin, 2600);
+    return () => clearInterval(interval);
+  }, [spin]);
 
   return (
-    <span className="inline-flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <span className="font-bold text-[#1F3622]">multiplied</span>
+    <span
+      onClick={spin}
+      className="relative inline-flex h-[1.12em] overflow-hidden align-bottom select-none cursor-pointer group"
+      title="Click to spin"
+    >
+      {/* 3D Cylindrical Shadow Overlays (Slot Machine Window) */}
+      <span className="pointer-events-none absolute inset-x-0 top-0 z-20 h-4 bg-gradient-to-b from-[#F6F4ED] via-[#F6F4ED]/60 to-transparent" />
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-4 bg-gradient-to-t from-[#F6F4ED] via-[#F6F4ED]/60 to-transparent" />
+
+      {/* Rolling Reel Cylinder */}
       <span
-        className={`inline-flex items-center gap-1 self-center rounded-xl border border-[#3E6542] bg-[#1F3622] px-2.5 py-0.5 text-2xl font-black text-white shadow-md select-none transition-all duration-300 animate-multiplier-glow sm:rounded-2xl sm:px-3 sm:py-1 sm:text-3xl lg:text-4xl ${
-          pulse ? "scale-110 rotate-1" : "scale-100 rotate-0"
-        }`}
+        className="flex flex-col transition-transform duration-650 ease-[cubic-bezier(0.34,1.45,0.64,1)]"
+        style={{
+          transform: `translateY(-${(index * 100) / SLOT_WORDS.length}%)`,
+          filter: isSpinning ? "blur(0.6px)" : "none",
+        }}
       >
-        <span className="font-black text-emerald-400">×</span>
-        <span className="font-black tracking-tight text-[#EDF7EE] tabular-nums">
-          {multipliers[index]?.replace("×", "")}
-        </span>
+        {SLOT_WORDS.map((word, i) => {
+          const isActive = index === i;
+          return (
+            <span
+              key={word}
+              className={`inline-flex items-center h-[1.12em] font-bold text-[#1F3622] tracking-tight transition-all duration-300 ${
+                isActive ? "opacity-100 scale-100" : "opacity-30 scale-95"
+              }`}
+            >
+              {word}
+            </span>
+          );
+        })}
       </span>
     </span>
   );
@@ -431,7 +454,7 @@ function SocietyDeskLanding() {
             <h1 className="text-6xl font-light leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
               <span className="font-light text-[#111215]/90">The society manager,</span>
               <br />
-              <AnimatedMultiplier />
+              <SlotMachineReel />
             </h1>
 
             <p className="mt-8 max-w-lg text-base leading-relaxed text-[#4A4D54] sm:text-lg">
