@@ -11,6 +11,11 @@ import {
   Check,
   Wrench,
   Clock,
+  Broadcast,
+  CheckCircle,
+  Lightning,
+  Sparkle,
+  PaperPlaneTilt,
 } from "@phosphor-icons/react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { BrandLogo } from "@/components/brand";
@@ -339,15 +344,24 @@ function SocietyDeskLanding() {
           </div>
         </div>
 
-        <div>
-          {/* Scenario Toggle */}
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
-              Interactive Preview
+        <div className="relative overflow-hidden rounded-3xl border border-[#DFD9CA] bg-gradient-to-b from-[#FAF8F2] to-[#F3EFE6] p-6 sm:p-8 shadow-xs">
+          {/* Header & Scenario Switcher */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#EAE6DA]/80 relative z-10">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex size-2 rounded-full bg-[#1F3622] animate-ping" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1F3622]">
+                  Live Society Flow
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111215] mt-1">
+                How an incident journeys through SocietyDesk
+              </h3>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="font-semibold text-slate-500 uppercase tracking-tight">
-                Try sample issue:
+
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-tight">
+                Simulate Issue:
               </span>
               {SCENARIOS.map((sc, i) => (
                 <button
@@ -356,7 +370,7 @@ function SocietyDeskLanding() {
                   className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                     activeScenarioIdx === i
                       ? "bg-[#1F3622] text-white shadow-xs scale-105"
-                      : "bg-[#EAE6DA] text-[#4A4D54] hover:bg-[#DFDACB]"
+                      : "bg-white/80 border border-[#DFD9CA] text-[#4A4D54] hover:bg-[#FAF8F2]"
                   }`}
                 >
                   {sc.label}
@@ -365,174 +379,265 @@ function SocietyDeskLanding() {
             </div>
           </div>
 
-          <div className="relative min-h-[380px] w-full pt-2">
-            {/* Connecting Flow Line behind Step Badges */}
-            <div className="pointer-events-none absolute top-5.5 left-8 right-8 z-0 hidden border-t-2 border-dashed border-[#1F3622]/30 lg:block" />
+          {/* Connected Flow Canvas */}
+          <div className="relative pt-6">
+            {/* SVG Curvy Flow Lines (Visible on Large Screens) */}
+            <div className="pointer-events-none absolute inset-0 z-0 hidden lg:block overflow-visible">
+              <svg
+                className="w-full h-full"
+                viewBox="0 0 1200 360"
+                fill="none"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient id="stream-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#1F3622" stopOpacity="0.8" />
+                    <stop offset="50%" stopColor="#788F54" stopOpacity="0.7" />
+                    <stop offset="100%" stopColor="#1F3622" stopOpacity="0.9" />
+                  </linearGradient>
+                </defs>
 
-            {/* 4 Step Labels */}
-            <div className="relative z-10 mb-7 hidden grid-cols-12 gap-6 text-xs font-semibold uppercase tracking-wider text-[#4A4D54] lg:grid">
-              <div className="col-span-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-[#FAF8F2] px-3.5 py-1 text-[#111215] shadow-2xs">
-                  <span className="font-bold text-[#1F3622]">1.</span> REPORT ISSUE
-                </span>
-              </div>
-              <div className="col-span-3 pl-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-[#FAF8F2] px-3.5 py-1 text-[#111215] shadow-2xs">
-                  <span className="font-bold text-[#1F3622]">2.</span> ASSIGN WORKER
-                </span>
-              </div>
-              <div className="col-span-3 pl-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-[#FAF8F2] px-3.5 py-1 text-[#111215] shadow-2xs">
-                  <span className="font-bold text-[#1F3622]">3.</span> TRACK DEADLINE
-                </span>
-              </div>
-              <div className="col-span-3 pl-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-[#FAF8F2] px-3.5 py-1 text-[#111215] shadow-2xs">
-                  <span className="font-bold text-[#1F3622]">4.</span> VERIFY & RATE
-                </span>
-              </div>
+                {/* S-Curve 1: From Card 1 (Resident dispatch) to Card 2 (Triage spine) */}
+                <path
+                  d="M 285 160 C 330 160, 310 80, 355 80"
+                  stroke="url(#stream-grad)"
+                  strokeWidth="2.5"
+                  strokeDasharray="5 4"
+                  strokeLinecap="round"
+                />
+
+                {/* S-Curve 2: From Card 2 (Triage spine) to Card 3 (Radar & SLA) */}
+                <path
+                  d="M 580 80 C 625 80, 605 140, 650 140"
+                  stroke="url(#stream-grad)"
+                  strokeWidth="2.5"
+                  strokeDasharray="5 4"
+                  strokeLinecap="round"
+                />
+
+                {/* S-Curve 3: From Card 3 (Radar & SLA) to Card 4 (Resolution) */}
+                <path
+                  d="M 875 140 C 920 140, 900 95, 945 95"
+                  stroke="url(#stream-grad)"
+                  strokeWidth="2.5"
+                  strokeDasharray="5 4"
+                  strokeLinecap="round"
+                />
+              </svg>
             </div>
 
-            {/* 4 Columns */}
-            <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
-              {/* Col 1: Resident Report Card */}
-              <div className="lg:col-span-3">
-                <div className="relative flex min-h-[240px] flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-[0_8px_24px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_12px_28px_rgba(0,0,0,0.07)]">
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                        Resident Ticket
+            {/* 4 Flow Nodes */}
+            <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-4">
+              {/* NODE 1: Resident Incident Dispatch */}
+              <div className="relative flex flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-[0_10px_28px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_14px_32px_rgba(0,0,0,0.08)]">
+                {/* Outflow Pulse Node Marker */}
+                <div className="absolute -right-2 top-36 z-20 hidden lg:flex size-4 items-center justify-center rounded-full bg-[#1F3622] ring-4 ring-[#EDF4EE]">
+                  <span className="size-1.5 rounded-full bg-white animate-ping" />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <span className="flex size-5.5 items-center justify-center rounded-full bg-[#1F3622] text-white text-[11px] font-bold">
+                        1
                       </span>
-                      <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
-                        {scenario.unitBadge}
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
+                        Resident Dispatch
                       </span>
                     </div>
-                    <textarea
-                      value={customPrompt}
-                      onChange={(e) => setCustomPrompt(e.target.value)}
-                      rows={3}
-                      className="w-full resize-none border-none bg-transparent p-0 text-sm leading-relaxed text-[#111215] outline-none"
-                    />
+                    <span className="rounded-full bg-amber-50 border border-amber-200/80 px-2.5 py-0.5 text-[10px] font-semibold text-amber-800">
+                      {scenario.unitBadge}
+                    </span>
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-                    <div className="flex items-center gap-2">
-                      <div className="size-7 shrink-0 overflow-hidden rounded-md border border-slate-200 shadow-2xs">
+                  <div className="mt-3.5 space-y-3">
+                    <div className="relative rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-3 shadow-2xs focus-within:border-[#1F3622] focus-within:bg-white transition-colors">
+                      <textarea
+                        value={customPrompt}
+                        onChange={(e) => setCustomPrompt(e.target.value)}
+                        rows={3}
+                        className="w-full resize-none border-none bg-transparent p-0 text-xs leading-relaxed text-[#111215] outline-none"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2.5 rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-2">
+                      <div className="size-8 shrink-0 overflow-hidden rounded-lg border border-slate-200 shadow-2xs">
                         <img
                           src={scenario.image}
                           alt="Thumbnail"
                           className="size-full object-cover"
                         />
                       </div>
-                      <span className="max-w-[130px] truncate text-xs font-medium text-[#4A4D54]">
+                      <span className="text-xs font-medium text-[#4A4D54] truncate">
                         {scenario.photoLabel}
                       </span>
                     </div>
-                    <Link
-                      to="/auth"
-                      className="flex size-7 items-center justify-center rounded-lg bg-[#1F3622] text-white shadow-xs transition-all hover:bg-[#2E4E30] hover:scale-105 active:scale-95"
-                      title="Submit issue"
-                    >
-                      <ArrowUp className="size-4" weight="bold" />
-                    </Link>
                   </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-[11px] font-medium text-slate-500">Auto-tagged unit</span>
+                  <Link
+                    to="/auth"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#1F3622] px-3 py-1 text-xs font-semibold text-white shadow-xs hover:bg-[#2E4E30] transition-transform hover:scale-105 active:scale-95"
+                    title="Submit issue"
+                  >
+                    <span>Dispatch</span>
+                    <PaperPlaneTilt className="size-3" weight="bold" />
+                  </Link>
                 </div>
               </div>
 
-              {/* Col 2: Task Checklist */}
-              <div className="space-y-2 lg:col-span-3 lg:pl-4">
-                {scenario.workflow.map((item) => (
-                  <div
-                    key={item.text}
-                    className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all ${
-                      item.done
-                        ? "border-[#DFD9CA] bg-[#FAF8F2] text-[#111215] shadow-2xs"
-                        : "border-[#EAE6DA] bg-[#FAF8F2]/60 text-slate-400"
-                    }`}
-                  >
-                    <span
-                      className={`flex size-4.5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-                        item.done ? "bg-[#1F3622] text-white" : "bg-slate-200 text-slate-500"
-                      }`}
-                    >
-                      {item.done ? <Check className="size-2.5" weight="bold" /> : "•"}
+              {/* NODE 2: Automated Triage Spine */}
+              <div className="relative flex flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-[0_10px_28px_rgba(0,0,0,0.04)]">
+                {/* Outflow Pulse Node Marker */}
+                <div className="absolute -right-2 top-16 z-20 hidden lg:flex size-4 items-center justify-center rounded-full bg-[#1F3622] ring-4 ring-[#EDF4EE]">
+                  <span className="size-1.5 rounded-full bg-white" />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <span className="flex size-5.5 items-center justify-center rounded-full bg-[#1F3622] text-white text-[11px] font-bold">
+                        2
+                      </span>
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
+                        Triage Spine
+                      </span>
+                    </div>
+                    <span className="rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-800">
+                      WO #{activeScenarioIdx === 0 ? "104" : "109"}
                     </span>
-                    <span className="tracking-tight">{item.text}</span>
                   </div>
-                ))}
+
+                  {/* Progressive Task Spine */}
+                  <div className="mt-3.5 relative pl-4 space-y-2.5 before:absolute before:left-1.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#DFD9CA]">
+                    {scenario.workflow.slice(0, 4).map((item) => (
+                      <div key={item.text} className="relative flex items-center gap-2.5 text-xs">
+                        <span
+                          className={`absolute -left-4 flex size-3.5 items-center justify-center rounded-full ring-4 ring-white ${
+                            item.done ? "bg-[#1F3622] text-white" : "bg-slate-300 text-slate-600"
+                          }`}
+                        >
+                          {item.done ? <Check className="size-2" weight="bold" /> : null}
+                        </span>
+                        <div
+                          className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-medium border transition-all ${
+                            item.done
+                              ? "border-[#DFD9CA] bg-[#FAF8F2] text-[#111215]"
+                              : "border-dashed border-slate-200 bg-slate-50/50 text-slate-400"
+                          }`}
+                        >
+                          <span className="truncate">{item.text}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-[11px] font-medium text-slate-500">Auto assignment</span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1F3622]">
+                    <Lightning className="size-3" weight="fill" /> High Priority
+                  </span>
+                </div>
               </div>
 
-              {/* Col 3: Rules & Targets */}
-              <div className="space-y-3 text-xs leading-relaxed lg:col-span-3 lg:pl-4">
-                {scenario.rules.map((r) => (
-                  <div
-                    key={r.title}
-                    className="flex items-start gap-3 rounded-xl border border-[#DFD9CA] bg-white p-3.5 shadow-2xs transition-all hover:border-[#1F3622]/30"
-                  >
-                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-[#EDF4EE] text-[#1F3622]">
-                      <PushPin className="size-3.5" weight="fill" />
+              {/* NODE 3: Community Broadcast & SLA Radar */}
+              <div className="relative flex flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-[0_10px_28px_rgba(0,0,0,0.04)]">
+                {/* Outflow Pulse Node Marker */}
+                <div className="absolute -right-2 top-32 z-20 hidden lg:flex size-4 items-center justify-center rounded-full bg-[#1F3622] ring-4 ring-[#EDF4EE]">
+                  <span className="size-1.5 rounded-full bg-white" />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <span className="flex size-5.5 items-center justify-center rounded-full bg-[#1F3622] text-white text-[11px] font-bold">
+                        3
+                      </span>
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#111215]">
+                        Broadcast & SLA
+                      </span>
                     </div>
-                    <div>
-                      <div className="font-semibold text-[#111215]">{r.title}</div>
-                      <div className="mt-0.5 text-slate-600 leading-snug">{r.desc}</div>
-                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#EDF4EE] border border-[#1F3622]/15 px-2.5 py-0.5 text-[10px] font-semibold text-[#1F3622]">
+                      <Broadcast className="size-2.5 animate-pulse" /> Live SLA
+                    </span>
                   </div>
-                ))}
+
+                  <div className="mt-3.5 space-y-2.5">
+                    {scenario.rules.map((r) => (
+                      <div
+                        key={r.title}
+                        className="rounded-xl border border-[#DFD9CA] bg-[#FAF8F2] p-2.5 shadow-2xs space-y-0.5"
+                      >
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-[#111215]">
+                          <Clock className="size-3 text-[#1F3622]" weight="bold" />
+                          <span>{r.title}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-600 pl-4.5">{r.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-[11px] font-medium text-slate-500">Overdue guard</span>
+                  <span className="text-[11px] font-semibold text-emerald-800">✓ On schedule</span>
+                </div>
               </div>
 
-              {/* Col 4: Completed Card with Photo Header */}
-              <div className="lg:col-span-3 lg:pl-4">
-                <div className="group relative overflow-hidden rounded-2xl border border-[#233827] bg-[#142317] text-white shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-all hover:border-[#385B3D]">
+              {/* NODE 4: Verified Resolution & 5-Star Seal */}
+              <div className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#233827] bg-[#142317] text-white shadow-[0_14px_36px_rgba(0,0,0,0.14)] transition-all hover:border-[#385B3D]">
+                <div>
                   {/* Photo Header */}
-                  <div className="relative h-36 w-full overflow-hidden">
+                  <div className="relative h-32 w-full overflow-hidden">
                     <img
                       src={scenario.image}
                       alt={scenario.resolution.title}
-                      className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                      className="h-full w-full object-cover object-center"
                     />
-                    {/* Gradient Overlay Scrim */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#142317] via-[#142317]/40 to-black/30" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#142317] via-[#142317]/50 to-black/30" />
 
-                    {/* Status Badge Tag */}
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-2.5 left-2.5">
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/90 px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-emerald-300 shadow-sm backdrop-blur-md">
                         <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         {scenario.resolution.tag}
                       </span>
                     </div>
 
-                    {/* Star Rating Overlay */}
-                    <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-xs text-amber-400">
+                    <div className="absolute bottom-2 left-2.5 flex items-center gap-1.5 text-xs text-amber-400">
                       <div className="flex">
                         {[...Array(5)].map((_, idx) => (
                           <Star key={idx} className="size-3.5" weight="fill" />
                         ))}
                       </div>
-                      <span className="text-[11px] font-medium text-slate-200">
-                        5.0 Star Rating
-                      </span>
+                      <span className="text-[11px] font-medium text-slate-200">5.0 Rating</span>
                     </div>
                   </div>
 
                   {/* Card Content */}
                   <div className="p-4 pt-3">
-                    <h4 className="text-sm font-semibold tracking-tight text-white leading-snug">
+                    <h4 className="text-xs sm:text-sm font-semibold tracking-tight text-white leading-snug">
                       {scenario.resolution.title}
                     </h4>
-                    <p className="mt-1.5 text-xs leading-relaxed text-slate-300/85">
+                    <p className="mt-1 text-[11px] leading-relaxed text-slate-300/85">
                       {scenario.resolution.desc}
                     </p>
-                    <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
-                      <Link
-                        to="/auth"
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
-                      >
-                        {scenario.resolution.action} <ArrowRight className="size-3.5" />
-                      </Link>
-                      <span className="font-mono text-[10px] text-slate-400">
-                        WO #{activeScenarioIdx === 0 ? "104" : "109"}
-                      </span>
-                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 pt-0">
+                  <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                    <Link
+                      to="/auth"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
+                    >
+                      {scenario.resolution.action} <ArrowRight className="size-3.5" />
+                    </Link>
+                    <span className="rounded-md bg-emerald-950 border border-emerald-500/30 px-1.5 py-0.5 font-mono text-[9px] text-emerald-300">
+                      VERIFIED
+                    </span>
                   </div>
                 </div>
               </div>
