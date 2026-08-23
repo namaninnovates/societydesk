@@ -222,7 +222,7 @@ function PinnedFeaturesCarousel() {
 
     const trackWidth = trackRef.current.scrollWidth;
     const containerWidth = trackRef.current.parentElement?.clientWidth || window.innerWidth;
-    const maxShift = Math.max(trackWidth - containerWidth + 64, 0);
+    const maxShift = Math.max(trackWidth - containerWidth, 0);
     setMaxTranslate(maxShift);
   }, []);
 
@@ -245,12 +245,12 @@ function PinnedFeaturesCarousel() {
     <section
       ref={sectionRef}
       id="features"
-      className="relative h-[280vh] border-t border-[#E8E4D8] bg-[#F6F4ED]"
+      className="relative h-[180vh] border-t border-[#E8E4D8] bg-[#F6F4ED]"
     >
       <div className="sticky top-0 flex h-screen w-full flex-col justify-center overflow-hidden px-6 sm:px-8">
         <div className="mx-auto w-full max-w-[1400px]">
           {/* Header */}
-          <div className="mb-10 max-w-xl">
+          <div className="mb-8 max-w-xl">
             <span className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
               Built for Societies
             </span>
@@ -262,10 +262,10 @@ function PinnedFeaturesCarousel() {
           {/* Horizontal Track translated by vertical scroll */}
           <div
             ref={trackRef}
-            className="flex gap-7 will-change-transform"
+            className="flex gap-6 will-change-transform"
             style={{
               transform: `translateX(-${scrollProgress * maxTranslate}px)`,
-              transition: "transform 0.05s ease-out",
+              transition: "transform 0.08s cubic-bezier(0.2, 0.8, 0.4, 1)",
             }}
           >
             {SOCIETY_FEATURES.map((item) => {
@@ -273,26 +273,28 @@ function PinnedFeaturesCarousel() {
               return (
                 <div
                   key={item.id}
-                  className="w-[320px] sm:w-[380px] lg:w-[420px] shrink-0 rounded-3xl border border-[#DFD9CA] bg-white p-8 shadow-sm transition-all duration-300 flex flex-col justify-between hover:border-[#1F3622] hover:shadow-md"
+                  className="w-[300px] sm:w-[360px] lg:w-[390px] shrink-0 rounded-3xl border border-[#DFD9CA] bg-white p-7 shadow-sm transition-all duration-200 flex flex-col justify-between hover:border-[#1F3622] hover:shadow-md"
                 >
                   <div>
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-5">
                       <div className="text-xs font-bold uppercase tracking-wider text-[#687063]">
                         {item.tag}
                       </div>
-                      <div className="flex size-12 items-center justify-center rounded-2xl bg-[#EDF4EE] text-[#1F3622]">
+                      <div className="flex size-11 items-center justify-center rounded-2xl bg-[#EDF4EE] text-[#1F3622]">
                         <Icon className="size-6" weight="fill" />
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-bold tracking-tight text-[#111215] leading-snug">
+                    <h3 className="text-lg font-bold tracking-tight text-[#111215] leading-snug">
                       {item.title}
                     </h3>
 
-                    <p className="mt-3 text-sm leading-relaxed text-[#5A5E68]">{item.desc}</p>
+                    <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-[#5A5E68]">
+                      {item.desc}
+                    </p>
                   </div>
 
-                  <div className="mt-8 flex items-center justify-between border-t border-[#F0EBE0] pt-4">
+                  <div className="mt-6 flex items-center justify-between border-t border-[#F0EBE0] pt-4">
                     <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold bg-[#FAF7EE] border-[#E2DDD0] text-[#1F3622]">
                       <Sparkle className="size-3.5 text-emerald-600" weight="fill" />
                       {item.pill}
