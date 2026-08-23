@@ -55,7 +55,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminDashboard,
 });
 
-const CHART_COLORS = ["#1F3622", "#2E4E30", "#5F8E63", "#C8DAC2"];
+const CHART_COLORS = ["#3E4D28", "#6D8249", "#9FB375", "#BDCC9B"];
 const BLOCKS = ["Tower A", "Tower B", "Tower C", "Tower D", "Clubhouse"];
 
 function AdminDashboard() {
@@ -387,7 +387,7 @@ function AdminDashboard() {
                       padding: "4px 8px",
                     }}
                   />
-                  <Bar dataKey="value" fill="#1F3622" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="value" fill="#3E4D28" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

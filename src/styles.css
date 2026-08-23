@@ -96,11 +96,11 @@
   --info-foreground: #1f3622;
   --info-soft: #edf3ea;
   --neutral-soft: oklch(0.94 0.005 250);
-  --chart-1: #1f3622;
-  --chart-2: #2e4e30;
-  --chart-3: oklch(0.77 0.155 70);
-  --chart-4: #436c46;
-  --chart-5: #5f8e63;
+  --chart-1: #3e4d28;
+  --chart-2: #556837;
+  --chart-3: #6d8249;
+  --chart-4: #829758;
+  --chart-5: #9fb375;
   --sidebar: #1f3622;
   --sidebar-foreground: oklch(0.93 0.02 180);
   --sidebar-primary: #2e4e30;
