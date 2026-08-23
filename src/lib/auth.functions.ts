@@ -4,7 +4,7 @@ export type AuthProfile = {
   id: string;
   email: string;
   full_name: string;
-  role: "admin" | "resident";
+  role: "admin" | "staff" | "resident";
   unit_number: string | null;
   block: string | null;
   phone: string | null;
@@ -19,6 +19,9 @@ export const signInServerFn = createServerFn({ method: "POST" })
   .validator((d: { email: string; password: string }) => d)
   .handler(async ({ data }) => {
     const { email, password } = data;
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
+
     const { sql } = await import("@/integrations/neon/client.server");
     const { verifyPassword, createJwtToken } = await import("@/lib/auth.server");
 
@@ -68,11 +71,14 @@ export const signUpServerFn = createServerFn({ method: "POST" })
       unit_number: string;
       block: string;
       phone: string;
-      role?: "admin" | "resident";
+      role?: "admin" | "staff" | "resident";
     }) => d,
   )
   .handler(async ({ data }) => {
     const { full_name, email, password, unit_number, block, phone, role = "resident" } = data;
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
+
     const { sql } = await import("@/integrations/neon/client.server");
     const { hashPassword, createJwtToken } = await import("@/lib/auth.server");
 
@@ -136,6 +142,9 @@ export const getCurrentUserServerFn = createServerFn({ method: "GET" })
     const { verifyJwtToken } = await import("@/lib/auth.server");
     const session = await verifyJwtToken(token);
     if (!session) return null;
+
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
 
     const { sql } = await import("@/integrations/neon/client.server");
     const rows = (await sql`
@@ -201,14 +210,137 @@ export const updateProfileServerFn = createServerFn({ method: "POST" })
   });
 
 export const fetchResidentsServerFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+  await ensureDatabaseSchema();
+
   const { sql } = await import("@/integrations/neon/client.server");
   const rows = (await sql`
     SELECT id, full_name, email, role, unit_number, block, phone, created_at
     FROM profiles
-    ORDER BY block ASC, unit_number ASC
+    ORDER BY role ASC, block ASC, unit_number ASC
   `) as unknown as AuthProfile[];
   return rows;
 });
+
+export const fetchStaffMembersServerFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+  await ensureDatabaseSchema();
+
+  const { sql } = await import("@/integrations/neon/client.server");
+  const rows = (await sql`
+    SELECT id, full_name, email, role, unit_number, block, phone, created_at
+    FROM profiles
+    WHERE role = 'staff'
+    ORDER BY full_name ASC
+  `) as unknown as AuthProfile[];
+  return rows;
+});
+
+export const createUserByAdminServerFn = createServerFn({ method: "POST" })
+  .validator(
+    (d: {
+      full_name: string;
+      email: string;
+      password: string;
+      role: "admin" | "staff" | "resident";
+      unit_number?: string | null;
+      block?: string | null;
+      phone?: string | null;
+    }) => d,
+  )
+  .handler(async ({ data }) => {
+    const { full_name, email, password, role, unit_number, block, phone } = data;
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
+
+    const { sql } = await import("@/integrations/neon/client.server");
+    const { hashPassword } = await import("@/lib/auth.server");
+
+    const existing = await sql`
+      SELECT id FROM profiles WHERE LOWER(email) = LOWER(${email.trim()}) LIMIT 1
+    `;
+
+    if (existing.length > 0) {
+      throw new Error("A user with this email already exists");
+    }
+
+    const password_hash = await hashPassword(password || "SocietyDesk@2026");
+
+    const rows = (await sql`
+      INSERT INTO profiles (
+        id, full_name, email, password_hash, role, unit_number, block, phone
+      ) VALUES (
+        gen_random_uuid(),
+        ${full_name.trim()},
+        ${email.trim().toLowerCase()},
+        ${password_hash},
+        ${role},
+        ${unit_number?.trim() || null},
+        ${block?.trim() || null},
+        ${phone?.trim() || null}
+      )
+      RETURNING id, email, full_name, role, unit_number, block, phone, created_at
+    `) as unknown as AuthProfile[];
+
+    return rows[0];
+  });
+
+export const updateUserRoleServerFn = createServerFn({ method: "POST" })
+  .validator((d: { userId: string; role: "admin" | "staff" | "resident" }) => d)
+  .handler(async ({ data }) => {
+    const { userId, role } = data;
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
+
+    const { sql } = await import("@/integrations/neon/client.server");
+    await sql`
+      UPDATE profiles
+      SET role = ${role}
+      WHERE id = ${userId}
+    `;
+    return { success: true };
+  });
+
+export const updateUserServerFn = createServerFn({ method: "POST" })
+  .validator(
+    (d: {
+      userId: string;
+      full_name: string;
+      email: string;
+      role: "admin" | "staff" | "resident";
+      unit_number?: string | null;
+      block?: string | null;
+      phone?: string | null;
+    }) => d,
+  )
+  .handler(async ({ data }) => {
+    const { userId, full_name, email, role, unit_number, block, phone } = data;
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
+
+    const { sql } = await import("@/integrations/neon/client.server");
+    await sql`
+      UPDATE profiles
+      SET 
+        full_name = ${full_name.trim()},
+        email = ${email.trim().toLowerCase()},
+        role = ${role},
+        unit_number = ${unit_number?.trim() || null},
+        block = ${block?.trim() || null},
+        phone = ${phone?.trim() || null}
+      WHERE id = ${userId}
+    `;
+    return { success: true };
+  });
+
+export const deleteUserServerFn = createServerFn({ method: "POST" })
+  .validator((d: { userId: string }) => d)
+  .handler(async ({ data }) => {
+    const { userId } = data;
+    const { sql } = await import("@/integrations/neon/client.server");
+    await sql`DELETE FROM profiles WHERE id = ${userId}`;
+    return { success: true };
+  });
 
 export const signOutServerFn = createServerFn({ method: "POST" }).handler(async () => {
   return { success: true };

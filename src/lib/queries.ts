@@ -12,11 +12,29 @@ import {
   updateOverdueThresholdServerFn,
   createNoticeServerFn,
   deleteNoticeServerFn,
+  assignComplaintServerFn,
 } from "./complaints.functions";
+
+export {
+  fetchComplaintsServerFn,
+  fetchComplaintByIdServerFn,
+  fetchComplaintHistoryServerFn,
+  fetchComplaintCommentsServerFn,
+  fetchNoticesServerFn,
+  addComplaintCommentServerFn,
+  addResolutionFeedbackServerFn,
+  updateComplaintStatusServerFn,
+  fetchOverdueThresholdsServerFn,
+  updateOverdueThresholdServerFn,
+  createNoticeServerFn,
+  deleteNoticeServerFn,
+  assignComplaintServerFn,
+};
 
 export type ComplaintRow = {
   id: string;
   resident_id: string;
+  assigned_to?: string | null;
   category: string;
   title: string;
   description: string;
@@ -32,12 +50,21 @@ export type ComplaintRow = {
     block: string | null;
     phone: string | null;
   } | null;
+  assigned_profile?: {
+    id: string;
+    full_name: string;
+    email: string;
+    phone: string | null;
+    role: string;
+  } | null;
   complaint_photos?: { id: string; storage_path: string }[];
 };
 
 export async function fetchComplaints(
   opts: {
     residentId?: string;
+    assignedTo?: string;
+    unassignedOnly?: boolean;
     status?: string;
     category?: string;
     priority?: string;

@@ -17,6 +17,7 @@ type AuthValue = {
   profile: Profile | null;
   profileLoading: boolean;
   isAdmin: boolean;
+  isStaff: boolean;
   setAuth: (profile: Profile, token: string) => void;
   signOut: () => Promise<void>;
 };
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthValue>({
   profile: null,
   profileLoading: true,
   isAdmin: false,
+  isStaff: false,
   setAuth: () => {},
   signOut: async () => {},
 });
@@ -137,6 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profile: profile ?? null,
         profileLoading: Boolean(token) && profileLoading,
         isAdmin: profile?.role === "admin",
+        isStaff: profile?.role === "staff",
         setAuth,
         signOut,
       }}

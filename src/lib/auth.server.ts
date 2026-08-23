@@ -27,7 +27,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 export type TokenPayload = {
   id: string;
   email: string;
-  role: "admin" | "resident";
+  role: "admin" | "staff" | "resident";
 };
 
 export async function createJwtToken(user: TokenPayload): Promise<string> {
@@ -49,7 +49,7 @@ export async function verifyJwtToken(token: string): Promise<TokenPayload | null
     return {
       id: payload.sub,
       email: String(payload["email"]),
-      role: payload["role"] as "admin" | "resident",
+      role: payload["role"] as "admin" | "staff" | "resident",
     };
   } catch {
     return null;

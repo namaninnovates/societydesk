@@ -1,9 +1,16 @@
 -- Neon PostgreSQL Schema for SocietyDesk
 
 DO $$ BEGIN
-  CREATE TYPE public.app_role AS ENUM ('resident','admin');
+  CREATE TYPE public.app_role AS ENUM ('resident','admin','staff');
 EXCEPTION
   WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  ALTER TYPE public.app_role ADD VALUE IF NOT EXISTS 'staff';
+EXCEPTION
+  WHEN duplicate_object THEN null;
+  WHEN undefined_object THEN null;
 END $$;
 
 DO $$ BEGIN
@@ -31,6 +38,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 CREATE TABLE IF NOT EXISTS public.complaints (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   resident_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  assigned_to UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   category TEXT NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL DEFAULT '',
@@ -41,6 +49,9 @@ CREATE TABLE IF NOT EXISTS public.complaints (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   resolved_at TIMESTAMPTZ
 );
+
+ALTER TABLE public.complaints
+ADD COLUMN IF NOT EXISTS assigned_to UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS public.complaint_photos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

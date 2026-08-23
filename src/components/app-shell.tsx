@@ -23,8 +23,14 @@ const adminNav = [
   { to: "/admin", label: "Dashboard", icon: SquaresFour },
   { to: "/admin/complaints", label: "Complaints", icon: ClipboardText },
   { to: "/admin/notices", label: "Notice Board", icon: Megaphone },
-  { to: "/admin/residents", label: "Residents", icon: Users },
+  { to: "/admin/residents", label: "Users & Staff", icon: Users },
   { to: "/admin/settings", label: "Settings", icon: Gear },
+] as const;
+
+const staffNav = [
+  { to: "/staff", label: "Assigned Tasks", icon: ClipboardText },
+  { to: "/notices", label: "Notice Board", icon: Megaphone },
+  { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
 const residentNav = [
@@ -57,7 +63,7 @@ export function Brand({
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { isAdmin, profile, profileLoading } = useAuth();
+  const { isAdmin, isStaff, profile, profileLoading } = useAuth();
 
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("societydesk_token");
@@ -78,7 +84,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     return null;
   }
 
-  return isAdmin ? <AdminShell>{children}</AdminShell> : <ResidentShell>{children}</ResidentShell>;
+  if (isAdmin) return <AdminShell>{children}</AdminShell>;
+  if (isStaff) return <StaffShell>{children}</StaffShell>;
+  return <ResidentShell>{children}</ResidentShell>;
 }
 
 function AdminShell({ children }: { children: ReactNode }) {
@@ -117,9 +125,14 @@ function AdminShell({ children }: { children: ReactNode }) {
           {nav}
         </div>
         <div className="space-y-3 border-t border-sidebar-border pt-4">
-          <p className="px-3 text-xs text-sidebar-foreground/70">
-            {profile?.full_name || "Administrator"}
-          </p>
+          <div className="px-3">
+            <p className="text-xs font-semibold text-sidebar-foreground">
+              {profile?.full_name || "Administrator"}
+            </p>
+            <span className="inline-block mt-0.5 rounded bg-sidebar-accent px-1.5 py-0.5 text-[10px] font-medium text-[#1F3622] uppercase tracking-wider">
+              Admin
+            </span>
+          </div>
           <Button
             variant="ghost"
             onClick={signOut}
@@ -142,6 +155,63 @@ function AdminShell({ children }: { children: ReactNode }) {
         {open ? <div className="bg-sidebar p-4 lg:hidden">{nav}</div> : null}
         <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">{children}</main>
       </div>
+    </div>
+  );
+}
+
+function StaffShell({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const signOut = useSignOut();
+  const { profile } = useAuth();
+
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <Brand linkTo="/staff" />
+            <span className="rounded-full bg-emerald-100 border border-emerald-300 px-2 py-0.5 text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
+              Staff Portal
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-medium text-slate-700 hidden sm:inline">
+              {profile?.full_name}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={signOut}
+              aria-label="Sign out"
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              <SignOut className="size-4 mr-1.5" /> Sign out
+            </Button>
+          </div>
+        </div>
+        <div className="mx-auto max-w-5xl overflow-x-auto px-2 pb-2">
+          <nav className="flex gap-1">
+            {staffNav.map((item) => {
+              const active =
+                item.to === "/staff" ? pathname === "/staff" : pathname.startsWith(item.to);
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground",
+                    active && "bg-secondary text-secondary-foreground",
+                  )}
+                >
+                  <item.icon className="size-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </header>
+      <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
     </div>
   );
 }

@@ -14,6 +14,7 @@ function getSql() {
 export type ComplaintQueryResult = {
   id: string;
   resident_id: string;
+  assigned_to: string | null;
   category: string;
   title: string;
   description: string;
@@ -28,6 +29,13 @@ export type ComplaintQueryResult = {
     unit_number: string | null;
     block: string | null;
     phone: string | null;
+  } | null;
+  assigned_profile?: {
+    id: string;
+    full_name: string;
+    email: string;
+    phone: string | null;
+    role: string;
   } | null;
   complaint_photos: { id: string; storage_path: string }[];
 };
@@ -78,13 +86,15 @@ function toIsoOrNull(val: unknown): string | null {
   return new Date(String(val)).toISOString();
 }
 
-// ── 1. FETCH COMPLAINTS (WITH FILTERS) ─────────────────────────
+// ── 1. FETCH COMPLAINTS (WITH FILTERS & ASSIGNMENTS) ───────────
 export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
   .validator(
     (
       d:
         | {
             residentId?: string | undefined;
+            assignedTo?: string | undefined;
+            unassignedOnly?: boolean | undefined;
             status?: string | undefined;
             category?: string | undefined;
             priority?: string | undefined;
@@ -95,11 +105,15 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
     ) => d,
   )
   .handler(async ({ data }) => {
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
+
     const sql = getSql();
     const rows = (await sql`
       SELECT 
         c.id,
         c.resident_id,
+        c.assigned_to,
         c.category,
         c.title,
         c.description,
@@ -115,6 +129,17 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
           'block', p.block,
           'phone', p.phone
         ) AS profiles,
+        CASE 
+          WHEN staff_p.id IS NOT NULL THEN
+            json_build_object(
+              'id', staff_p.id,
+              'full_name', staff_p.full_name,
+              'email', staff_p.email,
+              'phone', staff_p.phone,
+              'role', staff_p.role
+            )
+          ELSE NULL
+        END AS assigned_profile,
         COALESCE(
           (
             SELECT json_agg(json_build_object('id', cp.id, 'storage_path', cp.storage_path))
@@ -125,12 +150,19 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
         ) AS complaint_photos
       FROM complaints c
       LEFT JOIN profiles p ON p.id = c.resident_id
+      LEFT JOIN profiles staff_p ON staff_p.id = c.assigned_to
       ORDER BY c.is_overdue DESC, c.created_at DESC
     `) as unknown as ComplaintDbRow[];
 
     let result = rows;
     if (data?.residentId) {
       result = result.filter((r) => r.resident_id === data.residentId);
+    }
+    if (data?.assignedTo) {
+      result = result.filter((r) => r.assigned_to === data.assignedTo);
+    }
+    if (data?.unassignedOnly) {
+      result = result.filter((r) => !r.assigned_to);
     }
     if (data?.status && data.status !== "all") {
       if (data.status === "overdue") {
@@ -160,7 +192,8 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
           r.description.toLowerCase().includes(q) ||
           r.location?.toLowerCase().includes(q) ||
           r.profiles?.full_name?.toLowerCase().includes(q) ||
-          r.profiles?.unit_number?.toLowerCase().includes(q),
+          r.profiles?.unit_number?.toLowerCase().includes(q) ||
+          r.assigned_profile?.full_name?.toLowerCase().includes(q),
       );
     }
 
@@ -175,11 +208,15 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
 export const fetchComplaintByIdServerFn = createServerFn({ method: "GET" })
   .validator((d: { id: string }) => d)
   .handler(async ({ data }) => {
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
+
     const sql = getSql();
     const rows = (await sql`
       SELECT 
         c.id,
         c.resident_id,
+        c.assigned_to,
         c.category,
         c.title,
         c.description,
@@ -195,6 +232,17 @@ export const fetchComplaintByIdServerFn = createServerFn({ method: "GET" })
           'block', p.block,
           'phone', p.phone
         ) AS profiles,
+        CASE 
+          WHEN staff_p.id IS NOT NULL THEN
+            json_build_object(
+              'id', staff_p.id,
+              'full_name', staff_p.full_name,
+              'email', staff_p.email,
+              'phone', staff_p.phone,
+              'role', staff_p.role
+            )
+          ELSE NULL
+        END AS assigned_profile,
         COALESCE(
           (
             SELECT json_agg(json_build_object('id', cp.id, 'storage_path', cp.storage_path))
@@ -205,6 +253,7 @@ export const fetchComplaintByIdServerFn = createServerFn({ method: "GET" })
         ) AS complaint_photos
       FROM complaints c
       LEFT JOIN profiles p ON p.id = c.resident_id
+      LEFT JOIN profiles staff_p ON staff_p.id = c.assigned_to
       WHERE c.id = ${data.id}
       LIMIT 1
     `) as unknown as ComplaintDbRow[];
@@ -215,6 +264,60 @@ export const fetchComplaintByIdServerFn = createServerFn({ method: "GET" })
       created_at: toIso(r.created_at),
       resolved_at: toIsoOrNull(r.resolved_at),
     } as ComplaintQueryResult;
+  });
+
+// ── 2B. ASSIGN COMPLAINT TO STAFF ──────────────────────────────
+export const assignComplaintServerFn = createServerFn({ method: "POST" })
+  .validator(
+    (d: {
+      complaintId: string;
+      staffId: string | null;
+      actorId?: string | null;
+      note?: string | null;
+    }) => d,
+  )
+  .handler(async ({ data }) => {
+    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
+    await ensureDatabaseSchema();
+
+    const sql = getSql();
+    let staffName = "Unassigned";
+
+    if (data.staffId) {
+      const staffRows = (await sql`
+        SELECT full_name FROM profiles WHERE id = ${data.staffId} LIMIT 1
+      `) as { full_name: string }[];
+      if (staffRows[0]) {
+        staffName = staffRows[0].full_name;
+      }
+    }
+
+    await sql`
+      UPDATE complaints
+      SET assigned_to = ${data.staffId}
+      WHERE id = ${data.complaintId}
+    `;
+
+    const historyNote = data.note
+      ? `Assigned to ${staffName}. Note: ${data.note}`
+      : data.staffId
+        ? `Assigned technician: ${staffName}`
+        : "Unassigned technician";
+
+    await sql`
+      INSERT INTO complaint_history (
+        id, complaint_id, old_status, new_status, note, actor_id
+      ) VALUES (
+        gen_random_uuid(),
+        ${data.complaintId},
+        (SELECT status FROM complaints WHERE id = ${data.complaintId}),
+        (SELECT status FROM complaints WHERE id = ${data.complaintId}),
+        ${historyNote},
+        ${data.actorId ?? null}
+      )
+    `;
+
+    return { success: true, staffName };
   });
 
 // ── 3. FETCH COMPLAINT HISTORY ─────────────────────────────────

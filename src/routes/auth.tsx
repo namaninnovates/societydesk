@@ -59,13 +59,15 @@ function AuthPage() {
 
   useEffect(() => {
     if (session && profile) {
-      navigate({ to: profile.role === "admin" ? "/admin" : "/complaints", replace: true });
+      const destination =
+        profile.role === "admin" ? "/admin" : profile.role === "staff" ? "/staff" : "/complaints";
+      navigate({ to: destination, replace: true });
     }
   }, [session, profile, navigate]);
 
   const handleSignIn = async (
     e: React.FormEvent<HTMLFormElement>,
-    roleHint?: "admin" | "resident",
+    roleHint?: "admin" | "resident" | "staff",
   ) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -77,9 +79,19 @@ function AuthPage() {
       const res = await signInServerFn({ data: { email, password } });
       setAuth(res.profile, res.token);
       toast.success(
-        roleHint === "admin" ? "Welcome back, Admin" : `Welcome back, ${res.profile.full_name}`,
+        res.profile.role === "admin"
+          ? "Welcome back, Admin"
+          : res.profile.role === "staff"
+            ? `Welcome back, ${res.profile.full_name} (Staff)`
+            : `Welcome back, ${res.profile.full_name}`,
       );
-      navigate({ to: res.profile.role === "admin" ? "/admin" : "/complaints", replace: true });
+      const destination =
+        res.profile.role === "admin"
+          ? "/admin"
+          : res.profile.role === "staff"
+            ? "/staff"
+            : "/complaints";
+      navigate({ to: destination, replace: true });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to sign in";
       toast.error(msg);
