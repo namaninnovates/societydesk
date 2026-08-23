@@ -2,9 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { neon } from "@neondatabase/serverless";
 
 function getSql() {
-  const databaseUrl =
-    process.env["DATABASE_URL"] ||
-    "postgresql://neondb_owner:npg_A1Y6EKQLqSPI@ep-late-resonance-azp3y5ii-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+  const databaseUrl = process.env["DATABASE_URL"];
+  if (!databaseUrl) {
+    const message = "Missing DATABASE_URL environment variable. Please check your .env file.";
+    console.error(`[Neon DB] ${message}`);
+    throw new Error(message);
+  }
   return neon(databaseUrl);
 }
 
