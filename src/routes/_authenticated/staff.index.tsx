@@ -217,11 +217,11 @@ function StaffDashboard() {
 
       {/* ── TAB SELECTOR & SEARCH ────────────────────────────── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#DFD9CA] pb-3">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setTab("assigned")}
-            className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+            className={`cursor-pointer rounded-full px-3 py-1.5 text-xs sm:px-4 sm:text-sm font-semibold transition-colors ${
               tab === "assigned"
                 ? "bg-[#1F3622] text-white shadow-xs"
                 : "bg-white border border-[#DFD9CA] text-[#4F5148] hover:bg-[#F3EFE6]"
@@ -232,7 +232,7 @@ function StaffDashboard() {
           <button
             type="button"
             onClick={() => setTab("pool")}
-            className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+            className={`cursor-pointer rounded-full px-3 py-1.5 text-xs sm:px-4 sm:text-sm font-semibold transition-colors ${
               tab === "pool"
                 ? "bg-[#1F3622] text-white shadow-xs"
                 : "bg-white border border-[#DFD9CA] text-[#4F5148] hover:bg-[#F3EFE6]"

@@ -151,11 +151,11 @@ function ComplaintDetail() {
       </Button>
 
       {/* Main Complaint Overview */}
-      <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-xs space-y-4">
+      <div className="rounded-2xl border border-[#DFD9CA] bg-white p-4 sm:p-6 shadow-xs space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-[#111215]">{c.title}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#111215]">{c.title}</h1>
+            <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
               {c.category}
               {c.location ? ` · ${c.location}` : ""} · raised{" "}
               {new Date(c.created_at).toLocaleDateString()} ·{" "}
@@ -183,7 +183,7 @@ function ComplaintDetail() {
                 <img
                   src={photoUrl(p.storage_path)}
                   alt="Complaint photo"
-                  className="size-24 object-cover"
+                  className="size-20 sm:size-24 object-cover"
                 />
               </button>
             ))}
@@ -213,7 +213,7 @@ function ComplaintDetail() {
       </div>
 
       {/* ── ASSIGNED TECHNICIAN CARD ──────────────────────────── */}
-      <div className="rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-xs">
+      <div className="rounded-2xl border border-[#DFD9CA] bg-white p-4 sm:p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
@@ -239,7 +239,7 @@ function ComplaintDetail() {
 
           {/* Admin / Staff Reassignment actions */}
           {isAdmin && (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs text-muted-foreground">Reassign:</span>
               <Select
                 value={c.assigned_to ?? "none"}
@@ -247,7 +247,7 @@ function ComplaintDetail() {
                   assignStaffMut.mutate(val === "none" ? null : val);
                 }}
               >
-                <SelectTrigger className="h-8 w-44 text-xs bg-white">
+                <SelectTrigger className="h-8 w-40 sm:w-44 text-xs bg-white">
                   <SelectValue placeholder="Assign Staff" />
                 </SelectTrigger>
                 <SelectContent>

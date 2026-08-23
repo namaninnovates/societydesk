@@ -274,7 +274,7 @@ function AdminComplaints() {
       </div>
 
       {/* ── FILTER TOOLBAR ────────────────────────────────────── */}
-      <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+      <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <Input
           placeholder="Search complaints, resident, technician…"
           value={search}

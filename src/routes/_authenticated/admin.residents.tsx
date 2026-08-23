@@ -307,7 +307,7 @@ function UserManagement() {
       ) : (
         <div className="rounded-2xl border border-[#DFD9CA] bg-white shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[650px] text-left text-xs">
               <thead className="bg-[#FAF8F2] border-b border-[#DFD9CA] text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th className="px-4 py-3.5">User</th>

@@ -273,7 +273,7 @@ function PinnedFeaturesCarousel() {
               return (
                 <div
                   key={item.id}
-                  className="w-[300px] sm:w-[360px] lg:w-[390px] shrink-0 rounded-3xl border border-[#DFD9CA] bg-white p-7 shadow-sm transition-all duration-200 flex flex-col justify-between hover:border-[#1F3622] hover:shadow-md"
+                  className="w-[280px] max-w-[85vw] sm:w-[360px] lg:w-[390px] shrink-0 rounded-3xl border border-[#DFD9CA] bg-white p-5 sm:p-7 shadow-sm transition-all duration-200 flex flex-col justify-between hover:border-[#1F3622] hover:shadow-md"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-5">
@@ -324,10 +324,10 @@ function SocietyDeskLanding() {
   return (
     <div className="flex min-h-screen flex-col bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
       {/* ── TOP NAVIGATION BAR ──────────────────────────────── */}
-      <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-6 py-4 backdrop-blur-md sm:px-8">
-        <div className="mx-auto grid max-w-[1400px] grid-cols-3 items-center">
-          {/* Left: Navigation Links in place of branding */}
-          <nav className="flex items-center gap-6 text-sm font-medium text-[#4A4D54] sm:gap-8">
+      <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-4 py-3.5 backdrop-blur-md sm:px-8 sm:py-4">
+        <div className="mx-auto flex items-center justify-between sm:grid sm:max-w-[1400px] sm:grid-cols-3">
+          {/* Left: Navigation Links */}
+          <nav className="hidden items-center gap-6 text-sm font-medium text-[#4A4D54] sm:flex sm:gap-8">
             <a href="#features" className="transition-colors hover:text-[#111215]">
               Features
             </a>
@@ -337,7 +337,7 @@ function SocietyDeskLanding() {
           </nav>
 
           {/* Center: Brand Logo */}
-          <div className="flex justify-center">
+          <div className="flex sm:justify-center">
             <BrandLogo linkTo="/" />
           </div>
 
@@ -345,7 +345,7 @@ function SocietyDeskLanding() {
           <div className="flex items-center justify-end gap-3">
             <Link
               to="/auth"
-              className="rounded-full bg-[#1F3622] px-5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-[#2E4E30]"
+              className="rounded-full bg-[#1F3622] px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-[#2E4E30] sm:px-5 sm:py-2 sm:text-sm"
             >
               Sign In
             </Link>
@@ -354,9 +354,9 @@ function SocietyDeskLanding() {
       </header>
 
       {/* ── HERO & WORKFLOW SECTION ─────────────────────────── */}
-      <main className="relative mx-auto w-full max-w-[1400px] flex-1 px-6 pt-4 pb-16 sm:px-8">
+      <main className="relative mx-auto w-full max-w-[1400px] flex-1 px-4 pt-3 pb-16 sm:px-8 sm:pt-4">
         {/* ── 1. HERO BANNER WITH BACKGROUND VIDEO ─────────────── */}
-        <div className="relative mb-16 overflow-hidden rounded-3xl border border-[#E9E5DA]/80 bg-[#F6F4ED] p-8 sm:p-12 lg:p-14">
+        <div className="relative mb-12 overflow-hidden rounded-3xl border border-[#E9E5DA]/80 bg-[#F6F4ED] p-6 sm:mb-16 sm:p-12 lg:p-14">
           {/* Background Video */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
             <video
@@ -376,23 +376,23 @@ function SocietyDeskLanding() {
 
           {/* Foreground Hero Content */}
           <div className="relative z-10 max-w-2xl">
-            <h1 className="text-6xl font-light leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
+            <h1 className="text-4xl font-light leading-[1.05] tracking-tight text-[#111215] sm:text-6xl md:text-7xl lg:text-[82px] sm:leading-[0.95]">
               <span className="font-light text-[#111215]/90">The society manager,</span>
               <br />
               <ScrambleText />
             </h1>
 
-            <p className="mt-8 max-w-lg text-base leading-relaxed text-[#4A4D54] sm:text-lg">
+            <p className="mt-5 max-w-lg text-sm leading-relaxed text-[#4A4D54] sm:mt-8 sm:text-base md:text-lg">
               SocietyDesk helps residents report maintenance issues with photos and lets society
               managers assign workers, track deadlines, and keep everyone informed through notices
               and email updates.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div className="mt-6 flex flex-wrap items-center gap-4 sm:mt-8">
               <Link
                 to="/auth"
                 search={{ mode: "signup" } as never}
-                className="rounded-full bg-[#1F3622] px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#2E4E30]"
+                className="rounded-full bg-[#1F3622] px-6 py-3 text-xs font-semibold text-white shadow-sm transition-all hover:bg-[#2E4E30] sm:px-8 sm:py-3.5 sm:text-sm"
               >
                 Register as Resident <ArrowRight className="ml-2 inline size-4" />
               </Link>
