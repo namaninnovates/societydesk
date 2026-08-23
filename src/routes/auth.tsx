@@ -1,5 +1,12 @@
 import { createFileRoute, useNavigate, Link, useSearch } from "@tanstack/react-router";
-import { Buildings, SpinnerGap, ShieldCheck, UserCheck, Key } from "@phosphor-icons/react";
+import {
+  Buildings,
+  SpinnerGap,
+  ShieldCheck,
+  UserCheck,
+  Key,
+  ArrowLeft,
+} from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -202,13 +209,21 @@ function AuthPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F6F4ED] px-4 py-10">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="mb-6 flex justify-center">
-          <BrandLogo linkTo="/" />
-        </div>
+    <div className="flex min-h-screen flex-col bg-[#F6F4ED] px-4 py-6 sm:py-8">
+      {/* Top Navigation Bar */}
+      <header className="mx-auto w-full max-w-4xl flex items-center justify-between">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#DFD9CA] bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] transition-colors shadow-2xs cursor-pointer"
+        >
+          <ArrowLeft className="size-3.5 text-[#1F3622]" weight="bold" />
+          <span>Back to Home</span>
+        </Link>
+        <BrandLogo linkTo="/" />
+        <div className="w-24 hidden sm:block" />
+      </header>
 
+      <div className="my-auto mx-auto w-full max-w-md py-6">
         <div className="surface p-6 shadow-sm border border-[#DFD9CA] bg-white rounded-2xl">
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="grid w-full grid-cols-3 bg-[#F1EDE1] p-1 rounded-xl">
