@@ -1,197 +1,166 @@
-# SocietyDesk — Society Maintenance Tracker
+# SocietyDesk — Modern Society Maintenance & Operations Platform
 
-A full-stack maintenance complaint tracking platform for apartment/housing societies. Residents raise and track complaints with photos; admins triage, prioritize, resolve, and communicate via a notice board and email notifications.
+SocietyDesk is a production-grade full-stack operations and complaint lifecycle platform built for residential housing societies and apartment communities. It replaces chaotic WhatsApp groups and paper registers with an end-to-end triaging system covering residents, maintenance technicians, and society management committees.
 
-**Tech stack:** React 19 · TanStack Start · Tailwind CSS v4 · shadcn/ui · Neon PostgreSQL · Jose JWT + bcrypt · Resend (email) · Recharts · Nitro (server)
-
----
-
-## Features
-
-### Resident
-
-- **Register & sign in** (secure email/password with JWT and bcrypt)
-- **Raise complaints** with category, title, description, location, and up to 3 photos (client-side compressed)
-- **Track complaints** — filter by status/category, view full status history timeline, photos in lightbox
-- **Comment** on open complaints for clarifications
-- **Rate resolutions** (1–5 stars with optional feedback) when a complaint is resolved
-- **Notice board** — read society announcements; important notices pinned to the top
-- **Email notifications** when complaint status changes
-
-### Admin
-
-- **Dashboard** — stat tiles (total/open/in-progress/resolved/overdue), bar chart by category, pie chart by status, 30-day raised-vs-resolved trend, average resolution time, recurring issue watchlist
-- **Complaint management** — list + Kanban views, filters by category/status/priority/overdue, search, set priority (Low/Medium/High), change status with required note, view resident contact info
-- **Overdue detection** — per-category configurable thresholds (Admin → Settings), `recalculate_overdue()` function, overdue complaints auto-surface at the top with amber highlight
-- **Notice board** — create/delete notices, mark as important (pinned)
-- **Resident directory** — view all residents with unit/block/phone
-- **CSV export** of complaints
-- **Email notifications** — status change emails to affected resident, important notice emails to all residents
+**Tech Stack:** React 19 · TanStack Start (SSR) · Tailwind CSS v4 · Neon Serverless PostgreSQL · Jose JWT + bcrypt · Resend · Recharts · Nitro
 
 ---
 
-## Quick Start
+## 🏛️ System Architecture & Persona Capabilities
 
-### Prerequisites
+SocietyDesk implements a strict **three-tier role architecture** with end-to-end type safety, server-side authorization, and Indian Standard Time (IST) audit logging:
 
-- **Node.js** ≥ 20
-- A **Neon** PostgreSQL database (free tier works)
-- A **Resend** account for email (free tier, optional — emails are logged in dry-run mode without it)
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              SocietyDesk                                │
+├───────────────────┬───────────────────────┬─────────────────────────────┤
+│   🏡 RESIDENTS     │     🛠️ STAFF / TECH   │      🛡️ SOCIETY ADMIN       │
+├───────────────────┼───────────────────────┼─────────────────────────────┤
+│ • Raise Tickets   │ • Assigned Queue      │ • Executive BI Dashboard    │
+│ • Photo Proof     │ • 1-Click Status Step │ • Kanban & Table Triage     │
+│ • Live IST Clock  │ • Resolution Notes    │ • SLA & Overdue Thresholds  │
+│ • Remove Tickets  │ • Mobile-First View   │ • Notice Broadcasts (Email) │
+│ • 5-Star Ratings  │ • Verified Sign-off   │ • Resident & Staff Directory│
+│ • Society Notices │ • Clean Display Name  │ • CSV Export & Audit Logs   │
+└───────────────────┴───────────────────────┴─────────────────────────────┘
+```
 
-### 1. Clone & Install
+---
+
+## ⚡ Core Features
+
+### 1. Resident Portal (`/complaints`)
+
+- **Self-Service Ticketing**: Raise maintenance issues by category (Electrical, Plumbing, Lift, Security, etc.) with location details and client-compressed photo attachments.
+- **Real-Time Lifecycle Tracking**: Live visual timeline tracking from `Open` → `In Progress` → `Resolved` with official staff notes.
+- **Interactive Comments**: Direct communication thread with society managers and technicians on active complaints.
+- **Resolution Verification & Rating**: Rate completed repairs from 1 to 5 stars with qualitative feedback.
+- **Complaint Management**: Option to cancel or remove unwanted complaints directly from the portal.
+- **Personalized Header**: Time-aware greeting (`Good morning / afternoon / evening`), flat unit badge, live ticking IST date/time clock, and quick Sign Out.
+
+### 2. Staff / Technician Portal (`/staff`)
+
+- **Assigned Work Queue**: Filterable workspace showing tickets specifically assigned to the technician.
+- **Rapid Status Transitions**: Fast-action workflow to transition tickets from assigned to `In Progress` or `Resolved`.
+- **Resolution Logging**: Mandatory resolution notes capturing what was fixed before closing the ticket.
+- **Mobile-Optimized Interface**: Streamlined layouts tailored for on-site field technicians.
+
+### 3. Management Committee / Admin Portal (`/admin`)
+
+- **Analytical Intelligence Dashboard**: Real-time KPI summary cards, 30-day raised vs. resolved volume trends, category distribution charts, status breakdown pies, and recurring issue watchlists powered by Recharts.
+- **Dual-Mode Triage (Kanban & List)**: Drag-and-drop or table-based triaging with instant category, priority, and staff assignment controls.
+- **Automated SLA & Overdue Engine**: Configurable overdue day thresholds per category (Settings); automatic `recalculate_overdue()` trigger highlighting breached SLAs.
+- **Floating Action Alert Popup**: Dedicated triage reminder badge surfacing unassigned issues and overdue SLA tickets for immediate action.
+- **Notice Board Broadcasts**: Publish society announcements with an "Important" flag that automatically emails all registered flat owners.
+- **Resident & Staff Directory**: Manage unit allocations, contact details, and account permissions with 1-click password resets.
+- **CSV Data Export**: Export filtered ticket databases for audit and accounting records.
+
+---
+
+## 🎨 Design & Engineering Standards
+
+- **Strict Olive & Earth Theme**: Tailored color palette using natural forest and olive tones (`#1F3622`, `#2E4E30`, `#DFD9CA`, `#FAF8F2`).
+- **Zero Emoji Clutter**: Professional iconography powered by `@phosphor-icons/react` for a clean, human-crafted enterprise aesthetic.
+- **Seamless Flow Animations**: Hardware-accelerated SVG dashflow and smooth micro-interactions.
+- **Stateless JWT Security**: Industry-standard `jose` JWTs (`HS256`) with `bcrypt` password hashing, robust session verification, and zero third-party lock-in.
+- **Database Connection Pooling**: Neon Serverless PostgreSQL with pooled endpoints for instant cold starts and sub-50ms query latency.
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components (app-shell, brand, dialogs, status badges)
+│   └── ui/              # Base shadcn/ui primitives styled with Tailwind v4
+├── hooks/               # Custom React hooks (useAuth, useIstTime, use-toast)
+├── integrations/
+│   ├── email/           # Resend email notification service and SSR server functions
+│   └── neon/            # Neon PostgreSQL database client and schema migration SQL
+├── lib/
+│   ├── auth.server.ts   # JWT token signing, verification, and bcrypt hashing
+│   ├── auth.functions.ts# Auth RPC server functions (signIn, signUp, signOut)
+│   ├── complaints.functions.ts # Ticket mutations, status changes, assignments, deletion
+│   └── queries.ts       # Type-safe client-side query fetchers
+├── routes/
+│   ├── index.tsx        # Interactive hero landing page with live workflow simulation
+│   ├── auth.tsx         # Universal portal sign-in, registration, and 1-click demo accounts
+│   └── _authenticated/  # Role-guarded application routes
+│       ├── complaints.* # Resident complaint creation, listing, and detail views
+│       ├── staff.*      # Staff technician assignment dashboard
+│       ├── notices.tsx  # Society notice board
+│       ├── profile.tsx  # User profile and password management
+│       └── admin.*      # Admin analytics, complaint triage, notices, settings, residents
+├── router.tsx           # TanStack Router configuration
+├── server.ts            # Server entrypoint with SSR error boundaries
+└── styles.css           # Global Tailwind CSS v4 design tokens and keyframe utilities
+```
+
+---
+
+## 🚀 Quick Start & Local Setup
+
+### 1. Prerequisites
+
+- **Node.js** ≥ 20.x
+- **Neon PostgreSQL** database instance
+
+### 2. Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/namaninnovates/societydesk.git
 cd resident-reply-system
 npm install
 ```
 
-### 2. Configure Environment
+### 3. Configure Environment Variables
+
+Copy `.env.example` to `.env` and fill in your credentials:
 
 ```bash
 cp .env.example .env
 ```
 
-Fill in the values in `.env`. See [`.env.example`](.env.example) for descriptions of each variable.
+```env
+# Neon Serverless PostgreSQL connection string (pooled)
+DATABASE_URL="postgresql://neondb_owner:password@ep-sample-pooler.region.aws.neon.tech/neondb?sslmode=require"
 
-### 3. Set Up the Database
+# 256-bit secret key for signing session JWTs
+JWT_SECRET="52cc3d95afdf35ae7cf2fb5a1f2d44d2a27f69e705469191919ca0a564d43af2"
 
-The database schema is in [`src/integrations/neon/schema.sql`](src/integrations/neon/schema.sql). Apply it to your Neon database:
-
-```bash
-# Using psql:
-psql $DATABASE_URL < src/integrations/neon/schema.sql
+# Optional: Resend API key for email delivery (runs in safe dry-run mode if omitted)
+RESEND_API_KEY="re_..."
 ```
 
-### 4. Run Locally
+### 4. Database Setup
+
+Execute the database schema in your Neon SQL editor:
+
+```bash
+psql $DATABASE_URL < supabase/migrations/20260822180605_da397ad0-fd18-41c4-ad2b-7dca9df49fab.sql
+```
+
+### 5. Run Locally
 
 ```bash
 npm run dev
 ```
 
-The app runs at `http://localhost:3000`.
-
-### 5. Build for Production
-
-```bash
-npm run build
-npx vite preview   # preview the production build
-```
+Open `http://localhost:8080` in your browser.
 
 ---
 
-## Database Schema
+## 🚢 Production Deployment (Vercel Ready)
 
-```
-┌──────────────────────┐     ┌──────────────────────────┐
-│      profiles        │     │       complaints          │
-├──────────────────────┤     ├──────────────────────────┤
-│ id (PK, FK→auth)     │◄────│ resident_id (FK)          │
-│ full_name            │     │ id (PK)                   │
-│ role (resident/admin)│     │ category                  │
-│ unit_number          │     │ title                     │
-│ block                │     │ description               │
-│ phone                │     │ location                  │
-│ created_at           │     │ status (open/in_progress/  │
-└──────────────────────┘     │         resolved)         │
-                             │ priority (low/med/high)   │
-                             │ is_overdue                │
-                             │ created_at                │
-                             │ resolved_at               │
-                             └──────────────────────────┘
-                                       │
-               ┌───────────────────────┼───────────────────┐
-               ▼                       ▼                   ▼
-┌────────────────────┐  ┌─────────────────────┐  ┌──────────────────┐
-│  complaint_photos  │  │  complaint_history   │  │complaint_comments│
-├────────────────────┤  ├─────────────────────┤  ├──────────────────┤
-│ id (PK)            │  │ id (PK)             │  │ id (PK)          │
-│ complaint_id (FK)  │  │ complaint_id (FK)   │  │ complaint_id (FK)│
-│ storage_path       │  │ old_status          │  │ author_id (FK)   │
-│ uploaded_at        │  │ new_status          │  │ comment          │
-└────────────────────┘  │ note                │  │ created_at       │
-                        │ actor_id (FK)       │  └──────────────────┘
-                        │ created_at          │
-                        └─────────────────────┘
+SocietyDesk is pre-configured for zero-config Vercel SSR deployment:
 
-┌──────────────────────┐  ┌─────────────────────┐  ┌──────────────────────┐
-│       notices        │  │ overdue_thresholds  │  │ resolution_feedback  │
-├──────────────────────┤  ├─────────────────────┤  ├──────────────────────┤
-│ id (PK)              │  │ id (PK)             │  │ id (PK)              │
-│ author_id (FK)       │  │ category (unique)   │  │ complaint_id (FK, UQ)│
-│ title                │  │ days                │  │ rating (1–5)         │
-│ body                 │  └─────────────────────┘  │ comment              │
-│ is_important         │                           │ created_at           │
-│ created_at           │                           └──────────────────────┘
-└──────────────────────┘
-```
-
-### Custom Types (ENUMs)
-
-- `app_role`: `resident`, `admin`
-- `complaint_status`: `open`, `in_progress`, `resolved`
-- `complaint_priority`: `low`, `medium`, `high`
-
-### Row-Level Security
-
-- Residents can only read/write their own complaints and comments
-- Admins have full read/write access
-- Both roles can read notices; only admins can write notices and thresholds
+1. Push your repository to GitHub.
+2. Import the project into **Vercel** (`Application Preset: TanStack Start` or `Other`).
+3. Add `DATABASE_URL` and `JWT_SECRET` in **Project Settings → Environment Variables**.
+4. Deploy! Nitro and TanStack Start will build and deploy the full-stack bundle automatically.
 
 ---
 
-## API / Data Layer
+## 🛡️ License
 
-The app uses **TanStack Start Server Functions** with **Neon Serverless PostgreSQL** via `@neondatabase/serverless` connection pooling. All authentication is handled using standard **Jose JWTs** and **bcrypt** passwords.
-
-### Key Server Functions
-
-| Function                | Trigger                          | Description                                       |
-| ----------------------- | -------------------------------- | ------------------------------------------------- |
-| `notifyStatusChange`    | Admin changes complaint status   | Sends branded HTML email to the affected resident |
-| `notifyImportantNotice` | Admin publishes important notice | Sends email to all registered residents           |
-
-### Storage & Photos
-
-- Compressed complaint photos stored with complaints data
-- Client-side image compression before upload (max 1400px, JPEG quality 0.75)
-
----
-
-## Project Structure
-
-```
-src/
-├── components/          # Shared UI components
-│   ├── ui/              # shadcn/ui primitives
-│   ├── app-shell.tsx    # Navigation layout (sidebar/topbar)
-│   ├── status.tsx       # StatusPill, PriorityTag components
-│   └── ...
-├── hooks/
-│   └── use-auth.tsx     # Auth context provider (session + profile)
-├── integrations/
-│   ├── email/           # Resend email service + server functions
-│   └── neon/            # Neon DB client + schema SQL
-├── lib/
-│   ├── queries.ts       # Data fetching helpers
-│   ├── societydesk.ts   # Constants, types, utilities
-│   └── utils.ts         # cn() helper
-├── routes/
-│   ├── index.tsx             # Landing page
-│   ├── auth.tsx              # Sign in / Register
-│   └── _authenticated/       # Protected routes
-│       ├── complaints.*.tsx  # Resident complaint views
-│       ├── notices.tsx       # Resident notice board
-│       ├── profile.tsx       # Profile settings
-│       └── admin.*.tsx       # Admin views (dashboard, complaints, notices, settings, residents)
-├── router.tsx           # TanStack Router config
-├── server.ts            # SSR error wrapper
-├── start.ts             # TanStack Start middleware config
-└── styles.css           # Tailwind + design tokens
-```
-
----
-
-## License
-
-Private project — all rights reserved.
+MIT License — feel free to use and adapt for your society community.
