@@ -228,7 +228,6 @@ function AdminComplaints() {
 
   return (
     <div className="space-y-6">
-      {/* ── HEADER ───────────────────────────────────────────── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#111215]">Complaints & Tasks</h1>
@@ -274,7 +273,6 @@ function AdminComplaints() {
         </div>
       </div>
 
-      {/* ── FILTER TOOLBAR ────────────────────────────────────── */}
       <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <Input
           placeholder="Search complaints, resident, technician…"
@@ -345,7 +343,6 @@ function AdminComplaints() {
         </Button>
       </div>
 
-      {/* ── COMPLAINT CONTENT ─────────────────────────────────── */}
       {isLoading && rows.length === 0 ? (
         <ComplaintsTableSkeleton count={5} />
       ) : rows.length === 0 ? (
@@ -387,7 +384,6 @@ function AdminComplaints() {
         </ul>
       )}
 
-      {/* ── MANAGE & ASSIGN DIALOG ────────────────────────────── */}
       <Dialog open={Boolean(active)} onOpenChange={(o) => !o && setActive(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>

@@ -86,7 +86,6 @@ function toIsoOrNull(val: unknown): string | null {
   return new Date(String(val)).toISOString();
 }
 
-// ── 1. FETCH COMPLAINTS (WITH FILTERS & ASSIGNMENTS) ───────────
 export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
   .validator(
     (
@@ -204,7 +203,6 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
     })) as ComplaintQueryResult[];
   });
 
-// ── 2. FETCH SINGLE COMPLAINT ──────────────────────────────────
 export const fetchComplaintByIdServerFn = createServerFn({ method: "GET" })
   .validator((d: { id: string }) => d)
   .handler(async ({ data }) => {
@@ -266,7 +264,6 @@ export const fetchComplaintByIdServerFn = createServerFn({ method: "GET" })
     } as ComplaintQueryResult;
   });
 
-// ── 2B. ASSIGN COMPLAINT TO STAFF ──────────────────────────────
 export const assignComplaintServerFn = createServerFn({ method: "POST" })
   .validator(
     (d: {
@@ -320,7 +317,6 @@ export const assignComplaintServerFn = createServerFn({ method: "POST" })
     return { success: true, staffName };
   });
 
-// ── 3. FETCH COMPLAINT HISTORY ─────────────────────────────────
 export const fetchComplaintHistoryServerFn = createServerFn({ method: "GET" })
   .validator((d: { complaintId: string }) => d)
   .handler(async ({ data }) => {
@@ -345,7 +341,6 @@ export const fetchComplaintHistoryServerFn = createServerFn({ method: "GET" })
     }));
   });
 
-// ── 4. FETCH COMPLAINT COMMENTS ────────────────────────────────
 export const fetchComplaintCommentsServerFn = createServerFn({ method: "GET" })
   .validator((d: { complaintId: string }) => d)
   .handler(async ({ data }) => {
@@ -368,7 +363,6 @@ export const fetchComplaintCommentsServerFn = createServerFn({ method: "GET" })
     }));
   });
 
-// ── 5. ADD COMPLAINT COMMENT ───────────────────────────────────
 export const addComplaintCommentServerFn = createServerFn({ method: "POST" })
   .validator((d: { complaintId: string; authorId: string; comment: string }) => d)
   .handler(async ({ data }) => {
@@ -381,7 +375,6 @@ export const addComplaintCommentServerFn = createServerFn({ method: "POST" })
     return rows[0];
   });
 
-// ── 6. ADD RESOLUTION FEEDBACK ─────────────────────────────────
 export const addResolutionFeedbackServerFn = createServerFn({ method: "POST" })
   .validator((d: { complaintId: string; rating: number; comment?: string | undefined }) => d)
   .handler(async ({ data }) => {
@@ -394,7 +387,6 @@ export const addResolutionFeedbackServerFn = createServerFn({ method: "POST" })
     return rows[0];
   });
 
-// ── 7. UPDATE COMPLAINT STATUS OR PRIORITY ─────────────────────
 export const updateComplaintStatusServerFn = createServerFn({ method: "POST" })
   .validator(
     (d: {
@@ -447,7 +439,6 @@ export const updateComplaintStatusServerFn = createServerFn({ method: "POST" })
     return { success: true };
   });
 
-// ── 8. CREATE COMPLAINT ────────────────────────────────────────
 export const createComplaintServerFn = createServerFn({ method: "POST" })
   .validator(
     (d: {
@@ -487,7 +478,6 @@ export const createComplaintServerFn = createServerFn({ method: "POST" })
     return { id: complaintId };
   });
 
-// ── 9. NOTICES (FETCH, CREATE, DELETE) ─────────────────────────
 export const fetchNoticesServerFn = createServerFn({ method: "GET" }).handler(async () => {
   const sql = getSql();
   const rows = await sql`
@@ -528,7 +518,6 @@ export const deleteNoticeServerFn = createServerFn({ method: "POST" })
     return { success: true };
   });
 
-// ── 10. OVERDUE THRESHOLDS ─────────────────────────────────────
 export const fetchOverdueThresholdsServerFn = createServerFn({ method: "GET" }).handler(
   async () => {
     const sql = getSql();
@@ -611,7 +600,6 @@ export const updateAllOverdueThresholdsServerFn = createServerFn({ method: "POST
     return { success: true };
   });
 
-// ── 11. DELETE / WITHDRAW COMPLAINT ────────────────────────────
 export const deleteComplaintServerFn = createServerFn({ method: "POST" })
   .validator((d: { complaintId: string; requesterId: string }) => d)
   .handler(async ({ data }) => {

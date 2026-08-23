@@ -57,7 +57,6 @@ export function ActionAlertPopup() {
   return (
     <div className="fixed bottom-4 right-4 z-40 w-[350px] max-w-[calc(100vw-2rem)]">
       <div className="rounded-2xl border border-[#DFD9CA] bg-white shadow-xl overflow-hidden flex flex-col font-sans">
-        {/* ── HEADER ───────────────────────────────────────────── */}
         <div className="bg-[#1F3622] px-4 py-3 text-white flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h3 className="text-xs font-bold tracking-tight text-white">Action Required</h3>
@@ -86,7 +85,6 @@ export function ActionAlertPopup() {
           </div>
         </div>
 
-        {/* ── CLEAN SEGMENTED TABS ───────────────────────────────── */}
         <div className="grid grid-cols-2 bg-[#F1EDE1] p-1 border-b border-[#DFD9CA] text-xs">
           <button
             type="button"
@@ -135,7 +133,6 @@ export function ActionAlertPopup() {
           </button>
         </div>
 
-        {/* ── LIST ITEMS ───────────────────────────────────────── */}
         <div className="max-h-64 overflow-y-auto divide-y divide-[#F0EBE0] px-2 py-1">
           {activeList.length === 0 ? (
             <div className="py-7 text-center text-xs text-muted-foreground">
@@ -189,7 +186,6 @@ export function ActionAlertPopup() {
           )}
         </div>
 
-        {/* ── FOOTER ───────────────────────────────────────────── */}
         <div className="bg-[#FAF8F2] border-t border-[#DFD9CA] px-4 py-2.5 text-center">
           <Link
             to="/admin/complaints"

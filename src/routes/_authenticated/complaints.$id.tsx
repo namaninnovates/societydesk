@@ -291,7 +291,6 @@ function ComplaintDetail() {
         ) : null}
       </div>
 
-      {/* ── ASSIGNED TECHNICIAN CARD ──────────────────────────── */}
       <div className="rounded-2xl border border-[#DFD9CA] bg-white p-4 sm:p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -353,7 +352,6 @@ function ComplaintDetail() {
         </div>
       </div>
 
-      {/* ── TIMELINE HISTORY ──────────────────────────────────── */}
       <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-xs">
         <h2 className="text-sm font-bold uppercase tracking-wider text-[#111215]">
           Activity History
@@ -379,7 +377,6 @@ function ComplaintDetail() {
         </ol>
       </div>
 
-      {/* ── RATING & FEEDBACK ──────────────────────────────────── */}
       {c.status === "resolved" && isOwner ? (
         <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-xs space-y-3">
           <h2 className="text-base font-semibold">Rate the resolution</h2>
@@ -422,7 +419,6 @@ function ComplaintDetail() {
         </div>
       ) : null}
 
-      {/* ── COMMENTS ──────────────────────────────────────────── */}
       <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 shadow-xs space-y-4">
         <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#111215]">
           <ChatCircleDots className="size-4 text-[#1F3622]" /> Comments & Notes

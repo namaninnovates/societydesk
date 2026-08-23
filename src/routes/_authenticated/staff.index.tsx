@@ -149,7 +149,6 @@ function StaffDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* ── HEADER & WELCOME ─────────────────────────────────── */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#111215]">
@@ -161,7 +160,6 @@ function StaffDashboard() {
         </div>
       </div>
 
-      {/* ── METRICS STRIP ────────────────────────────────────── */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="rounded-xl border border-[#DFD9CA] bg-white p-4 shadow-xs flex items-center justify-between">
           <div>
@@ -216,7 +214,6 @@ function StaffDashboard() {
         </div>
       </div>
 
-      {/* ── TAB SELECTOR & SEARCH ────────────────────────────── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#DFD9CA] pb-3">
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -251,7 +248,6 @@ function StaffDashboard() {
         />
       </div>
 
-      {/* ── TASK CARDS GRID ──────────────────────────────────── */}
       {isLoading ? (
         <ComplaintsTableSkeleton count={4} />
       ) : activeRows.length === 0 ? (
@@ -368,7 +364,6 @@ function StaffDashboard() {
         </div>
       )}
 
-      {/* ── UPDATE PROGRESS MODAL ────────────────────────────── */}
       <Dialog
         open={Boolean(activeComplaint)}
         onOpenChange={(v) => {

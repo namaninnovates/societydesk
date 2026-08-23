@@ -212,7 +212,6 @@ function UserManagement() {
 
   return (
     <div className="space-y-6">
-      {/* ── HEADER ───────────────────────────────────────────── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#111215]">
@@ -233,7 +232,6 @@ function UserManagement() {
         </Button>
       </div>
 
-      {/* ── ROLE TABS & SEARCH ────────────────────────────────── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#DFD9CA] pb-3">
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -296,7 +294,6 @@ function UserManagement() {
         </div>
       </div>
 
-      {/* ── USERS DIRECTORY TABLE ─────────────────────────────── */}
       {isLoading ? (
         <UsersDirectorySkeleton />
       ) : filteredUsers.length === 0 ? (
@@ -427,7 +424,6 @@ function UserManagement() {
         </div>
       )}
 
-      {/* ── ADD USER / STAFF MODAL ───────────────────────────── */}
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -571,7 +567,6 @@ function UserManagement() {
         </DialogContent>
       </Dialog>
 
-      {/* ── EDIT USER MODAL ──────────────────────────────────── */}
       <Dialog
         open={Boolean(editingUser)}
         onOpenChange={(v) => {

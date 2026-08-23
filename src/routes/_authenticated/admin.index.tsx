@@ -246,7 +246,6 @@ function AdminDashboard() {
 
   return (
     <div className="space-y-3">
-      {/* ── HEADER + INLINE FILTERS STRIP ─────────────────────── */}
       <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-bold tracking-tight text-[#111215]">Society Dashboard</h1>
@@ -340,7 +339,6 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* ── 5 COMPACT KPI METRIC CARDS ────────────────────────── */}
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((s) => (
           <div
@@ -362,7 +360,6 @@ function AdminDashboard() {
         ))}
       </div>
 
-      {/* ── MIDDLE ROW: BAR CHART & STATUS DONUT ──────────────── */}
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
         {/* Complaints by Category (7 cols) */}
         <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-7">
@@ -448,7 +445,6 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* ── BOTTOM ROW: 30-DAY TIMELINE & REPEAT WATCHLIST ────── */}
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
         {/* Raised vs Resolved Activity (8 cols) */}
         <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-8">

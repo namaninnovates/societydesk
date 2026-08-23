@@ -132,7 +132,6 @@ function Settings() {
 
   return (
     <div className="space-y-4">
-      {/* ── TOP HEADER & ACTIONS ──────────────────────────────── */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-[#111215] sm:text-2xl">
@@ -175,7 +174,6 @@ function Settings() {
         </div>
       </div>
 
-      {/* ── NO-SCROLL COMPACT 2-COLUMN DASHBOARD ──────────────── */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         {/* LEFT COLUMN: Global Default Policy + Status (4 cols) */}
         <div className="space-y-3 lg:col-span-4">

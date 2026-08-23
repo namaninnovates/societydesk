@@ -214,7 +214,6 @@
   animation: multiplier-glow 2.2s ease-in-out infinite;
 }
 
-/* ── CUSTOM SOCIETY MAINTENANCE ANIMATION KEYFRAMES ── */
 @keyframes wrench-repair {
   0% {
     transform: rotate(0deg);

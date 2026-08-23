@@ -33,7 +33,6 @@ export function SocietyMaintenanceLoader({
 
   const content = (
     <div className={cn("flex flex-col items-center justify-center p-6 text-center", className)}>
-      {/* ── CUSTOM ANIMATED SOCIETY MAINTENANCE SVG ── */}
       <div className="relative mb-5 flex size-28 items-center justify-center">
         {/* Radar wave pulse rings */}
         <div className="absolute size-24 rounded-full border border-emerald-500/30 animate-radar" />

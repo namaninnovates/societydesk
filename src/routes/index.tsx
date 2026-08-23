@@ -263,7 +263,6 @@ function SocietyDeskLanding() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
-      {/* ── TOP NAVIGATION BAR ──────────────────────────────── */}
       <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-4 py-3.5 backdrop-blur-md sm:px-8 sm:py-4">
         <div className="mx-auto flex items-center justify-between sm:grid sm:max-w-[1400px] sm:grid-cols-3">
           {/* Left: Navigation Links */}
@@ -293,9 +292,7 @@ function SocietyDeskLanding() {
         </div>
       </header>
 
-      {/* ── HERO & WORKFLOW SECTION ─────────────────────────── */}
       <main className="relative mx-auto w-full max-w-[1400px] flex-1 px-4 pt-3 pb-16 sm:px-8 sm:pt-4">
-        {/* ── 1. HERO BANNER WITH BACKGROUND VIDEO ─────────────── */}
         <div className="relative mb-12 overflow-hidden rounded-3xl border border-[#E9E5DA]/80 bg-[#F6F4ED] p-6 sm:mb-16 sm:p-12 lg:p-14">
           {/* Background Video */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
@@ -339,7 +336,6 @@ function SocietyDeskLanding() {
           </div>
         </div>
 
-        {/* ── 2. INTERACTIVE COMPLAINT WORKFLOW DEMO ──────────── */}
         <div>
           {/* Scenario Toggle */}
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -555,7 +551,6 @@ function SocietyDeskLanding() {
         </div>
       </main>
 
-      {/* ── 3-STEP EXPLANATION ──────────────────────────────── */}
       <section
         id="how-it-works"
         className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-16 px-6 sm:px-8"
@@ -600,10 +595,8 @@ function SocietyDeskLanding() {
         </div>
       </section>
 
-      {/* ── FEATURES SECTION (PINNED HORIZONTAL SCROLL) ─────── */}
       <PinnedFeaturesCarousel />
 
-      {/* ── REPAIR DEADLINES SECTION ────────────────────────── */}
       <section
         id="deadlines"
         className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-20 px-6 sm:px-8"
@@ -662,7 +655,6 @@ function SocietyDeskLanding() {
         </div>
       </section>
 
-      {/* ── FOOTER ──────────────────────────────────────────── */}
       <footer className="border-t border-[#233827] bg-[#162719] py-12 px-6 sm:px-8 text-xs text-[#A3B8A7]">
         <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 sm:flex-row">
           <BrandLogo linkTo="/" variant="footer" />
