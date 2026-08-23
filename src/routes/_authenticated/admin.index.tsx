@@ -114,6 +114,46 @@ function AdminDashboard() {
     priorityFilter !== "all" ||
     timeRange !== "30";
 
+  const displayDaysCount = timeRange === "7" ? 7 : timeRange === "90" ? 21 : 14;
+  const activityData = useMemo(() => {
+    return Array.from({ length: displayDaysCount }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (displayDaysCount - 1 - i));
+      const isoDate = d.toISOString().slice(0, 10);
+      const isToday = i === displayDaysCount - 1;
+
+      const dayLabel = isToday
+        ? "Today"
+        : d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+      const raisedCount = rows.filter((r) => {
+        const cDate = r.created_at ? new Date(r.created_at).toISOString().slice(0, 10) : "";
+        return cDate === isoDate;
+      }).length;
+
+      const resolvedCount = rows.filter((r) => {
+        if (!r.resolved_at) return false;
+        const resDate = new Date(r.resolved_at).toISOString().slice(0, 10);
+        return resDate === isoDate;
+      }).length;
+
+      return {
+        key: isoDate,
+        date: dayLabel,
+        fullDate: d.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        }),
+        raised: raisedCount,
+        resolved: resolvedCount,
+      };
+    });
+  }, [rows, displayDaysCount]);
+
+  const totalPeriodRaised = activityData.reduce((acc, d) => acc + d.raised, 0);
+  const totalPeriodResolved = activityData.reduce((acc, d) => acc + d.resolved, 0);
+
   const clearFilters = () => {
     setSearch("");
     setStatusFilter("all");
@@ -179,25 +219,6 @@ function AdminDashboard() {
     value: rows.filter((r) => r.status === s).length,
     fill: CHART_COLORS[i]!,
   }));
-
-  const daysCount = timeRange === "7" ? 7 : timeRange === "90" ? 90 : 30;
-  const days = Array.from({ length: Math.min(daysCount, 30) }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (Math.min(daysCount, 30) - 1 - i));
-    const key = d.toISOString().slice(0, 10);
-    return {
-      day: key.slice(5),
-      raised: rows.filter((r) => {
-        const cDate = r.created_at ? new Date(r.created_at).toISOString().slice(0, 10) : "";
-        return cDate === key;
-      }).length,
-      resolved: rows.filter((r) => {
-        if (!r.resolved_at) return false;
-        const resDate = new Date(r.resolved_at).toISOString().slice(0, 10);
-        return resDate === key;
-      }).length,
-    };
-  });
 
   const resolved = rows.filter((r) => r.status === "resolved" && r.resolved_at);
   const avgResolution = resolved.length
@@ -426,52 +447,85 @@ function AdminDashboard() {
 
       {/* ── BOTTOM ROW: 30-DAY TIMELINE & REPEAT WATCHLIST ────── */}
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
-        {/* Raised vs Resolved Timeline (8 cols) */}
+        {/* Raised vs Resolved Activity (8 cols) */}
         <div className="rounded-2xl border border-[#DFD9CA] bg-white p-3.5 shadow-xs lg:col-span-8">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
-              Raised vs Resolved Trend ({timeRange === "all" ? "All Time" : `Last ${timeRange}d`})
-            </h2>
-            <div className="flex items-center gap-3 text-[10px] font-semibold">
-              <span className="flex items-center gap-1 text-[#1F3622]">
-                <span className="size-2 rounded-full bg-[#1F3622]" /> Raised
+            <div className="flex items-center gap-2">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-[#111215]">
+                Activity: Raised vs Resolved
+              </h2>
+              <span className="text-[10px] text-muted-foreground">
+                (Last {displayDaysCount} Days)
               </span>
-              <span className="flex items-center gap-1 text-[#5F8E63]">
-                <span className="size-2 rounded-full bg-[#5F8E63]" /> Resolved
+            </div>
+
+            {/* Live summary pills */}
+            <div className="flex items-center gap-2 text-[11px] font-semibold">
+              <span className="inline-flex items-center gap-1 rounded-md bg-[#EDF4EE] px-2 py-0.5 text-[#1F3622]">
+                <span className="size-2 rounded-full bg-[#1F3622]" />
+                {totalPeriodRaised} Raised
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-emerald-800">
+                <span className="size-2 rounded-full bg-[#10B981]" />
+                {totalPeriodResolved} Resolved
               </span>
             </div>
           </div>
 
           <div className="h-[135px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={days} margin={{ top: 5, right: 10, left: -25, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                <XAxis dataKey="day" fontSize={10} tickLine={false} />
+              <BarChart
+                data={activityData}
+                margin={{ top: 5, right: 10, left: -25, bottom: 0 }}
+                barGap={2}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.12} />
+                <XAxis dataKey="date" fontSize={10} tickLine={false} />
                 <YAxis fontSize={10} allowDecimals={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{
-                    fontSize: "11px",
-                    borderRadius: "8px",
-                    padding: "4px 8px",
+                  cursor={{ fill: "rgba(0,0,0,0.03)" }}
+                  content={({ active, payload }) => {
+                    const item = payload?.[0]?.payload as
+                      { fullDate: string; raised: number; resolved: number } | undefined;
+                    if (active && item) {
+                      return (
+                        <div className="rounded-lg border border-[#DFD9CA] bg-white p-2 text-xs shadow-md space-y-1">
+                          <p className="font-semibold text-slate-900 border-b border-slate-100 pb-1">
+                            {item.fullDate}
+                          </p>
+                          <div className="flex items-center justify-between gap-3 text-slate-700">
+                            <span className="flex items-center gap-1">
+                              <span className="size-2 rounded-full bg-[#1F3622]" /> Raised:
+                            </span>
+                            <span className="font-bold text-[#1F3622]">{item.raised}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3 text-slate-700">
+                            <span className="flex items-center gap-1">
+                              <span className="size-2 rounded-full bg-[#10B981]" /> Resolved:
+                            </span>
+                            <span className="font-bold text-emerald-700">{item.resolved}</span>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
                   }}
                 />
-                <Line
-                  type="monotone"
+                <Bar
                   dataKey="raised"
-                  stroke="#1F3622"
-                  strokeWidth={2}
                   name="Raised"
-                  dot={false}
+                  fill="#1F3622"
+                  radius={[3, 3, 0, 0]}
+                  maxBarSize={14}
                 />
-                <Line
-                  type="monotone"
+                <Bar
                   dataKey="resolved"
-                  stroke="#5F8E63"
-                  strokeWidth={2}
                   name="Resolved"
-                  dot={false}
+                  fill="#10B981"
+                  radius={[3, 3, 0, 0]}
+                  maxBarSize={14}
                 />
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
