@@ -1,45 +1,43 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
+  ArrowUp,
   ChartBar,
+  Buildings,
+  Check,
+  CaretDown,
+  CaretLeft,
+  CaretRight,
   Drop,
   Stack,
   PushPin,
+  ShieldCheck,
   Sparkle,
   Star,
   Timer,
+  Users,
   Wrench,
   Lightning,
-  ShieldCheck,
-  Airplane,
-  Broadcast,
-  CheckCircle,
-  GearSix,
-  Gauge,
-  Cpu,
-  Warning,
-  Eye,
-  Sliders,
-  Buildings,
+  Clock,
+  ChatCircleDots,
 } from "@phosphor-icons/react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { BrandLogo } from "@/components/brand";
-import { TelemetryGlobe } from "@/components/telemetry-globe";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SocietyDesk — Intelligent Society Maintenance & Operations Radar" },
+      { title: "SocietyDesk — Maintenance Complaints for Housing Societies" },
       {
         name: "description",
         content:
-          "High-tech maintenance telemetry, live complaint tracking, overdue SLA warnings, and notice broadcasts for modern housing societies.",
+          "SocietyDesk helps apartment residents raise maintenance complaints with photos and lets society managers track, prioritize, and resolve issues on time.",
       },
-      { property: "og:title", content: "SocietyDesk — Next-Gen Society Operations" },
+      { property: "og:title", content: "SocietyDesk — Society Maintenance Made Simple" },
       {
         property: "og:description",
         content:
-          "Real-time maintenance telemetry, automated work orders, and instant resident alerts.",
+          "Raise complaints with photos, track repairs, get overdue reminders, and read society notices.",
       },
     ],
   }),
@@ -49,17 +47,19 @@ export const Route = createFileRoute("/")({
 const SCENARIOS = [
   {
     id: "elevator",
-    label: "Tower B Lift Telemetry",
+    label: "Tower B Lift Issue",
+    image: "/demo/lift-repair.jpg",
+    photoLabel: "Photo: lift_shaft_leak.jpg",
     unitBadge: "Flat 402, Tower B",
     prompt:
-      "Water dripping in Tower B lift shaft. High priority technician dispatched to inspect and seal before evening rush.",
+      "Water dripping in Tower B lift shaft. Need emergency technician to inspect and fix before evening rush.",
     workflow: [
-      { done: true, text: "CHECK PAST LIFT LOGS" },
+      { done: true, text: "CHECK PAST LIFT COMPLAINTS" },
       { done: true, text: "CREATE WORK ORDER #104" },
-      { done: true, text: "SET PRIORITY: URGENT" },
+      { done: true, text: "SET PRIORITY: HIGH" },
       { done: false, text: "ASSIGN OTIS LIFT TEAM" },
       { done: false, text: "NOTIFY TOWER B RESIDENTS" },
-      { done: false, text: "SEND REALTIME EMAIL" },
+      { done: false, text: "SEND EMAIL UPDATE" },
     ],
     rules: [
       { title: "TOWER B RESIDENTS", desc: "Notice posted on society board" },
@@ -67,37 +67,88 @@ const SCENARIOS = [
       { title: "OVERDUE ALERT", desc: "Alerts manager if delayed past deadline" },
     ],
     resolution: {
-      tag: "RESOLVED IN 1H 45M",
-      title: "Tower B Lift Sealed & Re-certified",
-      desc: "Water seal replaced and lift tested for 15 round trips. Telemetry verified 100% nominal.",
+      tag: "FIXED IN 1 HOUR 45 MINS",
+      title: "Tower B Lift Repaired & Tested",
+      desc: "Water seal replaced and lift tested for 15 round trips. Working normally.",
+      action: "View repair details",
     },
   },
   {
     id: "water",
-    label: "Basement Main Pump",
-    unitBadge: "Pump House #2, Basement",
+    label: "Basement Water Pump",
+    image: "/demo/pump-repair.jpg",
+    photoLabel: "Photo: basement_valve_leak.jpg",
+    unitBadge: "Parking B-14, Tower A",
     prompt:
-      "Main water pump valve pressure anomaly near parking slot 14. Plumber assigned to tighten joint.",
+      "Main water pump valve leaking near parking slot 14. Plumber needed to tighten connection.",
     workflow: [
-      { done: true, text: "LOG SENSOR TELEMETRY" },
+      { done: true, text: "LOG PLUMBING COMPLAINT" },
       { done: true, text: "ASSIGN SOCIETY PLUMBER" },
       { done: true, text: "SET PRIORITY: MEDIUM" },
-      { done: false, text: "CLOSE BACKUP VALVE 4B" },
+      { done: false, text: "CLOSE MAIN VALVE 4B" },
       { done: false, text: "POST WATER NOTICE" },
-      { done: false, text: "UPDATE REPAIR STATUS" },
+      { done: false, text: "UPDATE REPAIR TIMELINE" },
     ],
     rules: [
-      { title: "TOWERS A & B AFFECTED", desc: "Switched to secondary reservoir" },
+      { title: "TOWERS A & B AFFECTED", desc: "Switched to backup water tank" },
       { title: "TARGET FIX TIME", desc: "24 hours standard plumbing" },
       { title: "RESIDENT NOTIFICATION", desc: "Email sent with repair update" },
     ],
     resolution: {
-      tag: "RESOLVED IN 50M",
+      tag: "FIXED IN 50 MINS",
       title: "Pump Valve Sealed & Checked",
       desc: "Worn gasket replaced and water pressure verified across all floors.",
+      action: "View repair details",
     },
   },
 ];
+
+const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+function ScrambleText() {
+  const [displayText, setDisplayText] = useState("multiplied");
+
+  const scramble = useCallback((target = "multiplied") => {
+    let iteration = 0;
+    const maxIterations = target.length * 3;
+
+    const interval = setInterval(() => {
+      const revealedLength = Math.floor(iteration / 3);
+
+      const scrambled = target
+        .split("")
+        .map((char, index) => {
+          if (index < revealedLength) {
+            return char;
+          }
+          return SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
+        })
+        .join("");
+
+      setDisplayText(scrambled);
+      iteration++;
+
+      if (iteration > maxIterations) {
+        clearInterval(interval);
+        setDisplayText(target);
+      }
+    }, 35);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      scramble("multiplied");
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [scramble]);
+
+  return (
+    <span className="font-bold text-[#1F3622] tracking-tight inline-block">{displayText}</span>
+  );
+}
 
 const SOCIETY_FEATURES = [
   {
@@ -150,411 +201,222 @@ const SOCIETY_FEATURES = [
   },
 ];
 
-export function SocietyDeskLanding() {
-  const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
-  const scenario = SCENARIOS[activeScenarioIdx]!;
-  const [simulatedAlert, setSimulatedAlert] = useState<string | null>(null);
-  const [timeString, setTimeString] = useState<string>("");
+function PinnedFeaturesCarousel() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [maxTranslate, setMaxTranslate] = useState(0);
 
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTimeString(now.toISOString().replace("T", " ").substring(0, 19) + " UTC");
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+  const calculateScroll = useCallback(() => {
+    if (!sectionRef.current || !trackRef.current) return;
+
+    const rect = sectionRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const totalScrollDistance = rect.height - windowHeight;
+
+    if (totalScrollDistance <= 0) return;
+
+    const currentScroll = -rect.top;
+    const progress = Math.min(Math.max(currentScroll / totalScrollDistance, 0), 1);
+    setScrollProgress(progress);
+
+    const trackWidth = trackRef.current.scrollWidth;
+    const containerWidth = trackRef.current.parentElement?.clientWidth || window.innerWidth;
+    const maxShift = Math.max(trackWidth - containerWidth, 0);
+    setMaxTranslate(maxShift);
   }, []);
 
-  const triggerLiveSim = () => {
-    setSimulatedAlert("INCIDENT DISPATCHED: Tower B Elevator Sensor Alert (Code #8845)");
-    setTimeout(() => setSimulatedAlert(null), 5000);
+  useEffect(() => {
+    const handleScroll = () => {
+      requestAnimationFrame(calculateScroll);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    calculateScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [calculateScroll]);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="features"
+      className="relative h-[180vh] border-t border-[#E8E4D8] bg-[#F6F4ED]"
+    >
+      <div className="sticky top-0 flex h-screen w-full flex-col justify-center overflow-hidden px-6 sm:px-8">
+        <div className="mx-auto w-full max-w-[1400px]">
+          {/* Header */}
+          <div className="mb-8 max-w-xl">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+              Built for Societies
+            </span>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#111215] sm:text-4xl">
+              Everything your society needs to manage repairs.
+            </h2>
+          </div>
+
+          {/* Horizontal Track translated by vertical scroll */}
+          <div
+            ref={trackRef}
+            className="flex gap-6 will-change-transform"
+            style={{
+              transform: `translateX(-${scrollProgress * maxTranslate}px)`,
+              transition: "transform 0.08s cubic-bezier(0.2, 0.8, 0.4, 1)",
+            }}
+          >
+            {SOCIETY_FEATURES.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.id}
+                  className="w-[300px] sm:w-[360px] lg:w-[390px] shrink-0 rounded-3xl border border-[#DFD9CA] bg-white p-7 shadow-sm transition-all duration-200 flex flex-col justify-between hover:border-[#1F3622] hover:shadow-md"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="text-xs font-bold uppercase tracking-wider text-[#687063]">
+                        {item.tag}
+                      </div>
+                      <div className="flex size-11 items-center justify-center rounded-2xl bg-[#EDF4EE] text-[#1F3622]">
+                        <Icon className="size-6" weight="fill" />
+                      </div>
+                    </div>
+
+                    <h3 className="text-lg font-bold tracking-tight text-[#111215] leading-snug">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-[#5A5E68]">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-[#F0EBE0] pt-4">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold bg-[#FAF7EE] border-[#E2DDD0] text-[#1F3622]">
+                      <Sparkle className="size-3.5 text-emerald-600" weight="fill" />
+                      {item.pill}
+                    </span>
+                    <span className="text-xs font-medium text-[#7C8074]">SocietyDesk Core</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SocietyDeskLanding() {
+  const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
+  const scenario = SCENARIOS[activeScenarioIdx]!;
+  const [customPrompt, setCustomPrompt] = useState(scenario.prompt);
+
+  const switchScenario = (idx: number) => {
+    setActiveScenarioIdx(idx);
+    setCustomPrompt(SCENARIOS[idx]!.prompt);
   };
 
   return (
-    <div className="min-h-screen bg-[#060D08] font-sans text-slate-100 antialiased selection:bg-emerald-500 selection:text-black">
-      {/* ── TOP HUD COMMAND BAR ───────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-emerald-900/40 bg-[#08120B]/90 px-4 py-3 backdrop-blur-lg sm:px-8">
-        <div className="mx-auto flex max-w-[1700px] items-center justify-between">
-          {/* Brand Logo & DataV Monogram */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="flex size-7 items-center justify-center rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono text-xs font-bold shadow-[0_0_12px_rgba(16,185,129,0.3)]">
-                DATAV
-              </div>
-              <span className="font-mono text-sm font-bold tracking-wider text-emerald-300">
-                SOCIETYDESK // OPS-GRID
-              </span>
-            </div>
-
-            <div className="hidden items-center gap-2 rounded-full border border-emerald-800/40 bg-emerald-950/40 px-3 py-1 text-[11px] font-mono text-emerald-400 md:flex">
-              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>SYS 100% ONLINE</span>
-              <span className="text-emerald-700">|</span>
-              <span className="text-emerald-300/80">{timeString}</span>
-            </div>
-          </div>
-
-          {/* Navigation Links */}
-          <nav className="flex items-center gap-6 font-mono text-xs font-medium text-emerald-200/70 sm:gap-8">
-            <a href="#radar" className="transition-colors hover:text-emerald-300">
-              [ 01 RADAR ]
+    <div className="flex min-h-screen flex-col bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
+      {/* ── TOP NAVIGATION BAR ──────────────────────────────── */}
+      <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-6 py-4 backdrop-blur-md sm:px-8">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-3 items-center">
+          {/* Left: Navigation Links in place of branding */}
+          <nav className="flex items-center gap-6 text-sm font-medium text-[#4A4D54] sm:gap-8">
+            <a href="#features" className="transition-colors hover:text-[#111215]">
+              Features
             </a>
-            <a href="#features" className="transition-colors hover:text-emerald-300">
-              [ 02 FEATURES ]
-            </a>
-            <a href="#simulation" className="transition-colors hover:text-emerald-300">
-              [ 03 SIMULATION ]
+            <a href="#how-it-works" className="transition-colors hover:text-[#111215]">
+              How it works
             </a>
           </nav>
 
-          {/* CTA Buttons */}
-          <div className="flex items-center gap-3">
+          {/* Center: Brand Logo */}
+          <div className="flex justify-center">
+            <BrandLogo linkTo="/" />
+          </div>
+
+          {/* Right: CTA Button */}
+          <div className="flex items-center justify-end gap-3">
             <Link
               to="/auth"
-              className="hidden rounded-md border border-emerald-700/50 bg-emerald-950/40 px-4 py-1.5 font-mono text-xs text-emerald-300 transition-all hover:border-emerald-500 hover:bg-emerald-900/60 sm:inline-flex"
+              className="rounded-full bg-[#1F3622] px-5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-[#2E4E30]"
             >
               Sign In
-            </Link>
-            <Link
-              to="/auth"
-              search={{ mode: "signup" } as never}
-              className="inline-flex items-center gap-1.5 rounded-md bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 py-1.5 font-mono text-xs font-bold text-black shadow-[0_0_16px_rgba(16,185,129,0.4)] transition-all hover:brightness-110"
-            >
-              Register Resident <ArrowRight className="size-3.5" />
             </Link>
           </div>
         </div>
       </header>
 
-      {/* ── 3D HOLOGRAPHIC TELEMETRY RADAR HERO (DATAV HUD) ─── */}
-      <section
-        id="radar"
-        className="relative overflow-hidden border-b border-emerald-900/30 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0A1A10] via-[#060D08] to-[#040805] px-4 py-6 sm:px-8 sm:py-10"
-      >
-        {/* Background Grid Lines & Circuit Watermark */}
-        <div className="pointer-events-none absolute inset-0 opacity-15 bg-[linear-gradient(to_right,#10b981_1px,transparent_1px),linear-gradient(to_bottom,#10b981_1px,transparent_1px)] bg-[size:48px_48px]" />
+      {/* ── HERO & WORKFLOW SECTION ─────────────────────────── */}
+      <main className="relative mx-auto w-full max-w-[1400px] flex-1 px-6 pt-4 pb-16 sm:px-8">
+        {/* ── 1. HERO BANNER WITH BACKGROUND VIDEO ─────────────── */}
+        <div className="relative mb-16 overflow-hidden rounded-3xl border border-[#E9E5DA]/80 bg-[#F6F4ED] p-8 sm:p-12 lg:p-14">
+          {/* Background Video */}
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="h-full w-full origin-center scale-[1.25] object-cover opacity-75 transition-opacity duration-1000"
+            >
+              <source src="/hero-bg.mp4" type="video/mp4" />
+            </video>
 
-        {/* Live Simulation Alert Bar */}
-        {simulatedAlert && (
-          <div className="mx-auto mb-6 max-w-4xl rounded-lg border border-amber-500/50 bg-amber-950/80 p-3 font-mono text-xs text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] animate-pulse flex items-center justify-between">
-            <span className="flex items-center gap-2">
-              <Warning className="size-4 text-amber-400" />
-              {simulatedAlert}
-            </span>
-            <span className="text-[10px] uppercase tracking-widest text-amber-400">
-              DISPATCH ACTIVE
-            </span>
-          </div>
-        )}
-
-        <div className="relative mx-auto max-w-[1700px]">
-          {/* Main Grid: Left HUD + Center 3D Globe + Right HUD */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 items-stretch min-h-[640px]">
-            {/* ── LEFT HUD FLANK (4 Cols) ───────────────────── */}
-            <div className="flex flex-col justify-between gap-5 lg:col-span-3">
-              {/* Card 1: Dispatch Radar & Counts */}
-              <div className="rounded-xl border border-emerald-800/30 bg-[#09150E]/80 p-4 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <div className="flex items-center justify-between border-b border-emerald-900/40 pb-2">
-                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                    <Airplane className="size-3.5" /> Live Dispatch Radar
-                  </span>
-                  <span className="rounded bg-emerald-950 px-1.5 py-0.5 font-mono text-[10px] text-emerald-400 border border-emerald-800/40">
-                    REALTIME
-                  </span>
-                </div>
-
-                <div className="mt-4 grid grid-cols-2 gap-3 font-mono">
-                  <div className="rounded-lg bg-[#050C07] border border-emerald-900/30 p-2.5">
-                    <div className="text-[10px] text-emerald-400/60 uppercase">Resolved Total</div>
-                    <div className="text-xl font-bold text-emerald-300">28,869</div>
-                  </div>
-                  <div className="rounded-lg bg-[#050C07] border border-emerald-900/30 p-2.5">
-                    <div className="text-[10px] text-emerald-400/60 uppercase">In Progress</div>
-                    <div className="text-xl font-bold text-cyan-300">9,865</div>
-                  </div>
-                  <div className="rounded-lg bg-[#050C07] border border-emerald-900/30 p-2.5">
-                    <div className="text-[10px] text-emerald-400/60 uppercase">Urgent SLA</div>
-                    <div className="text-xl font-bold text-amber-400">386</div>
-                  </div>
-                  <div className="rounded-lg bg-[#050C07] border border-emerald-900/30 p-2.5">
-                    <div className="text-[10px] text-emerald-400/60 uppercase">On-Duty Techs</div>
-                    <div className="text-xl font-bold text-emerald-200">98</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2: Waveform Flow Chart */}
-              <div className="rounded-xl border border-emerald-800/30 bg-[#09150E]/80 p-4 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <div className="flex items-center justify-between border-b border-emerald-900/40 pb-2">
-                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-                    Hourly Resident Influx
-                  </span>
-                  <span className="font-mono text-[10px] text-emerald-500">24H CYCLE</span>
-                </div>
-
-                <div className="mt-3">
-                  {/* SVG Waveform Curve matching Alibaba DataV reference */}
-                  <svg className="h-20 w-full overflow-visible" viewBox="0 0 300 80" fill="none">
-                    <defs>
-                      <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                        <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d="M 0 55 Q 40 20 80 45 T 160 30 T 240 50 T 300 25 L 300 80 L 0 80 Z"
-                      fill="url(#waveGrad)"
-                    />
-                    <path
-                      d="M 0 55 Q 40 20 80 45 T 160 30 T 240 50 T 300 25"
-                      stroke="#34d399"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <circle cx="160" cy="30" r="3.5" fill="#6ee7b7" className="animate-ping" />
-                    <circle cx="160" cy="30" r="2.5" fill="#ffffff" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Card 3: Live Dispatch Ticker Matrix */}
-              <div className="rounded-xl border border-emerald-800/30 bg-[#09150E]/80 p-4 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <div className="flex items-center justify-between border-b border-emerald-900/40 pb-2">
-                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-                    Category Triage Matrix
-                  </span>
-                  <span className="font-mono text-[10px] text-emerald-500">EFFICIENCY</span>
-                </div>
-
-                <div className="mt-3 space-y-2 font-mono text-[11px]">
-                  <div className="flex items-center justify-between text-slate-300">
-                    <span className="flex items-center gap-1.5 text-emerald-300">
-                      <span className="size-1.5 rounded-full bg-emerald-400" />
-                      Elevators
-                    </span>
-                    <span className="text-emerald-400">98.4%</span>
-                    <span className="text-slate-400">1.2h avg</span>
-                  </div>
-                  <div className="flex items-center justify-between text-slate-300">
-                    <span className="flex items-center gap-1.5 text-cyan-300">
-                      <span className="size-1.5 rounded-full bg-cyan-400" />
-                      Plumbing
-                    </span>
-                    <span className="text-cyan-400">96.8%</span>
-                    <span className="text-slate-400">2.4h avg</span>
-                  </div>
-                  <div className="flex items-center justify-between text-slate-300">
-                    <span className="flex items-center gap-1.5 text-amber-300">
-                      <span className="size-1.5 rounded-full bg-amber-400" />
-                      Electrical
-                    </span>
-                    <span className="text-amber-400">99.1%</span>
-                    <span className="text-slate-400">0.8h avg</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ── CENTER 3D GLOBE HERO CANVAS (6 Cols) ───────── */}
-            <div className="relative flex flex-col items-center justify-between rounded-2xl border border-emerald-800/40 bg-[#07130B]/60 p-6 backdrop-blur-sm lg:col-span-6 shadow-[inset_0_0_40px_rgba(16,185,129,0.05)]">
-              {/* Corner Sci-Fi Tech Brackets */}
-              <div className="pointer-events-none absolute top-3 left-3 size-4 border-t-2 border-l-2 border-emerald-500" />
-              <div className="pointer-events-none absolute top-3 right-3 size-4 border-t-2 border-r-2 border-emerald-500" />
-              <div className="pointer-events-none absolute bottom-3 left-3 size-4 border-b-2 border-l-2 border-emerald-500" />
-              <div className="pointer-events-none absolute bottom-3 right-3 size-4 border-b-2 border-r-2 border-emerald-500" />
-
-              {/* Top Hero Title Over Globe */}
-              <div className="relative z-20 text-center">
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/60 px-3.5 py-1 text-xs font-mono font-semibold text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
-                  <Broadcast className="size-3.5 text-emerald-400 animate-pulse" />
-                  SOCIETY OPERATIONAL GRID v3.0
-                </div>
-
-                <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl font-sans">
-                  The Intelligent Society
-                  <br />
-                  <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(16,185,129,0.4)]">
-                    Operations Platform
-                  </span>
-                </h1>
-
-                <p className="mt-2.5 max-w-xl text-xs sm:text-sm text-emerald-200/70 font-mono">
-                  Real-time maintenance telemetry, automated work orders, instant resident alerts,
-                  and predictive society analytics.
-                </p>
-              </div>
-
-              {/* 3D Holographic Globe Canvas Container */}
-              <div className="relative h-[340px] sm:h-[380px] w-full my-2">
-                <TelemetryGlobe />
-              </div>
-
-              {/* Bottom Interactive Controls */}
-              <div className="relative z-20 flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  to="/auth"
-                  search={{ mode: "signup" } as never}
-                  className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 px-7 py-3 font-mono text-xs font-bold text-black shadow-[0_0_24px_rgba(16,185,129,0.5)] transition-all hover:scale-105 hover:brightness-110"
-                >
-                  Register as Resident <ArrowRight className="ml-1.5 inline size-4" />
-                </Link>
-
-                <button
-                  onClick={triggerLiveSim}
-                  className="rounded-full border border-emerald-500/40 bg-emerald-950/60 px-5 py-3 font-mono text-xs font-semibold text-emerald-300 backdrop-blur-sm transition-all hover:bg-emerald-900/60 hover:border-emerald-400 cursor-pointer shadow-[0_0_14px_rgba(16,185,129,0.15)]"
-                >
-                  ⚡ Simulate Incident Ping
-                </button>
-
-                <Link
-                  to="/auth"
-                  className="rounded-full border border-slate-700 bg-slate-900/80 px-5 py-3 font-mono text-xs font-semibold text-slate-300 transition-all hover:bg-slate-800"
-                >
-                  Admin Console
-                </Link>
-              </div>
-            </div>
-
-            {/* ── RIGHT HUD FLANK (3 Cols) ──────────────────── */}
-            <div className="flex flex-col justify-between gap-5 lg:col-span-3">
-              {/* Card 1: Early Warning & Security Radar */}
-              <div className="rounded-xl border border-emerald-800/30 bg-[#09150E]/80 p-4 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <div className="flex items-center justify-between border-b border-emerald-900/40 pb-2">
-                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                    <ShieldCheck className="size-3.5" /> SLA Early Warning
-                  </span>
-                  <span className="rounded bg-emerald-950 px-1.5 py-0.5 font-mono text-[10px] text-emerald-400 border border-emerald-800/40">
-                    GUARD // 007
-                  </span>
-                </div>
-
-                <div className="mt-3 flex items-center justify-around py-2">
-                  <div className="text-center font-mono">
-                    <div className="relative flex size-14 items-center justify-center rounded-full border-2 border-emerald-500/60 bg-emerald-950/40 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
-                      <span className="text-xs font-bold text-emerald-300">99.4%</span>
-                    </div>
-                    <span className="mt-1.5 block text-[10px] text-emerald-400/70">
-                      On-Time SLA
-                    </span>
-                  </div>
-
-                  <div className="text-center font-mono">
-                    <div className="relative flex size-14 items-center justify-center rounded-full border-2 border-amber-500/60 bg-amber-950/40 shadow-[0_0_12px_rgba(245,158,11,0.3)]">
-                      <span className="text-xs font-bold text-amber-300">0</span>
-                    </div>
-                    <span className="mt-1.5 block text-[10px] text-amber-400/70">Breaches</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2: Peak Activity Distribution */}
-              <div className="rounded-xl border border-emerald-800/30 bg-[#09150E]/80 p-4 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <div className="flex items-center justify-between border-b border-emerald-900/40 pb-2">
-                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-                    Maintenance Peak Curve
-                  </span>
-                  <span className="font-mono text-[10px] text-cyan-400">TELEMETRY</span>
-                </div>
-
-                <div className="mt-3">
-                  {/* Mountain Wave Distribution */}
-                  <svg className="h-16 w-full overflow-visible" viewBox="0 0 300 60" fill="none">
-                    <path
-                      d="M 0 50 Q 50 10 100 40 T 200 15 T 300 45 L 300 60 L 0 60 Z"
-                      fill="#0e3820"
-                      opacity="0.6"
-                    />
-                    <path
-                      d="M 0 50 Q 50 10 100 40 T 200 15 T 300 45"
-                      stroke="#38bdf8"
-                      strokeWidth="2"
-                    />
-                  </svg>
-                  <div className="mt-2 flex justify-between font-mono text-[9px] text-slate-400">
-                    <span>00:00</span>
-                    <span>08:00</span>
-                    <span>16:00</span>
-                    <span>24:00</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 3: Weekly Latency Heatmap Matrix */}
-              <div className="rounded-xl border border-emerald-800/30 bg-[#09150E]/80 p-4 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <div className="flex items-center justify-between border-b border-emerald-900/40 pb-2">
-                  <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-                    Weekly Latency Matrix
-                  </span>
-                  <span className="font-mono text-[10px] text-emerald-500">7-DAY</span>
-                </div>
-
-                <div className="mt-3 grid grid-cols-7 gap-1.5 text-center font-mono">
-                  {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1.5">
-                      <span className="text-[10px] text-emerald-400/60">{d}</span>
-                      <div
-                        className={`size-4 rounded-full transition-all ${
-                          i === 2 || i === 5
-                            ? "bg-emerald-400 shadow-[0_0_8px_#34d399]"
-                            : i === 4
-                              ? "bg-amber-400 shadow-[0_0_8px_#f59e0b]"
-                              : "bg-emerald-800/60"
-                        }`}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            {/* Gradient overlay for clear text reading */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#F6F4ED] via-[#F6F4ED]/70 to-transparent" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#1F3622]/20 via-transparent to-transparent" />
           </div>
 
-          {/* Bottom Telemetry Ticker Bar */}
-          <div className="mt-6 flex flex-wrap items-center justify-between border-t border-emerald-900/40 pt-4 font-mono text-[11px] text-emerald-400/60">
-            <div className="flex items-center gap-4">
-              <span>■ 48112</span>
-              <span>■ 78454</span>
-              <span>■ 22991</span>
-              <span>■ 43965</span>
-              <span>■ 84521</span>
-            </div>
-            <div className="hidden sm:block text-emerald-500">
-              // data.societydesk.com/visual/datav/v3
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-emerald-300">LAT: 28.6139° N</span>
-              <span className="text-emerald-300">LON: 77.2090° E</span>
+          {/* Foreground Hero Content */}
+          <div className="relative z-10 max-w-2xl">
+            <h1 className="text-6xl font-light leading-[0.95] tracking-tight text-[#111215] sm:text-7xl md:text-[82px]">
+              <span className="font-light text-[#111215]/90">The society manager,</span>
+              <br />
+              <ScrambleText />
+            </h1>
+
+            <p className="mt-8 max-w-lg text-base leading-relaxed text-[#4A4D54] sm:text-lg">
+              SocietyDesk helps residents report maintenance issues with photos and lets society
+              managers assign workers, track deadlines, and keep everyone informed through notices
+              and email updates.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link
+                to="/auth"
+                search={{ mode: "signup" } as never}
+                className="rounded-full bg-[#1F3622] px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#2E4E30]"
+              >
+                Register as Resident <ArrowRight className="ml-2 inline size-4" />
+              </Link>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* ── SECTION 2: INTERACTIVE COMPLAINT SIMULATION ──────── */}
-      <section
-        id="simulation"
-        className="border-b border-emerald-900/30 bg-[#09150E] py-16 px-4 sm:px-8"
-      >
-        <div className="mx-auto max-w-[1400px]">
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-            <div>
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-                [ 03 WORKFLOW SIMULATION ]
-              </span>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl font-sans">
-                Experience the 4-Step Society Triage Cycle
-              </h2>
+        {/* ── 2. INTERACTIVE COMPLAINT WORKFLOW DEMO ──────────── */}
+        <div>
+          {/* Scenario Toggle */}
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div className="text-xs font-semibold uppercase tracking-wider text-[#6B707B]">
+              Interactive Simulation
             </div>
-
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs text-emerald-400/70">SWITCH SAMPLE:</span>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-semibold text-[#8E929B] uppercase">Try sample issue:</span>
               {SCENARIOS.map((sc, i) => (
                 <button
                   key={sc.id}
-                  onClick={() => setActiveScenarioIdx(i)}
-                  className={`rounded-lg px-3.5 py-1.5 font-mono text-xs font-semibold transition-all cursor-pointer ${
+                  onClick={() => switchScenario(i)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all cursor-pointer ${
                     activeScenarioIdx === i
-                      ? "bg-emerald-500 text-black shadow-[0_0_12px_rgba(16,185,129,0.4)]"
-                      : "bg-emerald-950/60 text-emerald-300 border border-emerald-800/40 hover:bg-emerald-900/50"
+                      ? "bg-[#111215] text-white shadow-sm scale-105"
+                      : "bg-[#EAE6DA] text-[#4A4D54] hover:bg-[#DFDACB]"
                   }`}
                 >
                   {sc.label}
@@ -563,194 +425,321 @@ export function SocietyDeskLanding() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-            {/* Step 1: Resident Incident Input */}
-            <div className="rounded-2xl border border-emerald-800/30 bg-[#060D08] p-6 flex flex-col justify-between">
-              <div>
-                <span className="font-mono text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-                  STEP 01 // RESIDENT INPUT
-                </span>
-                <div className="mt-2 inline-block rounded bg-emerald-950 px-2 py-0.5 font-mono text-xs text-emerald-300 border border-emerald-800/40">
-                  {scenario.unitBadge}
-                </div>
-                <p className="mt-3 text-xs leading-relaxed text-emerald-100/80 font-mono">
-                  "{scenario.prompt}"
-                </p>
-              </div>
+          <div className="relative min-h-[380px] w-full pt-2">
+            {/* Connecting Flow Line */}
+            <div className="pointer-events-none absolute inset-0 z-0 hidden lg:block">
+              <svg
+                className="h-full w-full"
+                viewBox="0 0 1340 380"
+                fill="none"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M 0 18 L 315 18 C 330 18 340 28 340 42 L 340 50 C 340 64 350 74 365 74 L 1340 74"
+                  stroke="#1F3622"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeDasharray="6 3"
+                />
+              </svg>
+            </div>
 
-              <div className="mt-6 border-t border-emerald-900/40 pt-4 flex items-center justify-between font-mono text-[11px] text-emerald-400/70">
-                <span className="flex items-center gap-1">
-                  <CheckCircle className="size-3.5 text-emerald-400" /> Photo Attached
+            {/* 4 Step Labels */}
+            <div className="relative z-10 mb-7 hidden grid-cols-12 gap-6 text-xs font-semibold uppercase tracking-wider text-[#4A4D54] lg:grid">
+              <div className="col-span-3">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">1.</span> REPORT ISSUE
                 </span>
-                <span>Auto-Compressed</span>
+              </div>
+              <div className="col-span-3 pl-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">2.</span> ASSIGN WORKER
+                </span>
+              </div>
+              <div className="col-span-3 pl-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">3.</span> TRACK DEADLINE
+                </span>
+              </div>
+              <div className="col-span-3 pl-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                  <span className="font-bold text-[#1F3622]">4.</span> VERIFY & RATE
+                </span>
               </div>
             </div>
 
-            {/* Step 2: Automated Dispatch Rules */}
-            <div className="rounded-2xl border border-emerald-800/30 bg-[#060D08] p-6 flex flex-col justify-between">
-              <div>
-                <span className="font-mono text-[10px] font-bold text-cyan-400 uppercase tracking-wider">
-                  STEP 02 // RULES & DEADLINES
-                </span>
-                <div className="mt-3 space-y-2.5 font-mono text-xs">
-                  {scenario.rules.map((r, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded bg-emerald-950/30 p-2 border border-emerald-900/30"
-                    >
-                      <div className="text-[10px] text-cyan-300 font-bold">{r.title}</div>
-                      <div className="text-[11px] text-slate-300 mt-0.5">{r.desc}</div>
+            {/* 4 Columns */}
+            <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
+              {/* Col 1: Resident Report Card */}
+              <div className="lg:col-span-3">
+                <div className="relative flex min-h-[220px] flex-col justify-between rounded-2xl border border-[#E2DDD0] bg-white p-5 shadow-[0_12px_32px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)]">
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8E929B]">
+                        Resident Ticket
+                      </span>
+                      <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                        {scenario.unitBadge}
+                      </span>
                     </div>
-                  ))}
+                    <textarea
+                      value={customPrompt}
+                      onChange={(e) => setCustomPrompt(e.target.value)}
+                      rows={3}
+                      className="w-full resize-none border-none bg-transparent p-0 text-sm leading-relaxed text-[#111215] outline-none"
+                    />
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                    <div className="flex items-center gap-2">
+                      <div className="size-7 shrink-0 overflow-hidden rounded-md border border-slate-200 shadow-xs">
+                        <img
+                          src={scenario.image}
+                          alt="Thumbnail"
+                          className="size-full object-cover"
+                        />
+                      </div>
+                      <span className="max-w-[130px] truncate text-xs font-medium text-[#6B707B]">
+                        {scenario.photoLabel}
+                      </span>
+                    </div>
+                    <Link
+                      to="/auth"
+                      className="flex size-7 items-center justify-center rounded-lg bg-[#1F3622] text-white shadow-sm transition-all hover:scale-105 active:scale-95"
+                      title="Submit issue"
+                    >
+                      <ArrowUp className="size-4" weight="bold" />
+                    </Link>
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-4 border-t border-emerald-900/40 pt-4 font-mono text-[11px] text-cyan-400">
-                SLA Trigger: 100% Guaranteed
-              </div>
-            </div>
-
-            {/* Step 3: Admin Triage & Worker Actions */}
-            <div className="rounded-2xl border border-emerald-800/30 bg-[#060D08] p-6 flex flex-col justify-between">
-              <div>
-                <span className="font-mono text-[10px] font-bold text-amber-400 uppercase tracking-wider">
-                  STEP 03 // DISPATCH PIPELINE
-                </span>
-                <div className="mt-3 space-y-1.5 font-mono text-xs">
-                  {scenario.workflow.map((w, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex items-center gap-2 rounded px-2.5 py-1.5 ${
-                        w.done
-                          ? "bg-emerald-950/60 text-emerald-300 border border-emerald-800/40"
-                          : "bg-slate-900/40 text-slate-400"
+              {/* Col 2: Task Checklist */}
+              <div className="space-y-2 lg:col-span-3 lg:pl-4">
+                {scenario.workflow.map((item) => (
+                  <div
+                    key={item.text}
+                    className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all ${
+                      item.done
+                        ? "border-[#DFD9CA] bg-[#F1EDE1] text-[#3F434D] shadow-xs"
+                        : "border-[#E8E2D6] bg-[#F8F6F0] text-[#7C8089]"
+                    }`}
+                  >
+                    <span
+                      className={`flex size-4 items-center justify-center rounded-full text-[10px] font-bold ${
+                        item.done ? "bg-[#1F3622] text-white" : "bg-slate-300 text-slate-700"
                       }`}
                     >
-                      <span
-                        className={`size-1.5 rounded-full ${w.done ? "bg-emerald-400" : "bg-slate-600"}`}
-                      />
-                      <span className="text-[11px]">{w.text}</span>
-                    </div>
-                  ))}
-                </div>
+                      {item.done ? "✓" : "•"}
+                    </span>
+                    <span className="tracking-tight">{item.text}</span>
+                  </div>
+                ))}
               </div>
 
-              <div className="mt-4 border-t border-emerald-900/40 pt-4 font-mono text-[11px] text-amber-400">
-                Worker Assigned Instantly
+              {/* Col 3: Rules & Targets */}
+              <div className="space-y-3.5 text-xs leading-relaxed text-[#6D717A] lg:col-span-3 lg:pl-4">
+                {scenario.rules.map((r) => (
+                  <div
+                    key={r.title}
+                    className="flex items-start gap-3 rounded-xl border border-[#E5DFCFC0] bg-white/70 p-3 shadow-xs"
+                  >
+                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-[#EDF3EA] text-[#1F3622]">
+                      <PushPin className="size-3.5" weight="fill" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-[#111215]">{r.title}</div>
+                      <div className="mt-0.5 text-slate-600">{r.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Col 4: Completed Card with Photo Header */}
+              <div className="lg:col-span-3 lg:pl-4">
+                <div className="group relative overflow-hidden rounded-2xl border border-[#233827] bg-[#0E1510] text-white shadow-[0_16px_40px_rgba(0,0,0,0.18)] transition-all hover:border-[#3A5C40]">
+                  {/* Photo Header */}
+                  <div className="relative h-36 w-full overflow-hidden">
+                    <img
+                      src={scenario.image}
+                      alt={scenario.resolution.title}
+                      className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    {/* Gradient Overlay Scrim */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E1510] via-[#0E1510]/40 to-black/30" />
+
+                    {/* Status Badge Tag */}
+                    <div className="absolute top-3 left-3">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/85 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-emerald-300 shadow-sm backdrop-blur-md">
+                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        {scenario.resolution.tag}
+                      </span>
+                    </div>
+
+                    {/* Star Rating Overlay */}
+                    <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-xs text-amber-400">
+                      <div className="flex">
+                        {[...Array(5)].map((_, idx) => (
+                          <Star key={idx} className="size-3.5" weight="fill" />
+                        ))}
+                      </div>
+                      <span className="text-[11px] font-medium text-slate-200">
+                        5.0 Star Rating
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="p-4 pt-3">
+                    <h4 className="text-sm font-semibold tracking-tight text-white">
+                      {scenario.resolution.title}
+                    </h4>
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-300/85">
+                      {scenario.resolution.desc}
+                    </p>
+                    <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+                      <Link
+                        to="/auth"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
+                      >
+                        {scenario.resolution.action} <ArrowRight className="size-3.5" />
+                      </Link>
+                      <span className="font-mono text-[10px] text-slate-400">
+                        WO #{activeScenarioIdx === 0 ? "104" : "109"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      </main>
 
-            {/* Step 4: Resolution & Verification */}
-            <div className="rounded-2xl border border-emerald-500/40 bg-gradient-to-b from-[#0B1E12] to-[#060D08] p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(16,185,129,0.15)]">
-              <div>
-                <span className="font-mono text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-                  STEP 04 // RESOLUTION
-                </span>
-                <div className="mt-2 inline-block rounded bg-emerald-500 px-2 py-0.5 font-mono text-xs font-bold text-black">
-                  {scenario.resolution.tag}
-                </div>
-                <h3 className="mt-3 text-sm font-bold text-white font-sans">
-                  {scenario.resolution.title}
-                </h3>
-                <p className="mt-2 text-xs leading-relaxed text-emerald-100/70 font-mono">
-                  {scenario.resolution.desc}
-                </p>
+      {/* ── 3-STEP EXPLANATION ──────────────────────────────── */}
+      <section
+        id="how-it-works"
+        className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-16 px-6 sm:px-8"
+      >
+        <div className="mx-auto max-w-[1400px]">
+          <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+                STEP 01
               </div>
+              <h3 className="mt-2 text-lg font-bold text-[#111215]">Report in 30 Seconds</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+                Take photos, choose category (Plumbing, Lift, Electric), enter your flat number, and
+                submit directly from your phone.
+              </p>
+            </div>
 
-              <div className="mt-6 border-t border-emerald-900/40 pt-4 flex items-center justify-between font-mono text-xs text-amber-400">
-                <span className="flex items-center gap-1">
-                  <Star className="size-3.5 fill-amber-400 text-amber-400" /> 5.0 Star Rating
-                </span>
-                <span className="text-emerald-400">Verified</span>
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+                STEP 02
               </div>
+              <h3 className="mt-2 text-lg font-bold text-[#111215]">
+                Admin Assigns & Sets Priority
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+                The manager sets priority (Low, Medium, High), writes notes, and tracks due dates so
+                repairs are not forgotten.
+              </p>
+            </div>
+
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+                STEP 03
+              </div>
+              <h3 className="mt-2 text-lg font-bold text-[#111215]">Email Updates & Feedback</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+                Residents receive emails on every status change. Once repaired, residents rate the
+                work 1 to 5 stars.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── SECTION 3: FEATURES GRID ─────────────────────────── */}
+      {/* ── FEATURES SECTION (PINNED HORIZONTAL SCROLL) ─────── */}
+      <PinnedFeaturesCarousel />
+
+      {/* ── REPAIR DEADLINES SECTION ────────────────────────── */}
       <section
-        id="features"
-        className="border-b border-emerald-900/30 bg-[#060D08] py-20 px-4 sm:px-8"
+        id="deadlines"
+        className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-20 px-6 sm:px-8"
       >
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-12 max-w-xl">
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-              [ 02 BUILT FOR SOCIETIES ]
-            </span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl font-sans">
-              Everything your society needs to manage repairs.
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {SOCIETY_FEATURES.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.id}
-                  className="rounded-2xl border border-emerald-900/40 bg-[#09150E] p-7 shadow-lg transition-all duration-200 hover:border-emerald-500/60 hover:shadow-[0_0_24px_rgba(16,185,129,0.15)] flex flex-col justify-between"
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 items-center">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+                Target Deadlines
+              </span>
+              <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#111215] sm:text-4xl">
+                Set clear repair timelines. Avoid forgotten complaints.
+              </h2>
+              <p className="mt-4 text-sm leading-relaxed text-[#5A5E68]">
+                You choose how many days each type of repair should take (for example: Lifts = 1
+                day, Plumbing = 2 days, Cleaning = 4 days). Any complaint taking longer gets
+                highlighted in amber automatically.
+              </p>
+              <div className="mt-6">
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#1F3622] px-6 py-2.5 text-xs font-semibold text-white hover:bg-[#2E4E30]"
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-5">
-                      <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-                        {item.tag}
-                      </span>
-                      <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-950 border border-emerald-800/40 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
-                        <Icon className="size-6" weight="fill" />
-                      </div>
-                    </div>
+                  Configure Society Settings <ArrowRight className="size-3.5" />
+                </Link>
+              </div>
+            </div>
 
-                    <h3 className="text-lg font-bold text-white font-sans leading-snug">
-                      {item.title}
-                    </h3>
-
-                    <p className="mt-3 text-xs sm:text-sm leading-relaxed text-emerald-100/70 font-mono">
-                      {item.desc}
-                    </p>
-                  </div>
-
-                  <div className="mt-6 flex items-center justify-between border-t border-emerald-900/40 pt-4">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-800/50 bg-emerald-950/60 px-3 py-1 font-mono text-xs text-emerald-300">
-                      <Sparkle className="size-3 text-emerald-400" weight="fill" />
-                      {item.pill}
-                    </span>
-                    <span className="font-mono text-xs text-emerald-600">Core Engine</span>
-                  </div>
-                </div>
-              );
-            })}
+            <div className="rounded-2xl border border-[#DFD9CA] bg-white p-6 text-xs space-y-3 shadow-md">
+              <div className="flex justify-between border-b pb-2 text-slate-700 font-bold">
+                <span>Category</span>
+                <span>Target Resolution Time</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Lift & Elevator</span>
+                <span className="font-semibold text-red-600">1 Day (Urgent)</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Plumbing & Water Supply</span>
+                <span className="font-semibold text-blue-600">2 Days</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Electrical & Power</span>
+                <span className="font-semibold text-blue-600">2 Days</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Housekeeping & Common Area</span>
+                <span className="font-semibold text-slate-600">4 Days</span>
+              </div>
+              <div className="flex justify-between text-slate-500 pt-2 border-t text-[11px]">
+                <span>Default for other complaints</span>
+                <span>3 Days</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── FOOTER ──────────────────────────────────────────── */}
-      <footer className="border-t border-emerald-950 bg-[#040905] py-12 px-6 sm:px-8 font-mono text-xs text-emerald-400/60">
+      <footer className="border-t border-[#233827] bg-[#162719] py-12 px-6 sm:px-8 text-xs text-[#A3B8A7]">
         <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 sm:flex-row">
-          <div className="flex items-center gap-3">
-            <div className="flex size-6 items-center justify-center rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/40">
-              SD
-            </div>
-            <span className="font-bold text-white tracking-wider">SOCIETYDESK</span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-8 font-medium text-emerald-300/80">
-            <a href="#radar" className="transition-colors hover:text-white">
-              Telemetry Radar
-            </a>
+          <BrandLogo linkTo="/" variant="footer" />
+          <div className="flex flex-wrap items-center gap-8 font-medium text-sm text-[#D1DFD3]">
             <a href="#features" className="transition-colors hover:text-white">
               Features
             </a>
-            <a href="#simulation" className="transition-colors hover:text-white">
-              Simulation
+            <a href="#how-it-works" className="transition-colors hover:text-white">
+              How it works
             </a>
             <Link to="/auth" className="transition-colors hover:text-white">
               Sign In
             </Link>
           </div>
-
-          <p className="text-xs text-emerald-500/50">
-            © {new Date().getFullYear()} SocietyDesk Ops-Grid. Built for apartment societies.
+          <p className="text-xs text-[#8BA490]">
+            © {new Date().getFullYear()} SocietyDesk. Built for apartment societies.
           </p>
         </div>
       </footer>

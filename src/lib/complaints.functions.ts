@@ -437,20 +437,73 @@ export const fetchOverdueThresholdsServerFn = createServerFn({ method: "GET" }).
 );
 
 export const updateOverdueThresholdServerFn = createServerFn({ method: "POST" })
-  .validator((d: { category: string; days: number }) => d)
+  .validator((d: { category: string | null; days: number }) => d)
   .handler(async ({ data }) => {
     const sql = getSql();
-    const existing = (await sql`
-      SELECT id FROM overdue_thresholds WHERE LOWER(category) = LOWER(${data.category}) LIMIT 1
-    `) as { id: string }[];
-    if (existing.length > 0 && existing[0]) {
-      await sql`
-        UPDATE overdue_thresholds SET days = ${data.days} WHERE id = ${existing[0].id}
-      `;
+    const isGlobal = !data.category || data.category === "__global";
+    if (isGlobal) {
+      const existing = (await sql`
+        SELECT id FROM overdue_thresholds WHERE category IS NULL OR LOWER(category) = '__global' LIMIT 1
+      `) as { id: string }[];
+      if (existing.length > 0 && existing[0]) {
+        await sql`
+          UPDATE overdue_thresholds SET days = ${data.days} WHERE id = ${existing[0].id}
+        `;
+      } else {
+        await sql`
+          INSERT INTO overdue_thresholds (id, category, days) VALUES (gen_random_uuid(), NULL, ${data.days})
+        `;
+      }
     } else {
-      await sql`
-        INSERT INTO overdue_thresholds (id, category, days) VALUES (gen_random_uuid(), ${data.category}, ${data.days})
-      `;
+      const existing = (await sql`
+        SELECT id FROM overdue_thresholds WHERE LOWER(category) = LOWER(${data.category}) LIMIT 1
+      `) as { id: string }[];
+      if (existing.length > 0 && existing[0]) {
+        await sql`
+          UPDATE overdue_thresholds SET days = ${data.days} WHERE id = ${existing[0].id}
+        `;
+      } else {
+        await sql`
+          INSERT INTO overdue_thresholds (id, category, days) VALUES (gen_random_uuid(), ${data.category}, ${data.days})
+        `;
+      }
+    }
+    return { success: true };
+  });
+
+export const updateAllOverdueThresholdsServerFn = createServerFn({ method: "POST" })
+  .validator((d: { items: { category: string | null; days: number }[] }) => d)
+  .handler(async ({ data }) => {
+    const sql = getSql();
+    for (const item of data.items) {
+      const isGlobal = !item.category || item.category === "__global";
+      if (isGlobal) {
+        const existing = (await sql`
+          SELECT id FROM overdue_thresholds WHERE category IS NULL OR LOWER(category) = '__global' LIMIT 1
+        `) as { id: string }[];
+        if (existing.length > 0 && existing[0]) {
+          await sql`
+            UPDATE overdue_thresholds SET days = ${item.days} WHERE id = ${existing[0].id}
+          `;
+        } else {
+          await sql`
+            INSERT INTO overdue_thresholds (id, category, days) VALUES (gen_random_uuid(), NULL, ${item.days})
+          `;
+        }
+      } else {
+        const existing = (await sql`
+          SELECT id FROM overdue_thresholds WHERE LOWER(category) = LOWER(${item.category}) LIMIT 1
+        `) as { id: string }[];
+        if (existing.length > 0 && existing[0]) {
+          await sql`
+            UPDATE overdue_thresholds SET days = ${item.days} WHERE id = ${existing[0].id}
+          `;
+        } else {
+          await sql`
+            INSERT INTO overdue_thresholds (id, category, days) VALUES (gen_random_uuid(), ${item.category}, ${item.days})
+          `;
+        }
+      }
     }
     return { success: true };
   });
