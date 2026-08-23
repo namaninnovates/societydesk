@@ -18,6 +18,7 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { fetchComplaints, photoUrl } from "@/lib/queries";
 import { CATEGORIES, CATEGORY_ICONS, daysOpen } from "@/lib/societydesk";
+import { ComplaintsTableSkeleton } from "@/components/society-loader";
 
 export const Route = createFileRoute("/_authenticated/complaints/")({
   head: () => ({
@@ -105,11 +106,7 @@ function MyComplaints() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-3">
-          {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-24 w-full rounded-xl" />
-          ))}
-        </div>
+        <ComplaintsTableSkeleton count={3} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={ClipboardText}

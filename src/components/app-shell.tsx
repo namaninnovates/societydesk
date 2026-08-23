@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand";
+import { SocietyMaintenanceLoader } from "@/components/society-loader";
 
 const adminNav = [
   { to: "/admin", label: "Dashboard", icon: SquaresFour },
@@ -73,11 +74,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   if (profileLoading && !profile) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F6F4ED]">
-        <div className="size-8 animate-spin rounded-full border-4 border-[#1F3622] border-t-transparent" />
-      </div>
-    );
+    return <SocietyMaintenanceLoader fullScreen text="Authenticating society portal..." />;
   }
 
   if (!profile) {

@@ -39,16 +39,17 @@ import {
   type AuthProfile,
 } from "@/lib/auth.functions";
 import { useAuth } from "@/hooks/use-auth";
+import { UsersDirectorySkeleton } from "@/components/society-loader";
 
 export const Route = createFileRoute("/_authenticated/admin/residents")({
   head: () => ({
     meta: [
-      { title: "User & Staff Management — SocietyDesk" },
+      { title: "Users & Staff — SocietyDesk" },
       {
         name: "description",
         content: "Manage residents, staff technicians, and admin permissions.",
       },
-      { property: "og:title", content: "User & Staff Management — SocietyDesk" },
+      { property: "og:title", content: "Users & Staff — SocietyDesk" },
       {
         property: "og:description",
         content: "Admin console to manage users, roles, and staff directory.",
@@ -297,7 +298,7 @@ function UserManagement() {
 
       {/* ── USERS DIRECTORY TABLE ─────────────────────────────── */}
       {isLoading ? (
-        <Skeleton className="h-64 w-full rounded-2xl" />
+        <UsersDirectorySkeleton />
       ) : filteredUsers.length === 0 ? (
         <EmptyState
           icon={Users}

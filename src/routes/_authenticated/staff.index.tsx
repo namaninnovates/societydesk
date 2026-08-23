@@ -29,13 +29,14 @@ import { fetchComplaints, assignComplaintServerFn, type ComplaintRow } from "@/l
 import { updateComplaintStatusServerFn } from "@/lib/complaints.functions";
 import { STATUS_LABELS, daysOpen, type Status } from "@/lib/societydesk";
 import { notifyStatusChange } from "@/integrations/email/notify.functions";
+import { ComplaintsTableSkeleton } from "@/components/society-loader";
 
 export const Route = createFileRoute("/_authenticated/staff/")({
   head: () => ({
     meta: [
-      { title: "Staff Portal — SocietyDesk" },
+      { title: "Staff Tasks — SocietyDesk" },
       { name: "description", content: "Assigned maintenance tasks and resolution tracker." },
-      { property: "og:title", content: "Staff Portal — SocietyDesk" },
+      { property: "og:title", content: "Staff Tasks — SocietyDesk" },
       { property: "og:description", content: "Staff task queue and status resolution workspace." },
     ],
   }),
@@ -252,7 +253,7 @@ function StaffDashboard() {
 
       {/* ── TASK CARDS GRID ──────────────────────────────────── */}
       {isLoading ? (
-        <Skeleton className="h-64 w-full rounded-2xl" />
+        <ComplaintsTableSkeleton count={4} />
       ) : activeRows.length === 0 ? (
         <EmptyState
           icon={ClipboardText}

@@ -21,13 +21,14 @@ import {
 } from "@/lib/complaints.functions";
 import { CATEGORIES, CATEGORY_ICONS } from "@/lib/societydesk";
 import { useAuth } from "@/hooks/use-auth";
+import { SocietyMaintenanceLoader } from "@/components/society-loader";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — SocietyDesk" },
+      { title: "SLA & Settings — SocietyDesk" },
       { name: "description", content: "Configure overdue thresholds per category." },
-      { property: "og:title", content: "Settings — SocietyDesk" },
+      { property: "og:title", content: "SLA & Settings — SocietyDesk" },
       { property: "og:description", content: "Society-level SocietyDesk configuration." },
     ],
   }),
@@ -117,9 +118,13 @@ function Settings() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (profileLoading) return <Skeleton className="h-96 w-full rounded-2xl" />;
+  if (profileLoading)
+    return <SocietyMaintenanceLoader fullScreen text="Verifying admin permissions..." />;
   if (!profile || !isAdmin) return null;
-  if (isLoading) return <Skeleton className="h-96 w-full rounded-2xl" />;
+  if (isLoading)
+    return (
+      <SocietyMaintenanceLoader fullScreen text="Loading SLA thresholds & society settings..." />
+    );
 
   const customCount = CATEGORIES.filter((c) => drafts[c] !== undefined).length;
 

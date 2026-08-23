@@ -39,13 +39,14 @@ import {
 import { fetchComplaints } from "@/lib/queries";
 import { CATEGORIES, daysOpen } from "@/lib/societydesk";
 import { useAuth } from "@/hooks/use-auth";
+import { DashboardSkeleton } from "@/components/society-loader";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({
     meta: [
-      { title: "Admin dashboard — SocietyDesk" },
+      { title: "Dashboard — SocietyDesk" },
       { name: "description", content: "Complaint volume, overdue counts and resolution trends." },
-      { property: "og:title", content: "Admin dashboard — SocietyDesk" },
+      { property: "og:title", content: "Dashboard — SocietyDesk" },
       { property: "og:description", content: "Track society complaint health at a glance." },
     ],
   }),
@@ -163,9 +164,9 @@ function AdminDashboard() {
     setTimeRange("30");
   };
 
-  if (profileLoading) return <Skeleton className="h-96 w-full rounded-2xl" />;
+  if (profileLoading) return <DashboardSkeleton />;
   if (!profile || !isAdmin) return null;
-  if (isLoading) return <Skeleton className="h-96 w-full rounded-2xl" />;
+  if (isLoading) return <DashboardSkeleton />;
 
   const stats = [
     {

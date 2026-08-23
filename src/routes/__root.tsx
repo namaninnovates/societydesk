@@ -15,19 +15,42 @@ import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
+    <div className="flex min-h-screen items-center justify-center bg-[#F6F4ED] px-4 py-12">
+      <div className="w-full max-w-lg rounded-3xl border border-[#DFD9CA] bg-white p-8 text-center shadow-md space-y-6">
+        {/* Themed 404 Illustration Badge */}
+        <div className="mx-auto flex size-20 items-center justify-center rounded-3xl bg-[#1F3622] text-white shadow-lg relative">
+          <span className="text-3xl font-extrabold tracking-tight">404</span>
+          <div className="absolute -bottom-2 -right-2 flex size-8 items-center justify-center rounded-full bg-emerald-500 text-white shadow-md border-2 border-white">
+            <span className="text-sm font-bold">?</span>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <span className="inline-block rounded-full bg-[#EDF4EE] px-3 py-1 text-xs font-bold text-[#1F3622] uppercase tracking-wider">
+            Corridor Not Found
+          </span>
+          <h1 className="text-2xl font-bold tracking-tight text-[#111215] sm:text-3xl">
+            This page isn't on the society map
+          </h1>
+          <p className="text-sm text-[#5A5E68] leading-relaxed max-w-sm mx-auto">
+            The flat, complaint ticket, or admin route you are trying to visit may have been moved,
+            resolved, or does not exist.
+          </p>
+        </div>
+
+        {/* Action Shortcuts */}
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-full bg-[#1F3622] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#2E4E30]"
           >
-            Go home
+            Go to Homepage
+          </Link>
+          <Link
+            to="/auth"
+            className="inline-flex items-center justify-center rounded-full border border-[#DFD9CA] bg-white px-5 py-2.5 text-sm font-medium text-slate-800 transition-colors hover:bg-[#FAF8F2]"
+          >
+            Sign In Portal
           </Link>
         </div>
       </div>
@@ -40,30 +63,37 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+    <div className="flex min-h-screen items-center justify-center bg-[#F6F4ED] px-4 py-12">
+      <div className="w-full max-w-lg rounded-3xl border border-red-200 bg-white p-8 text-center shadow-md space-y-6">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-red-100 text-red-700">
+          <span className="text-2xl font-bold">⚠️</span>
+        </div>
+        <div className="space-y-2">
+          <span className="inline-block rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-800 uppercase tracking-wider">
+            System Notice
+          </span>
+          <h1 className="text-2xl font-bold text-[#111215]">Temporary maintenance hiccup</h1>
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+            We encountered a temporary issue loading this society data. You can try refreshing
+            below.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-full bg-[#1F3622] px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#2E4E30] cursor-pointer"
           >
-            Try again
+            Retry Sync
           </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-full border border-[#DFD9CA] bg-white px-5 py-2.5 text-sm font-medium text-slate-800 transition-colors hover:bg-[#FAF8F2]"
           >
-            Go home
-          </a>
+            Go Home
+          </Link>
         </div>
       </div>
     </div>

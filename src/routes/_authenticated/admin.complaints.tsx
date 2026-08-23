@@ -34,13 +34,14 @@ import { updateComplaintStatusServerFn } from "@/lib/complaints.functions";
 import { CATEGORIES, STATUS_LABELS, daysOpen, type Priority, type Status } from "@/lib/societydesk";
 import { cn } from "@/lib/utils";
 import { notifyStatusChange } from "@/integrations/email/notify.functions";
+import { ComplaintsTableSkeleton } from "@/components/society-loader";
 
 export const Route = createFileRoute("/_authenticated/admin/complaints")({
   head: () => ({
     meta: [
-      { title: "Manage complaints — SocietyDesk" },
+      { title: "Complaints Triage — SocietyDesk" },
       { name: "description", content: "Triage, assign staff, prioritise and resolve complaints." },
-      { property: "og:title", content: "Manage complaints — SocietyDesk" },
+      { property: "og:title", content: "Complaints Triage — SocietyDesk" },
       {
         property: "og:description",
         content: "Admin view to triage and assign society complaints.",
@@ -346,7 +347,7 @@ function AdminComplaints() {
 
       {/* ── COMPLAINT CONTENT ─────────────────────────────────── */}
       {isLoading ? (
-        <Skeleton className="h-64 w-full rounded-2xl" />
+        <ComplaintsTableSkeleton count={5} />
       ) : rows.length === 0 ? (
         <EmptyState icon={Tray} title="No complaints match" body="Try clearing a filter or two." />
       ) : view === "board" ? (

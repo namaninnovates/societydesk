@@ -15,13 +15,14 @@ import { fetchNotices } from "@/lib/queries";
 import { createNoticeServerFn, deleteNoticeServerFn } from "@/lib/complaints.functions";
 import { cn } from "@/lib/utils";
 import { notifyImportantNotice } from "@/integrations/email/notify.functions";
+import { SocietyMaintenanceLoader } from "@/components/society-loader";
 
 export const Route = createFileRoute("/_authenticated/admin/notices")({
   head: () => ({
     meta: [
-      { title: "Publish notices — SocietyDesk" },
+      { title: "Notice Board (Admin) — SocietyDesk" },
       { name: "description", content: "Create and pin society-wide announcements." },
-      { property: "og:title", content: "Publish notices — SocietyDesk" },
+      { property: "og:title", content: "Notice Board (Admin) — SocietyDesk" },
       { property: "og:description", content: "Admin notice board management." },
     ],
   }),
@@ -97,7 +98,7 @@ function AdminNotices() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (profileLoading) return <div className="h-64 w-full animate-pulse rounded-xl bg-slate-200" />;
+  if (profileLoading) return <SocietyMaintenanceLoader fullScreen text="Loading notice board..." />;
   if (!profile || !isAdmin) return null;
 
   return (

@@ -40,13 +40,14 @@ import {
 } from "@/lib/complaints.functions";
 import { STATUS_LABELS, daysOpen } from "@/lib/societydesk";
 import { cn } from "@/lib/utils";
+import { SocietyMaintenanceLoader } from "@/components/society-loader";
 
 export const Route = createFileRoute("/_authenticated/complaints/$id")({
   head: () => ({
     meta: [
-      { title: "Complaint details — SocietyDesk" },
+      { title: "Complaint Details — SocietyDesk" },
       { name: "description", content: "Full history, technician assignments, photos and updates." },
-      { property: "og:title", content: "Complaint details — SocietyDesk" },
+      { property: "og:title", content: "Complaint Details — SocietyDesk" },
       { property: "og:description", content: "Follow technician progress and every update." },
     ],
   }),
@@ -135,7 +136,13 @@ function ComplaintDetail() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (complaintQ.isLoading) return <Skeleton className="h-72 w-full rounded-2xl" />;
+  if (complaintQ.isLoading)
+    return (
+      <SocietyMaintenanceLoader
+        fullScreen
+        text="Loading complaint timeline and resolution records..."
+      />
+    );
   const c = complaintQ.data;
   if (!c) return <p className="text-muted-foreground">Complaint not found.</p>;
 
