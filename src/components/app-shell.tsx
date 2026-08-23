@@ -236,34 +236,37 @@ function AdminShell({ children }: { children: ReactNode }) {
   );
 }
 
+function getCleanName(fullName?: string | null): string {
+  if (!fullName) return "";
+  return fullName.replace(/\s*\([^)]*\)/g, "").trim();
+}
+
 function StaffShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const signOut = useSignOut();
   const { profile } = useAuth();
-  const { timeStr, greeting } = useIstTime();
+  const { timeStr } = useIstTime();
+  const cleanName = getCleanName(profile?.full_name) || "Staff";
 
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2.5 sm:py-3">
-          {/* Left: Brand + Greeting */}
-          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          {/* Left: Brand */}
+          <div className="flex items-center gap-3 shrink-0">
             <Brand linkTo="/staff" />
-            <div className="hidden h-5 w-px bg-[#DFD9CA] sm:block" />
-            <div className="min-w-0">
-              <span className="text-xs sm:text-sm font-semibold text-[#111215] truncate">
-                {greeting}, {profile?.full_name || "Staff"}
-              </span>
-            </div>
-            <span className="hidden sm:inline-block rounded-full bg-emerald-100 border border-emerald-300 px-2 py-0.5 text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
-              Staff Portal
-            </span>
           </div>
 
-          {/* Right: IST Clock + Sign Out */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Right: Staff Name + Badge + IST Clock + Sign Out */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-xs sm:text-sm font-semibold text-[#111215] truncate max-w-[160px] sm:max-w-[220px]">
+              {cleanName}
+            </span>
+            <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 shrink-0">
+              Staff
+            </span>
             {timeStr && (
-              <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-[#FAF8F2] px-3 py-1 text-xs font-medium text-[#4F5148] border border-[#DFD9CA] shadow-2xs">
+              <div className="hidden md:flex items-center gap-1.5 rounded-full bg-[#FAF8F2] px-2.5 py-1 text-xs font-medium text-[#4F5148] border border-[#DFD9CA] shadow-2xs shrink-0">
                 <Clock className="size-3.5 text-[#1F3622]" weight="bold" />
                 <span className="tabular-nums">{timeStr}</span>
               </div>
@@ -272,25 +275,13 @@ function StaffShell({ children }: { children: ReactNode }) {
               variant="outline"
               size="sm"
               onClick={signOut}
-              className="h-8 rounded-full border-[#DFD9CA] bg-white px-3 text-xs font-medium text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] cursor-pointer shadow-2xs gap-1.5"
+              className="h-8 rounded-full border-[#DFD9CA] bg-white px-3 text-xs font-medium text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] cursor-pointer shadow-2xs gap-1.5 shrink-0"
             >
               <SignOut className="size-3.5 text-slate-500" />
               <span>Sign Out</span>
             </Button>
           </div>
         </div>
-
-        {timeStr && (
-          <div className="flex sm:hidden items-center justify-between px-4 pb-2 text-[11px] text-[#4F5148]">
-            <div className="flex items-center gap-1">
-              <Clock className="size-3 text-[#1F3622]" />
-              <span className="tabular-nums">{timeStr}</span>
-            </div>
-            <span className="rounded-full bg-emerald-100 px-2 py-0.2 text-[9px] font-bold text-emerald-800 uppercase">
-              Staff
-            </span>
-          </div>
-        )}
 
         <div className="mx-auto max-w-5xl overflow-x-auto px-2 pb-2">
           <nav className="flex gap-1">
@@ -324,34 +315,30 @@ function ResidentShell({ children }: { children: ReactNode }) {
   const signOut = useSignOut();
   const { profile } = useAuth();
   const { timeStr, greeting } = useIstTime();
+  const cleanName = getCleanName(profile?.full_name) || "Resident";
 
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2.5 sm:py-3">
-          {/* Left: Brand + Greeting */}
-          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          {/* Left: Brand */}
+          <div className="flex items-center gap-3 shrink-0">
             <Brand linkTo="/complaints" />
-            <div className="hidden h-5 w-px bg-[#DFD9CA] sm:block" />
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-semibold text-[#111215] truncate">
-                  {greeting}, {profile?.full_name || "Resident"}
-                </span>
-                {profile?.unit_number && (
-                  <span className="hidden md:inline-flex items-center rounded-md bg-[#EDF4EE] px-1.5 py-0.5 text-[10px] font-semibold text-[#1F3622] border border-[#1F3622]/15">
-                    {profile.block ? `${profile.block} · ` : ""}Flat{" "}
-                    {profile.unit_number.replace(/^Flat\s*/i, "")}
-                  </span>
-                )}
-              </div>
-            </div>
           </div>
 
-          {/* Right: IST Date/Time + Sign Out */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Right: Greeting + Flat Tag + IST Clock + Sign Out */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-xs sm:text-sm font-semibold text-[#111215] truncate max-w-[180px] sm:max-w-none">
+              {greeting}, {cleanName}
+            </span>
+            {profile?.unit_number && (
+              <span className="hidden md:inline-flex items-center rounded-md bg-[#EDF4EE] px-2 py-0.5 text-[10px] font-semibold text-[#1F3622] border border-[#1F3622]/15 shrink-0">
+                {profile.block ? `${profile.block} · ` : ""}Flat{" "}
+                {profile.unit_number.replace(/^Flat\s*/i, "")}
+              </span>
+            )}
             {timeStr && (
-              <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-[#FAF8F2] px-3 py-1 text-xs font-medium text-[#4F5148] border border-[#DFD9CA] shadow-2xs">
+              <div className="hidden lg:flex items-center gap-1.5 rounded-full bg-[#FAF8F2] px-2.5 py-1 text-xs font-medium text-[#4F5148] border border-[#DFD9CA] shadow-2xs shrink-0">
                 <Clock className="size-3.5 text-[#1F3622]" weight="bold" />
                 <span className="tabular-nums">{timeStr}</span>
               </div>
@@ -360,29 +347,13 @@ function ResidentShell({ children }: { children: ReactNode }) {
               variant="outline"
               size="sm"
               onClick={signOut}
-              className="h-8 rounded-full border-[#DFD9CA] bg-white px-3 text-xs font-medium text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] cursor-pointer shadow-2xs gap-1.5"
+              className="h-8 rounded-full border-[#DFD9CA] bg-white px-3 text-xs font-medium text-slate-700 hover:bg-[#F3EFE6] hover:text-[#111215] cursor-pointer shadow-2xs gap-1.5 shrink-0"
             >
               <SignOut className="size-3.5 text-slate-500" />
               <span>Sign Out</span>
             </Button>
           </div>
         </div>
-
-        {/* Mobile-only IST time strip */}
-        {timeStr && (
-          <div className="flex sm:hidden items-center justify-between px-4 pb-2 text-[11px] text-[#4F5148]">
-            <div className="flex items-center gap-1">
-              <Clock className="size-3 text-[#1F3622]" />
-              <span className="tabular-nums">{timeStr}</span>
-            </div>
-            {profile?.unit_number && (
-              <span className="text-[10px] text-muted-foreground font-medium">
-                {profile.block ? `${profile.block} · ` : ""}Flat{" "}
-                {profile.unit_number.replace(/^Flat\s*/i, "")}
-              </span>
-            )}
-          </div>
-        )}
 
         <div className="mx-auto max-w-5xl overflow-x-auto px-2 pb-2">
           <nav className="flex gap-1">
