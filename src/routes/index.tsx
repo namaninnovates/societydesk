@@ -744,9 +744,26 @@ function SocietyDeskLanding() {
             </div>
           </div>
 
-          {/* Large Hero Branding: Opaque at top, faded at bottom */}
-          <div className="pt-8 pb-0 flex flex-col items-center justify-center select-none pointer-events-none overflow-hidden">
-            <span className="block w-full text-center text-[15vw] font-extrabold tracking-tighter leading-[0.82] bg-gradient-to-b from-white/40 via-white/15 to-transparent bg-clip-text text-transparent transform translate-y-2 sm:translate-y-4">
+          {/* Large Hero Branding with Logo & Text: Opaque at top, faded at bottom */}
+          <div className="pt-8 sm:pt-10 pb-0 flex items-center justify-center gap-3 sm:gap-6 md:gap-8 select-none pointer-events-none overflow-hidden">
+            <svg
+              className="h-[10vw] w-[10vw] max-h-36 max-w-36 shrink-0 transform translate-y-1 sm:translate-y-2"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="footerLogoFade" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.45" />
+                  <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0.18" />
+                  <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path d="M4 24L16 4L22 14L10 24H4Z" fill="url(#footerLogoFade)" />
+              <path d="M14 28L20 18L28 28H14Z" fill="url(#footerLogoFade)" />
+            </svg>
+
+            <span className="text-[13vw] sm:text-[14vw] font-extrabold tracking-tighter leading-[0.82] bg-gradient-to-b from-white/45 via-white/18 to-transparent bg-clip-text text-transparent transform translate-y-1 sm:translate-y-2">
               societydesk
             </span>
           </div>
