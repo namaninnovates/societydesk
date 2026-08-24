@@ -301,7 +301,12 @@ function SocietyDeskLanding() {
               loop
               muted
               playsInline
-              className="h-full w-full origin-center scale-[1.25] object-cover opacity-75 transition-opacity duration-1000"
+              poster="/hero-bg-poster.jpg"
+              preload="metadata"
+              className="h-full w-full origin-center scale-[1.25] object-cover opacity-0 transition-opacity duration-1000"
+              onCanPlay={(e) => {
+                (e.currentTarget as HTMLVideoElement).style.opacity = "0.75";
+              }}
             >
               <source src="/hero-bg.mp4" type="video/mp4" />
             </video>
