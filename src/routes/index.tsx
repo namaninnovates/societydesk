@@ -251,14 +251,14 @@ function PinnedFeaturesCarousel() {
   );
 }
 
-const SCRAMBLE_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%&*_-=+";
+const SCRAMBLE_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 function ScrambleText({ text, className }: { text: string; className?: string }) {
   const [displayed, setDisplayed] = useState(text);
 
   useEffect(() => {
     let frame = 0;
-    const totalFrames = 30;
+    const totalFrames = 26;
     const len = text.length;
 
     const timeout = setTimeout(() => {
@@ -292,7 +292,11 @@ function ScrambleText({ text, className }: { text: string; className?: string })
     return () => clearTimeout(timeout);
   }, [text]);
 
-  return <span className={className}>{displayed}</span>;
+  return (
+    <span className={`inline-block whitespace-nowrap ${className || ""}`}>
+      {displayed}
+    </span>
+  );
 }
 
 function SocietyDeskLanding() {
@@ -406,7 +410,7 @@ function SocietyDeskLanding() {
           </div>
 
           {/* Foreground Hero Content */}
-          <div className="relative z-10 max-w-2xl">
+          <div className="relative z-10 max-w-3xl">
             <h1 className="text-4xl font-light leading-[1.05] tracking-tight text-[#111215] sm:text-6xl md:text-7xl lg:text-[76px] sm:leading-[0.98]">
               <span className="font-light text-[#111215]/90">Maintenance complaints,</span>
               <br />
