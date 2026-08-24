@@ -299,6 +299,15 @@ function SocietyDeskLanding() {
   const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
   const scenario = SCENARIOS[activeScenarioIdx]!;
   const [customPrompt, setCustomPrompt] = useState(scenario.prompt);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
 
   const switchScenario = (idx: number) => {
     setActiveScenarioIdx(idx);
@@ -341,16 +350,14 @@ function SocietyDeskLanding() {
           {/* Background Video */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
             <video
+              ref={videoRef}
               autoPlay
               loop
               muted
               playsInline
               poster="/hero-bg-poster.jpg"
-              preload="metadata"
-              className="h-full w-full origin-center scale-[1.25] object-cover opacity-0 transition-opacity duration-1000"
-              onCanPlay={(e) => {
-                (e.currentTarget as HTMLVideoElement).style.opacity = "0.75";
-              }}
+              preload="auto"
+              className="h-full w-full origin-center scale-[1.25] object-cover opacity-80"
             >
               <source src="/hero-bg.mp4" type="video/mp4" />
             </video>
