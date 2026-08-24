@@ -302,11 +302,49 @@ function SocietyDeskLanding() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.defaultMuted = true;
-      videoRef.current.muted = true;
-      videoRef.current.play().catch(() => {});
-    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.defaultMuted = true;
+    video.muted = true;
+
+    const playVideo = () => {
+      if (video.paused) {
+        const promise = video.play();
+        if (promise !== undefined) {
+          promise.catch(() => {
+            // Browser autoplay restrictions handled by user event listeners below
+          });
+        }
+      }
+    };
+
+    // Attempt immediate play
+    playVideo();
+
+    // If media was still buffering, play once loaded
+    video.addEventListener("loadeddata", playVideo, { once: true });
+    video.addEventListener("canplay", playVideo, { once: true });
+
+    // Fallback: unlock on first interaction (scroll, touch, or click)
+    const onUserInteraction = () => {
+      playVideo();
+      window.removeEventListener("touchstart", onUserInteraction);
+      window.removeEventListener("click", onUserInteraction);
+      window.removeEventListener("scroll", onUserInteraction);
+    };
+
+    window.addEventListener("touchstart", onUserInteraction, { passive: true, once: true });
+    window.addEventListener("click", onUserInteraction, { once: true });
+    window.addEventListener("scroll", onUserInteraction, { passive: true, once: true });
+
+    return () => {
+      video.removeEventListener("loadeddata", playVideo);
+      video.removeEventListener("canplay", playVideo);
+      window.removeEventListener("touchstart", onUserInteraction);
+      window.removeEventListener("click", onUserInteraction);
+      window.removeEventListener("scroll", onUserInteraction);
+    };
   }, []);
 
   const switchScenario = (idx: number) => {
@@ -352,16 +390,15 @@ function SocietyDeskLanding() {
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
             <video
               ref={videoRef}
+              src="/hero-bg.mp4"
               autoPlay
               loop
               muted
               playsInline
               poster="/hero-bg-poster.jpg"
               preload="auto"
-              className="h-full w-full origin-center scale-[1.25] object-cover opacity-80"
-            >
-              <source src="/hero-bg.mp4" type="video/mp4" />
-            </video>
+              className="h-full w-full origin-center scale-[1.25] object-cover opacity-85"
+            />
 
             {/* Gradient overlay for clear text reading */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#F6F4ED] via-[#F6F4ED]/70 to-transparent" />
