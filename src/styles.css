@@ -157,7 +157,7 @@
   }
 
   html {
-    /* Do not add overflow-x:hidden here — it kills vertical scroll in iOS Safari */
+    background-color: #162719;
   }
 
   body {

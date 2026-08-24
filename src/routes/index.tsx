@@ -712,33 +712,43 @@ function SocietyDeskLanding() {
         </div>
       </section>
 
-      <footer className="relative border-t border-[#233827] bg-[#162719] py-12 px-6 sm:px-8 text-xs text-[#A3B8A7] after:pointer-events-none after:absolute after:top-full after:left-0 after:right-0 after:h-[1500px] after:bg-[#162719]">
-        <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 sm:flex-row">
-          <BrandLogo linkTo="/" variant="footer" />
-          <div className="flex flex-wrap items-center gap-8 font-medium text-sm text-[#D1DFD3]">
-            <a href="#features" className="transition-colors hover:text-white">
-              Features
-            </a>
-            <a href="#how-it-works" className="transition-colors hover:text-white">
-              How it works
-            </a>
-            <Link to="/auth" className="transition-colors hover:text-white">
-              Sign In
-            </Link>
-          </div>
-          <div className="flex flex-col items-center sm:items-end gap-1 text-xs text-[#8BA490]">
-            <p>© {new Date().getFullYear()} SocietyDesk. Built for apartment societies.</p>
-            <p>
-              Developed by{" "}
-              <a
-                href="https://github.com/namaninnovates"
-                target="_blank"
-                rel="noreferrer"
-                className="font-semibold text-[#D1DFD3] hover:text-white underline decoration-[#3B543F] underline-offset-4 transition-colors"
-              >
-                namaninnovates
+      <footer className="border-t border-[#233827] bg-[#162719] pt-14 pb-0 px-6 sm:px-8 text-xs text-[#A3B8A7] overflow-hidden">
+        <div className="mx-auto max-w-[1400px]">
+          {/* Top Row: Links and Info */}
+          <div className="flex flex-col items-center justify-between gap-6 pb-10 sm:flex-row border-b border-[#233827]/80">
+            <BrandLogo linkTo="/" variant="footer" className="scale-110 origin-left" />
+            <div className="flex flex-wrap items-center gap-8 font-medium text-sm text-[#D1DFD3]">
+              <a href="#features" className="transition-colors hover:text-white">
+                Features
               </a>
-            </p>
+              <a href="#how-it-works" className="transition-colors hover:text-white">
+                How it works
+              </a>
+              <Link to="/auth" className="transition-colors hover:text-white">
+                Sign In
+              </Link>
+            </div>
+            <div className="flex flex-col items-center sm:items-end gap-1 text-xs text-[#8BA490]">
+              <p>© {new Date().getFullYear()} SocietyDesk. Built for apartment societies.</p>
+              <p>
+                Developed by{" "}
+                <a
+                  href="https://github.com/namaninnovates"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-[#D1DFD3] hover:text-white underline decoration-[#3B543F] underline-offset-4 transition-colors"
+                >
+                  namaninnovates
+                </a>
+              </p>
+            </div>
+          </div>
+
+          {/* Large Hero Branding: Opaque at top, faded at bottom */}
+          <div className="pt-8 pb-0 flex flex-col items-center justify-center select-none pointer-events-none overflow-hidden">
+            <span className="block w-full text-center text-[15vw] font-extrabold tracking-tighter leading-[0.82] bg-gradient-to-b from-white/40 via-white/15 to-transparent bg-clip-text text-transparent transform translate-y-2 sm:translate-y-4">
+              societydesk
+            </span>
           </div>
         </div>
       </footer>
