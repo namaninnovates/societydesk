@@ -712,7 +712,7 @@ function SocietyDeskLanding() {
         </div>
       </section>
 
-      <footer className="border-t border-[#233827] bg-[#162719] py-12 px-6 sm:px-8 text-xs text-[#A3B8A7]">
+      <footer className="relative border-t border-[#233827] bg-[#162719] py-12 px-6 sm:px-8 text-xs text-[#A3B8A7] after:pointer-events-none after:absolute after:top-full after:left-0 after:right-0 after:h-[1500px] after:bg-[#162719]">
         <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 sm:flex-row">
           <BrandLogo linkTo="/" variant="footer" />
           <div className="flex flex-wrap items-center gap-8 font-medium text-sm text-[#D1DFD3]">
@@ -726,9 +726,20 @@ function SocietyDeskLanding() {
               Sign In
             </Link>
           </div>
-          <p className="text-xs text-[#8BA490]">
-            © {new Date().getFullYear()} SocietyDesk. Built for apartment societies.
-          </p>
+          <div className="flex flex-col items-center sm:items-end gap-1 text-xs text-[#8BA490]">
+            <p>© {new Date().getFullYear()} SocietyDesk. Built for apartment societies.</p>
+            <p>
+              Developed by{" "}
+              <a
+                href="https://github.com/namaninnovates"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-[#D1DFD3] hover:text-white underline decoration-[#3B543F] underline-offset-4 transition-colors"
+              >
+                namaninnovates
+              </a>
+            </p>
+          </div>
         </div>
       </footer>
     </div>
