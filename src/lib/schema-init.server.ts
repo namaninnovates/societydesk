@@ -1,9 +1,22 @@
-let initialized = false;
+let schemaChecked = false;
 
 export async function ensureDatabaseSchema() {
-  if (initialized) return;
+  if (schemaChecked) return;
+  schemaChecked = true;
+
   try {
     const { sql } = await import("@/integrations/neon/client.server");
+
+    // Fast-path: If profiles table already exists and has records, skip all heavy migration & seeding loops
+    try {
+      const existingCount = (await sql`SELECT id FROM public.profiles LIMIT 1`) as unknown as unknown[];
+      if (existingCount && existingCount.length > 0) {
+        return;
+      }
+    } catch {
+      // Table doesn't exist yet, proceed with setup
+    }
+
     const { hashPassword } = await import("@/lib/auth.server");
 
     // Ensure 'staff' enum value is present
@@ -202,7 +215,7 @@ export async function ensureDatabaseSchema() {
       WHERE LOWER(email) = 'admin@societydesk.com'
     `;
 
-    initialized = true;
+    schemaChecked = true;
   } catch (err) {
     console.warn("[Schema Init] Notice:", err);
   }

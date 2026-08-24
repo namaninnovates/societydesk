@@ -19,9 +19,6 @@ export const signInServerFn = createServerFn({ method: "POST" })
   .validator((d: { email: string; password: string }) => d)
   .handler(async ({ data }) => {
     const { email, password } = data;
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
-
     const { sql } = await import("@/integrations/neon/client.server");
     const { verifyPassword, createJwtToken } = await import("@/lib/auth.server");
 
@@ -76,9 +73,6 @@ export const signUpServerFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { full_name, email, password, unit_number, block, phone, role = "resident" } = data;
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
-
     const { sql } = await import("@/integrations/neon/client.server");
     const { hashPassword, createJwtToken } = await import("@/lib/auth.server");
 
@@ -142,9 +136,6 @@ export const getCurrentUserServerFn = createServerFn({ method: "GET" })
     const { verifyJwtToken } = await import("@/lib/auth.server");
     const session = await verifyJwtToken(token);
     if (!session) return null;
-
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
 
     const { sql } = await import("@/integrations/neon/client.server");
     const rows = (await sql`
@@ -210,9 +201,6 @@ export const updateProfileServerFn = createServerFn({ method: "POST" })
   });
 
 export const fetchResidentsServerFn = createServerFn({ method: "GET" }).handler(async () => {
-  const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-  await ensureDatabaseSchema();
-
   const { sql } = await import("@/integrations/neon/client.server");
   const rows = (await sql`
     SELECT id, full_name, email, role, unit_number, block, phone, created_at
@@ -223,9 +211,6 @@ export const fetchResidentsServerFn = createServerFn({ method: "GET" }).handler(
 });
 
 export const fetchStaffMembersServerFn = createServerFn({ method: "GET" }).handler(async () => {
-  const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-  await ensureDatabaseSchema();
-
   const { sql } = await import("@/integrations/neon/client.server");
   const rows = (await sql`
     SELECT id, full_name, email, role, unit_number, block, phone, created_at
@@ -250,9 +235,6 @@ export const createUserByAdminServerFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { full_name, email, password, role, unit_number, block, phone } = data;
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
-
     const { sql } = await import("@/integrations/neon/client.server");
     const { hashPassword } = await import("@/lib/auth.server");
 
@@ -289,9 +271,6 @@ export const updateUserRoleServerFn = createServerFn({ method: "POST" })
   .validator((d: { userId: string; role: "admin" | "staff" | "resident" }) => d)
   .handler(async ({ data }) => {
     const { userId, role } = data;
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
-
     const { sql } = await import("@/integrations/neon/client.server");
     await sql`
       UPDATE profiles
@@ -315,9 +294,6 @@ export const updateUserServerFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { userId, full_name, email, role, unit_number, block, phone } = data;
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
-
     const { sql } = await import("@/integrations/neon/client.server");
     await sql`
       UPDATE profiles

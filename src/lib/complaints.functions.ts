@@ -104,9 +104,6 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
     ) => d,
   )
   .handler(async ({ data }) => {
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
-
     const sql = getSql();
     const rows = (await sql`
       SELECT 
@@ -206,9 +203,6 @@ export const fetchComplaintsServerFn = createServerFn({ method: "GET" })
 export const fetchComplaintByIdServerFn = createServerFn({ method: "GET" })
   .validator((d: { id: string }) => d)
   .handler(async ({ data }) => {
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
-
     const sql = getSql();
     const rows = (await sql`
       SELECT 
@@ -274,9 +268,6 @@ export const assignComplaintServerFn = createServerFn({ method: "POST" })
     }) => d,
   )
   .handler(async ({ data }) => {
-    const { ensureDatabaseSchema } = await import("@/lib/schema-init.server");
-    await ensureDatabaseSchema();
-
     const sql = getSql();
     let staffName = "Unassigned";
 
