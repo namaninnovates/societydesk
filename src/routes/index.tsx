@@ -315,8 +315,9 @@ function SocietyDeskLanding() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F6F4ED] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
-      <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-4 py-3.5 backdrop-blur-md sm:px-8 sm:py-4">
+    <div className="flex min-h-screen flex-col bg-[#162719] font-sans text-[#111215] antialiased selection:bg-[#1F3622] selection:text-white">
+      <div className="flex flex-col bg-[#F6F4ED] w-full">
+        <header className="sticky top-0 z-50 w-full border-b border-[#E9E6DC]/80 bg-[#F6F4ED]/90 px-4 py-3.5 backdrop-blur-md sm:px-8 sm:py-4">
         <div className="mx-auto flex items-center justify-between sm:grid sm:max-w-[1400px] sm:grid-cols-3">
           {/* Left: Navigation Links */}
           <nav className="hidden items-center gap-6 text-sm font-medium text-[#4A4D54] sm:flex sm:gap-8">
@@ -711,8 +712,9 @@ function SocietyDeskLanding() {
           </div>
         </div>
       </section>
+    </div>
 
-      <footer className="border-t border-[#233827] bg-[#162719] pt-14 pb-0 px-6 sm:px-8 text-xs text-[#A3B8A7] overflow-hidden">
+      <footer className="w-full border-t border-[#233827] bg-[#162719] pt-14 pb-8 sm:pb-12 px-6 sm:px-8 text-xs text-[#A3B8A7] overflow-hidden">
         <div className="mx-auto max-w-[1400px]">
           {/* Top Row: Links and Info */}
           <div className="flex flex-col items-center justify-between gap-6 pb-10 sm:flex-row border-b border-[#233827]/80">
@@ -745,9 +747,9 @@ function SocietyDeskLanding() {
           </div>
 
           {/* Large Hero Branding with Logo & Text: Opaque at top, faded at bottom */}
-          <div className="pt-8 sm:pt-10 pb-0 flex items-center justify-center gap-3 sm:gap-6 md:gap-8 select-none pointer-events-none overflow-hidden">
+          <div className="pt-8 sm:pt-12 pb-2 flex items-center justify-center gap-3 sm:gap-6 md:gap-8 select-none pointer-events-none overflow-hidden">
             <svg
-              className="h-[10vw] w-[10vw] max-h-36 max-w-36 shrink-0 transform translate-y-1 sm:translate-y-2"
+              className="h-[10vw] w-[10vw] max-h-36 max-w-36 shrink-0"
               viewBox="0 0 32 32"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -755,7 +757,7 @@ function SocietyDeskLanding() {
               <defs>
                 <linearGradient id="footerLogoFade" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.45" />
-                  <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0.18" />
+                  <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0.15" />
                   <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
                 </linearGradient>
               </defs>
@@ -763,7 +765,7 @@ function SocietyDeskLanding() {
               <path d="M14 28L20 18L28 28H14Z" fill="url(#footerLogoFade)" />
             </svg>
 
-            <span className="text-[13vw] sm:text-[14vw] font-extrabold tracking-tighter leading-[0.82] bg-gradient-to-b from-white/45 via-white/18 to-transparent bg-clip-text text-transparent transform translate-y-1 sm:translate-y-2">
+            <span className="text-[13vw] sm:text-[14vw] font-extrabold tracking-tighter leading-[0.85] bg-gradient-to-b from-white/45 via-white/15 to-transparent bg-clip-text text-transparent">
               societydesk
             </span>
           </div>
