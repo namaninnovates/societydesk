@@ -611,40 +611,49 @@ function SocietyDeskLanding() {
 
       <section
         id="how-it-works"
-        className="border-t border-[#E8E4D8] bg-[#F1ECE0]/50 py-16 px-6 sm:px-8"
+        className="border-y border-[#29452D] bg-[#1F3622] py-20 px-6 sm:px-8 text-white relative overflow-hidden"
       >
         <div className="mx-auto max-w-[1400px]">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
-            <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+          <div className="mb-10 text-center sm:text-left">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#2A472E] border border-[#3D6443] px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-[#A8D5B0]">
+              How SocietyDesk Works
+            </span>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              From issue report to verified resolution in 3 steps
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="relative rounded-2xl border border-[#2E4E30] bg-[#1A2E1D]/80 p-6 sm:p-8 backdrop-blur-xs transition-all hover:border-[#3E6841] hover:bg-[#1A2E1D]">
+              <div className="inline-flex items-center justify-center rounded-lg bg-[#2D4D32] border border-[#3E6841] px-2.5 py-1 text-xs font-bold text-[#A8D5B0] tracking-wider">
                 STEP 01
               </div>
-              <h3 className="mt-2 text-lg font-bold text-[#111215]">Report in 30 Seconds</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+              <h3 className="mt-4 text-lg font-bold text-white">Report in 30 Seconds</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#B4C9B8]">
                 Take photos, choose category (Plumbing, Lift, Electric), enter your flat number, and
                 submit directly from your phone.
               </p>
             </div>
 
-            <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+            <div className="relative rounded-2xl border border-[#2E4E30] bg-[#1A2E1D]/80 p-6 sm:p-8 backdrop-blur-xs transition-all hover:border-[#3E6841] hover:bg-[#1A2E1D]">
+              <div className="inline-flex items-center justify-center rounded-lg bg-[#2D4D32] border border-[#3E6841] px-2.5 py-1 text-xs font-bold text-[#A8D5B0] tracking-wider">
                 STEP 02
               </div>
-              <h3 className="mt-2 text-lg font-bold text-[#111215]">
+              <h3 className="mt-4 text-lg font-bold text-white">
                 Admin Assigns & Sets Priority
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+              <p className="mt-2 text-sm leading-relaxed text-[#B4C9B8]">
                 The manager sets priority (Low, Medium, High), writes notes, and tracks due dates so
                 repairs are not forgotten.
               </p>
             </div>
 
-            <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-[#1F3622]">
+            <div className="relative rounded-2xl border border-[#2E4E30] bg-[#1A2E1D]/80 p-6 sm:p-8 backdrop-blur-xs transition-all hover:border-[#3E6841] hover:bg-[#1A2E1D]">
+              <div className="inline-flex items-center justify-center rounded-lg bg-[#2D4D32] border border-[#3E6841] px-2.5 py-1 text-xs font-bold text-[#A8D5B0] tracking-wider">
                 STEP 03
               </div>
-              <h3 className="mt-2 text-lg font-bold text-[#111215]">Email Updates & Feedback</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#5A5E68]">
+              <h3 className="mt-4 text-lg font-bold text-white">Email Updates & Feedback</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#B4C9B8]">
                 Residents receive emails on every status change. Once repaired, residents rate the
                 work 1 to 5 stars.
               </p>
