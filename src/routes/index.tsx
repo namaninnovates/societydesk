@@ -251,6 +251,50 @@ function PinnedFeaturesCarousel() {
   );
 }
 
+const SCRAMBLE_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%&*_-=+";
+
+function ScrambleText({ text, className }: { text: string; className?: string }) {
+  const [displayed, setDisplayed] = useState(text);
+
+  useEffect(() => {
+    let frame = 0;
+    const totalFrames = 30;
+    const len = text.length;
+
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        frame++;
+        const progress = frame / totalFrames;
+        const resolvedCount = Math.floor(progress * len);
+
+        let result = "";
+        for (let i = 0; i < len; i++) {
+          if (i < resolvedCount) {
+            result += text[i];
+          } else if (text[i] === " ") {
+            result += " ";
+          } else {
+            result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+          }
+        }
+
+        setDisplayed(result);
+
+        if (frame >= totalFrames) {
+          clearInterval(interval);
+          setDisplayed(text);
+        }
+      }, 35);
+
+      return () => clearInterval(interval);
+    }, 200);
+
+    return () => clearTimeout(timeout);
+  }, [text]);
+
+  return <span className={className}>{displayed}</span>;
+}
+
 function SocietyDeskLanding() {
   const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
   const scenario = SCENARIOS[activeScenarioIdx]!;
@@ -284,7 +328,7 @@ function SocietyDeskLanding() {
           <div className="flex items-center justify-end gap-3">
             <Link
               to="/auth"
-              className="rounded-full bg-[#1F3622] px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-[#2E4E30] sm:px-5 sm:py-2 sm:text-sm"
+              className="rounded-full bg-[#1F3622] px-5 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-[#2E4E30] sm:px-6 sm:py-2.5 sm:text-sm"
             >
               Sign In
             </Link>
@@ -321,7 +365,7 @@ function SocietyDeskLanding() {
             <h1 className="text-4xl font-light leading-[1.05] tracking-tight text-[#111215] sm:text-6xl md:text-7xl lg:text-[76px] sm:leading-[0.98]">
               <span className="font-light text-[#111215]/90">Maintenance complaints,</span>
               <br />
-              <span className="font-bold text-[#1F3622]">resolved on time.</span>
+              <ScrambleText text="resolved on time." className="font-bold text-[#1F3622]" />
             </h1>
 
             <p className="mt-5 max-w-lg text-sm leading-relaxed text-[#4A4D54] sm:mt-8 sm:text-base md:text-lg">
