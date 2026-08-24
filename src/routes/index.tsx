@@ -433,19 +433,19 @@ function SocietyDeskLanding() {
         <div>
           {/* Scenario Toggle */}
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <div className="text-xs font-semibold uppercase tracking-wider text-[#6B707B]">
+            <div className="text-xs font-semibold uppercase tracking-wider text-[#1F3622]">
               Interactive Preview
             </div>
             <div className="flex items-center gap-2 text-xs">
-              <span className="font-semibold text-[#8E929B] uppercase">Try sample issue:</span>
+              <span className="font-semibold text-[#3F5B42] uppercase">Try sample issue:</span>
               {SCENARIOS.map((sc, i) => (
                 <button
                   key={sc.id}
                   onClick={() => switchScenario(i)}
-                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all cursor-pointer ${
+                  className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                     activeScenarioIdx === i
-                      ? "bg-[#111215] text-white shadow-sm scale-105"
-                      : "bg-[#EAE6DA] text-[#4A4D54] hover:bg-[#DFDACB]"
+                      ? "bg-[#1F3622] text-white shadow-sm scale-105 border border-[#1F3622]"
+                      : "bg-[#EDF3EA] text-[#2E4E30] hover:bg-[#DEE8DA] border border-[#1F3622]/15"
                   }`}
                 >
                   {sc.label}
@@ -475,24 +475,24 @@ function SocietyDeskLanding() {
             </div>
 
             {/* 4 Step Labels */}
-            <div className="relative z-10 mb-7 hidden grid-cols-12 gap-6 text-xs font-semibold uppercase tracking-wider text-[#4A4D54] lg:grid">
+            <div className="relative z-10 mb-7 hidden grid-cols-12 gap-6 text-xs font-semibold uppercase tracking-wider text-[#1F3622] lg:grid">
               <div className="col-span-3">
-                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#1F3622]/20 bg-[#EDF3EA] px-3.5 py-1 shadow-xs text-[#1F3622]">
                   <span className="font-bold text-[#1F3622]">1.</span> REPORT ISSUE
                 </span>
               </div>
               <div className="col-span-3 pl-4">
-                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#1F3622]/20 bg-[#EDF3EA] px-3.5 py-1 shadow-xs text-[#1F3622]">
                   <span className="font-bold text-[#1F3622]">2.</span> ASSIGN WORKER
                 </span>
               </div>
               <div className="col-span-3 pl-4">
-                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#1F3622]/20 bg-[#EDF3EA] px-3.5 py-1 shadow-xs text-[#1F3622]">
                   <span className="font-bold text-[#1F3622]">3.</span> TRACK DEADLINE
                 </span>
               </div>
               <div className="col-span-3 pl-4">
-                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#D5D2C7] bg-[#ECE9DE] px-3.5 py-1 shadow-xs">
+                <span className="relative z-10 inline-flex items-center gap-1.5 rounded-full border border-[#1F3622]/20 bg-[#EDF3EA] px-3.5 py-1 shadow-xs text-[#1F3622]">
                   <span className="font-bold text-[#1F3622]">4.</span> VERIFY & RATE
                 </span>
               </div>
@@ -502,13 +502,13 @@ function SocietyDeskLanding() {
             <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
               {/* Col 1: Resident Report Card */}
               <div className="lg:col-span-3">
-                <div className="relative flex min-h-[220px] flex-col justify-between rounded-2xl border border-[#E2DDD0] bg-white p-5 shadow-[0_12px_32px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)]">
+                <div className="relative flex min-h-[220px] flex-col justify-between rounded-2xl border border-[#DFD9CA] bg-white p-5 shadow-[0_12px_32px_rgba(31,54,34,0.06)] transition-all hover:shadow-[0_16px_36px_rgba(31,54,34,0.1)]">
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8E929B]">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[#2E4E30]">
                         Resident Ticket
                       </span>
-                      <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                      <span className="inline-flex items-center rounded-full border border-[#1F3622]/20 bg-[#EDF4EE] px-2 py-0.5 text-[10px] font-semibold text-[#1F3622]">
                         {scenario.unitBadge}
                       </span>
                     </div>
@@ -520,22 +520,22 @@ function SocietyDeskLanding() {
                     />
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                  <div className="mt-4 flex items-center justify-between border-t border-[#EDF3EA] pt-3">
                     <div className="flex items-center gap-2">
-                      <div className="size-7 shrink-0 overflow-hidden rounded-md border border-slate-200 shadow-xs">
+                      <div className="size-7 shrink-0 overflow-hidden rounded-md border border-[#D5E2D7] shadow-xs">
                         <img
                           src={scenario.image}
                           alt="Thumbnail"
                           className="size-full object-cover"
                         />
                       </div>
-                      <span className="max-w-[130px] truncate text-xs font-medium text-[#6B707B]">
+                      <span className="max-w-[130px] truncate text-xs font-medium text-[#4F6A52]">
                         {scenario.photoLabel}
                       </span>
                     </div>
                     <Link
                       to="/auth"
-                      className="flex size-7 items-center justify-center rounded-lg bg-[#1F3622] text-white shadow-sm transition-all hover:scale-105 active:scale-95"
+                      className="flex size-7 items-center justify-center rounded-lg bg-[#1F3622] text-white shadow-sm transition-all hover:bg-[#2E4E30] hover:scale-105 active:scale-95"
                       title="Submit issue"
                     >
                       <ArrowUp className="size-4" weight="bold" />
@@ -551,13 +551,15 @@ function SocietyDeskLanding() {
                     key={item.text}
                     className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all ${
                       item.done
-                        ? "border-[#DFD9CA] bg-[#F1EDE1] text-[#3F434D] shadow-xs"
-                        : "border-[#E8E2D6] bg-[#F8F6F0] text-[#7C8089]"
+                        ? "border-[#2E4E30]/20 bg-[#EDF4EE] text-[#1F3622] shadow-xs font-semibold"
+                        : "border-[#DFE7E0] bg-[#F6FAF6] text-[#4F6A52]"
                     }`}
                   >
                     <span
                       className={`flex size-4 items-center justify-center rounded-full text-[10px] font-bold ${
-                        item.done ? "bg-[#1F3622] text-white" : "bg-slate-300 text-slate-700"
+                        item.done
+                          ? "bg-[#1F3622] text-white"
+                          : "bg-[#D2DFD5] text-[#2D4D32]"
                       }`}
                     >
                       {item.done ? "✓" : "•"}
@@ -568,18 +570,18 @@ function SocietyDeskLanding() {
               </div>
 
               {/* Col 3: Rules & Targets */}
-              <div className="space-y-3.5 text-xs leading-relaxed text-[#6D717A] lg:col-span-3 lg:pl-4">
+              <div className="space-y-3.5 text-xs leading-relaxed text-[#4F6A52] lg:col-span-3 lg:pl-4">
                 {scenario.rules.map((r) => (
                   <div
                     key={r.title}
                     className="flex items-start gap-3 rounded-xl border border-[#DFD9CA] bg-white p-3 shadow-xs"
                   >
-                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-[#EDF3EA] text-[#1F3622]">
+                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-[#EDF4EE] text-[#1F3622]">
                       <PushPin className="size-3.5" weight="fill" />
                     </div>
                     <div>
                       <div className="font-semibold text-[#111215]">{r.title}</div>
-                      <div className="mt-0.5 text-slate-600">{r.desc}</div>
+                      <div className="mt-0.5 text-[#4F6A52]">{r.desc}</div>
                     </div>
                   </div>
                 ))}
@@ -587,7 +589,7 @@ function SocietyDeskLanding() {
 
               {/* Col 4: Completed Card with Photo Header */}
               <div className="lg:col-span-3 lg:pl-4">
-                <div className="group relative overflow-hidden rounded-2xl border border-[#233827] bg-[#0E1510] text-white shadow-[0_16px_40px_rgba(0,0,0,0.18)] transition-all hover:border-[#3A5C40]">
+                <div className="group relative overflow-hidden rounded-2xl border border-[#233827] bg-[#101F13] text-white shadow-[0_16px_40px_rgba(31,54,34,0.18)] transition-all hover:border-[#3A5C40]">
                   {/* Photo Header */}
                   <div className="relative h-36 w-full overflow-hidden">
                     <img
@@ -596,7 +598,7 @@ function SocietyDeskLanding() {
                       className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                     {/* Gradient Overlay Scrim */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E1510] via-[#0E1510]/40 to-black/30" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#101F13] via-[#101F13]/40 to-black/30" />
 
                     {/* Status Badge Tag */}
                     <div className="absolute top-3 left-3">
@@ -607,13 +609,13 @@ function SocietyDeskLanding() {
                     </div>
 
                     {/* Star Rating Overlay */}
-                    <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-xs text-amber-400">
+                    <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-xs text-emerald-400">
                       <div className="flex">
                         {[...Array(5)].map((_, idx) => (
-                          <Star key={idx} className="size-3.5" weight="fill" />
+                          <Star key={idx} className="size-3.5 text-emerald-400" weight="fill" />
                         ))}
                       </div>
-                      <span className="text-[11px] font-medium text-slate-200">
+                      <span className="text-[11px] font-semibold text-emerald-200">
                         5.0 Star Rating
                       </span>
                     </div>
@@ -624,17 +626,17 @@ function SocietyDeskLanding() {
                     <h4 className="text-sm font-semibold tracking-tight text-white">
                       {scenario.resolution.title}
                     </h4>
-                    <p className="mt-1.5 text-xs leading-relaxed text-slate-300/85">
+                    <p className="mt-1.5 text-xs leading-relaxed text-[#B4C9B8]">
                       {scenario.resolution.desc}
                     </p>
-                    <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+                    <div className="mt-4 flex items-center justify-between border-t border-[#1F3622] pt-3">
                       <Link
                         to="/auth"
                         className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
                       >
                         {scenario.resolution.action} <ArrowRight className="size-3.5" />
                       </Link>
-                      <span className="font-mono text-[10px] text-slate-400">
+                      <span className="font-mono text-[10px] text-[#A8D5B0]">
                         WO #{activeScenarioIdx === 0 ? "104" : "109"}
                       </span>
                     </div>
