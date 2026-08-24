@@ -173,7 +173,7 @@ function AdminShell({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-background lg:flex overflow-x-hidden w-full max-w-full">
+    <div className="min-h-screen bg-background lg:flex">
       <aside className="hidden w-64 shrink-0 sticky top-0 h-screen flex-col justify-between bg-sidebar p-5 lg:flex overflow-hidden z-20">
         <div className="space-y-8">
           <Brand variant="sidebar" linkTo="/admin" />
@@ -198,8 +198,8 @@ function AdminShell({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <div className="flex-1 min-w-0 overflow-x-hidden w-full max-w-full">
-        <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 lg:hidden w-full max-w-full">
+      <div className="flex-1 min-w-0">
+        <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 lg:hidden">
           <Brand linkTo="/admin" />
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" onClick={() => setOpen((v) => !v)}>
@@ -251,8 +251,8 @@ function StaffShell({ children }: { children: ReactNode }) {
   const cleanName = getCleanName(profile?.full_name) || "Staff";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden w-full max-w-full">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen bg-background flex flex-col">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3">
           {/* Left: Brand */}
           <div className="flex items-center gap-2 shrink-0">
@@ -322,8 +322,8 @@ function ResidentShell({ children }: { children: ReactNode }) {
   const cleanName = getCleanName(profile?.full_name) || "Resident";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden w-full max-w-full">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen bg-background flex flex-col">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3">
           {/* Left: Brand */}
           <div className="flex items-center gap-2 shrink-0">

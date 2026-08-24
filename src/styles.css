@@ -157,9 +157,7 @@
   }
 
   html {
-    overflow-x: hidden;
-    max-width: 100%;
-    width: 100%;
+    /* Do not add overflow-x:hidden here — it kills vertical scroll in iOS Safari */
   }
 
   body {
@@ -168,8 +166,7 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     overscroll-behavior-y: none;
-    overflow-x: hidden;
-    max-width: 100%;
+    overflow-x: clip; /* clip (not hidden) avoids creating a scroll container on body */
     width: 100%;
     position: relative;
   }
